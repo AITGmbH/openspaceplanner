@@ -1,0 +1,25 @@
+.overview-card {
+    margin-bottom: 20px;
+    margin-right: 20px;
+    width: 550px;
+    height: 200px;
+    float: left;
+}
+
+.slot {
+    position: relative;
+    top: 20px;
+    clear: both;
+}
+
+.slot-title {
+    font-weight: bold;
+    margin-left: 10px;
+    height: 60px;
+    padding-top: 20px;
+}
+ 
+.session-overview .slot:first-child .slot-title {
+    height: 40px;
+    padding-top: 0px;
+}

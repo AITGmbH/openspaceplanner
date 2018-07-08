@@ -1,0 +1,37 @@
+<app-modal-dialog title="Session" (save)="save()" (close)="onClose()" [showDeleteButton]="'false'" [isShown]="isShown">
+  <div class="field">
+    <label class="label">Name</label>
+    <div class="control">
+      <input class="input" type="text" placeholder="Name" id="name" [(ngModel)]="item.name" />
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="control">
+      <label class="checkbox">
+        <input type="checkbox" [(ngModel)]="item.freeForAll"> Free for all (unlimited attendance and votes)
+      </label>
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="control">
+      <label class="checkbox">
+        <input type="checkbox" [(ngModel)]="item.votingEnabled"> Enable voting
+      </label>
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="control">
+      <label class="checkbox">
+        <input type="checkbox" [(ngModel)]="item.attendanceEnabled"> Enable attendance
+      </label>
+    </div>
+  </div>
+
+  <div class="modal-buttons">
+    <button class="button is-danger" (click)="resetRatings()">Reset ratings</button>
+    <button class="button is-danger" (click)="resetAttendance()">Reset attendance</button>
+  </div>
+</app-modal-dialog>

@@ -1,0 +1,15 @@
+<app-modal-dialog title="Room" (save)="save()" (close)="onClose()" (delete)="delete()" [showDeleteButton]="item.id != null"
+  [isShown]="isShown">
+  <div class="field">
+    <label class="label">Name</label>
+    <div class="control">
+      <input class="input" type="text" placeholder="Name" id="name" [(ngModel)]="item.name" />
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Seats</label>
+    <div class="control">
+      <input class="input" type="number" placeholder="Seats" id="seats" [(ngModel)]="item.seats" />
+    </div>
+  </div>
+</app-modal-dialog>
