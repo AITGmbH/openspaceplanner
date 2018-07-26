@@ -10,12 +10,19 @@
     position: relative;
 }
 
-.topic-content > div {
-    margin-bottom: 10px;
+.topic-header {
+    height: 85px;
 }
 
-.topic-content p {
+.topic-title {
     overflow: hidden;
+    max-height: 48px;
+}
+
+.topic-owner {
+    overflow: hidden;
+    height: 24px;
+    margin-bottom: 10px;
 }
 
 .content:not(:last-child) {
@@ -70,7 +77,8 @@
     width: 100%;
 }
 
-.topic-attendees span,a {
+.topic-attendees span,
+a {
     margin: 0 5px;
 }
 
@@ -83,7 +91,7 @@
 }
 
 .topic-ratings-value ~ i {
-    color: #FFD700;
+    color: #ffd700;
 }
 
 .topic-content small {
@@ -100,32 +108,38 @@
     clear: both;
 }
 
-.topic-ratings-stars > input { display: none; } 
-.topic-ratings-stars > label:before { 
-  margin: 5px;
-  font-size: 1.25em;
-  font-family: FontAwesome;
-  display: inline-block;
-  content: "\f005";
+.topic-ratings-stars > input {
+    display: none;
+}
+.topic-ratings-stars > label:before {
+    margin: 5px;
+    font-size: 1.25em;
+    font-family: FontAwesome;
+    display: inline-block;
+    content: "\f005";
 }
 
-.topic-ratings-stars > label { 
-  width: 25%;
-  text-align: center;
-  float: right;
-  font-size: 14pt;
-  border-right: 1px solid rgba(10, 10, 10, 0.1);
-  color: #ddd; 
+.topic-ratings-stars > label {
+    width: 25%;
+    text-align: center;
+    float: right;
+    font-size: 14pt;
+    border-right: 1px solid rgba(10, 10, 10, 0.1);
+    color: #ddd;
 }
 
 .topic-ratings-stars > input:checked ~ label,
 .topic-ratings-stars:not(:checked) > label:hover,
-.topic-ratings-stars:not(:checked) > label:hover ~ label { color: #FFD700;  }
+.topic-ratings-stars:not(:checked) > label:hover ~ label {
+    color: #ffd700;
+}
 
 .topic-ratings-stars > input:checked + label:hover,
 .topic-ratings-stars > input:checked ~ label:hover,
 .topic-ratings-stars > label:hover ~ input:checked ~ label,
-.topic-ratings-stars > input:checked ~ label:hover ~ label { color: #FFED85;  } 
+.topic-ratings-stars > input:checked ~ label:hover ~ label {
+    color: #ffed85;
+}
 
 .room-seats-conflict {
     background-color: orange;

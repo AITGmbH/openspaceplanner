@@ -9,9 +9,7 @@
         "test": "ng test",
         "lint": "ng lint",
         "e2e": "ng e2e",
-        "watch": "concurrently \"ng build --watch\" \"dotnet watch run\"",
-        "publish": "ng build --aot --prod && dotnet publish --configuration Release",
-        "dist": "npm run publish"
+        "publish": "ng build --aot --prod && dotnet publish --configuration Release"
     },
     "private": true,
     "dependencies": {
@@ -58,6 +56,7 @@
         "protractor": "^5.3.2",
         "ts-node": "^6.1.0",
         "tslint": "^5.10.0",
-        "typescript": "^2.7.2"
+        "typescript": "^2.7.2",
+        "wait-on": "^2.1.0"
     }
 }

@@ -9,7 +9,9 @@
     padding: 1rem;
 }
 
-.margin-top-auto { margin-top: auto; }
+.margin-top-auto {
+    margin-top: auto;
+}
 
 .edit-button {
     opacity: 0;
@@ -17,4 +19,8 @@
 
 .modal-buttons > button ~ button {
     margin-left: 10px;
+}
+
+.drop-target {
+    background-color: lightyellow;
 }
