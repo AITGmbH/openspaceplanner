@@ -80,3 +80,11 @@ tbody .table-row {
 h1 .edit-button {
     margin-left: 10px;
 }
+
+.title {
+    float: left;
+}
+
+.calendar-button {
+    float: right;
+}
