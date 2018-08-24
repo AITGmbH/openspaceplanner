@@ -72,8 +72,8 @@ namespace openspace.Controllers
                 if (!TimeSpan.TryParse(slotTimes[0].Groups[0].Value, out TimeSpan startTime)) continue;
                 if (!TimeSpan.TryParse(slotTimes[1].Groups[0].Value, out TimeSpan endTime)) continue;
 
-                var startDateTime = new DateTime(date.Year, date.Month, date.Day, startTime.Hours, startTime.Minutes, 0);
-                var endDateTime = new DateTime(date.Year, date.Month, date.Day, endTime.Hours, endTime.Minutes, 0);
+                var startDateTime = new DateTime(date.Year, date.Month, date.Day, startTime.Hours, startTime.Minutes, 0).AddHours(-1);
+                var endDateTime = new DateTime(date.Year, date.Month, date.Day, endTime.Hours, endTime.Minutes, 0).AddHours(-1);
 
                 sb.AppendLine("BEGIN:VEVENT");
 
