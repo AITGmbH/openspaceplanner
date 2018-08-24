@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using openspace.Hubs;
 using openspace.Models;
 using openspace.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace openspace.Controllers
 {
@@ -40,7 +39,8 @@ namespace openspace.Controllers
 
             var dateMatch = Regex.Match(session.Name, "(\\d+\\.\\d+.\\d+)");
             if (dateMatch.Length == 0) return NotFound();
-            if (!DateTime.TryParse(dateMatch.Groups[0].Value, out DateTime date)) return NotFound();
+            if (!DateTime.TryParseExact(dateMatch.Groups[0].Value, "dd.MM.yyyy",
+                    CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date)) return NotFound();
 
             var sb = new StringBuilder();
 
@@ -114,19 +114,6 @@ namespace openspace.Controllers
             return session;
         }
 
-        [HttpDelete("{id}/ratings")]
-        public Task ResetRatings(int id)
-        {
-            return _sessionRepository.Update(id, session =>
-            {
-                foreach (var topic in session.Topics)
-                {
-                    topic.Ratings.Clear();
-                    _sessionsHub.Clients.Group(id.ToString()).UpdateTopic(topic);
-                }
-            });
-        }
-
         [HttpDelete("{id}/attendances")]
         public Task ResetAttendances(int id)
         {
@@ -135,6 +122,19 @@ namespace openspace.Controllers
                 foreach (var topic in session.Topics)
                 {
                     topic.Attendees.Clear();
+                    _sessionsHub.Clients.Group(id.ToString()).UpdateTopic(topic);
+                }
+            });
+        }
+
+        [HttpDelete("{id}/ratings")]
+        public Task ResetRatings(int id)
+        {
+            return _sessionRepository.Update(id, session =>
+            {
+                foreach (var topic in session.Topics)
+                {
+                    topic.Ratings.Clear();
                     _sessionsHub.Clients.Group(id.ToString()).UpdateTopic(topic);
                 }
             });
