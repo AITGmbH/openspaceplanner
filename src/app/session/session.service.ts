@@ -1,16 +1,17 @@
-import { Injectable } from '@angular/core';
-import { Session } from '../models/session';
-import { HttpClient } from '@angular/common/http';
-import { Topic } from '../models/topic';
-import { Slot } from '../models/slot';
-import { Room } from '../models/room';
-import { HubConnectionBuilder, HubConnection } from '@aspnet/signalr';
-import * as _ from 'lodash';
-import { SessionOptions } from '../models/sessionOptions';
-import { Rating } from '../models/rating';
-import { Attendance } from '../models/attendance';
-import { getRandomId } from '../shared/common';
-import { Feedback } from '../models/feedback';
+import { Injectable } from "@angular/core";
+import { Session } from "../models/session";
+import { HttpClient } from "@angular/common/http";
+import { Topic } from "../models/topic";
+import { Slot } from "../models/slot";
+import { Room } from "../models/room";
+import { HubConnectionBuilder, HubConnection } from "@aspnet/signalr";
+import * as _ from "lodash";
+import { SessionOptions } from "../models/sessionOptions";
+import { Rating } from "../models/rating";
+import { Attendance } from "../models/attendance";
+import { getRandomId } from "../shared/common";
+import { Feedback } from "../models/feedback";
+import { Observable } from "rxjs";
 
 @Injectable()
 export class SessionService {
@@ -45,10 +46,14 @@ export class SessionService {
 
   public update(session: Session = <Session>{}): Promise<Session> {
     const request = session.id != null
-      ? this.http.put(`/api/sessions/${session.id}`, session)
-      : this.http.post(`/api/sessions`, session);
+      ? this.http.put<Session>(`/api/sessions/${session.id}`, session)
+      : this.http.post<Session>(`/api/sessions`, session);
 
-    return request.toPromise().then(obj => obj as Session);
+    return request.toPromise();
+  }
+
+  public getLastSessions(): Observable<Session[]> {
+    return this.http.get<Session[]>(`/api/sessions/last`);
   }
 
   public get(sessionId: number): Promise<Session> {
@@ -287,20 +292,20 @@ export class SessionService {
       .withUrl(`/hubs/sessions?sessionId=${this.currentSession.id}`)
       .build();
 
-    this._hubConnection.on('updateSession', (session: Session) => this.currentSession = session);
-    this._hubConnection.on('updateTopic', (topic: Topic) => this.updateInternal(this.currentSession.topics, topic));
-    this._hubConnection.on('updateRoom', (room: Room) => this.updateInternal(this.currentSession.rooms, room));
-    this._hubConnection.on('updateSlot', (slot: Slot) => this.updateInternal(this.currentSession.slots, slot));
-    this._hubConnection.on('deleteTopic', (id: string) => this.deleteInternal(this.currentSession.topics, id));
-    this._hubConnection.on('deleteRoom', (id: string) => this.deleteInternal(this.currentSession.rooms, id));
-    this._hubConnection.on('deleteSlot', (id: string) => this.deleteInternal(this.currentSession.slots, id));
+    this._hubConnection.on("updateSession", (session: Session) => this.currentSession = session);
+    this._hubConnection.on("updateTopic", (topic: Topic) => this.updateInternal(this.currentSession.topics, topic));
+    this._hubConnection.on("updateRoom", (room: Room) => this.updateInternal(this.currentSession.rooms, room));
+    this._hubConnection.on("updateSlot", (slot: Slot) => this.updateInternal(this.currentSession.slots, slot));
+    this._hubConnection.on("deleteTopic", (id: string) => this.deleteInternal(this.currentSession.topics, id));
+    this._hubConnection.on("deleteRoom", (id: string) => this.deleteInternal(this.currentSession.rooms, id));
+    this._hubConnection.on("deleteSlot", (id: string) => this.deleteInternal(this.currentSession.slots, id));
 
     this._hubConnection.start()
       .then(() => {
-        console.log('Hub connection started');
+        console.log("Hub connection started");
       })
       .catch(err => {
-        console.log('Error while establishing connection');
+        console.log("Error while establishing connection");
       });
   }
 }

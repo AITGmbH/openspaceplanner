@@ -31,6 +31,9 @@ namespace openspace.Controllers
         [HttpGet]
         public Task<IEnumerable<Session>> Get() => _sessionRepository.Get();
 
+        [HttpGet("last")]
+        public async Task<IEnumerable<Session>> GetLast() => (await _sessionRepository.Get()).OrderByDescending(s => s.Id).Take(10);
+
         [HttpGet("{id}")]
         public Task<Session> Get(int id) => _sessionRepository.Get(id);
 

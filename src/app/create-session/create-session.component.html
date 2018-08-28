@@ -28,6 +28,14 @@
   </div>
 </form>
 
+<div class="field session">
+  <label class="label">Last 10 sessions</label>
+  <ul>
+    <li *ngFor="let session of lastSessions$ | async"><a href="session/{{session.id}}">{{ session.name }}</a></li>
+  </ul>
+</div>
+
+
 <a class="calendar-button" href="/api/sessions/calendar">
   <span class="fa fa-calendar fa-2x"></span>
 </a>
