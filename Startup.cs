@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using openspace.Hubs;
 using openspace.Repositories;
+using openspace.Services;
 using System.IO;
 
 namespace openspace
@@ -74,6 +75,8 @@ namespace openspace
             {
                 services.AddSingleton<ISessionRepository, LocalSessionRepository>();
             }
+
+            services.AddSingleton<ICalendarService>(provider => new CalendarService(provider.GetService<ISessionRepository>(), Configuration["Timezone"] ?? "Europe/Berlin"));
         }
     }
 }
