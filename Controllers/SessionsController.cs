@@ -37,6 +37,16 @@ namespace openspace.Controllers
         [HttpGet("{id}")]
         public Task<Session> Get(int id) => _sessionRepository.Get(id);
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var success = await _sessionRepository.Delete(id);
+            if (!success) return NotFound();
+
+            await _sessionsHub.Clients.Group(id.ToString()).DeleteSession();
+            return Ok();  
+        } 
+
         [HttpGet("{id}/calendar")]
         public async Task<IActionResult> GetSessionCalendar(int id)
         {

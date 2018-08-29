@@ -65,6 +65,21 @@ namespace openspace.Repositories
             return Task.FromResult(0);
         }
 
+        public Task<bool> Delete(int id)
+        {
+            lock (_sessions)
+            {
+                var session = _sessions.FirstOrDefault(s => s.Id == id);
+                if (session == null) return Task.FromResult(false);
+
+                _sessions.Remove(session);
+
+                Save();
+            }
+
+            return Task.FromResult(true);
+        }
+
         protected abstract void Save();
     }
 }

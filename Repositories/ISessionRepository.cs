@@ -16,5 +16,7 @@ namespace openspace.Repositories
         Task Update(int sessionId, Action<Session> func);
 
         Task Update(Session session);
+
+        Task<bool> Delete(int id);
     }
 }

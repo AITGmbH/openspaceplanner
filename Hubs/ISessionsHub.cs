@@ -15,6 +15,8 @@ namespace openspace.Hubs
 
         Task UpdateSession(Session session);
 
+        Task DeleteSession();
+
         Task UpdateSlot(Slot slot);
 
         Task UpdateTopic(Topic topic);

@@ -11,13 +11,14 @@ import { Rating } from "../models/rating";
 import { Attendance } from "../models/attendance";
 import { getRandomId } from "../shared/common";
 import { Feedback } from "../models/feedback";
-import { Observable } from "rxjs";
+import { Observable, Subject } from "rxjs";
 
 @Injectable()
 export class SessionService {
   private _hubConnection: HubConnection;
   private _sessionOptions: SessionOptions;
 
+  public sessionDeleted = new Subject();
   public currentSession: Session;
 
   public get sessionOptions() {
@@ -50,6 +51,10 @@ export class SessionService {
       : this.http.post<Session>(`/api/sessions`, session);
 
     return request.toPromise();
+  }
+
+  public delete(id: number): Promise<void> {
+    return this.http.delete<void>(`/api/sessions/${id}`).toPromise();
   }
 
   public getLastSessions(): Observable<Session[]> {
@@ -299,6 +304,7 @@ export class SessionService {
     this._hubConnection.on("deleteTopic", (id: string) => this.deleteInternal(this.currentSession.topics, id));
     this._hubConnection.on("deleteRoom", (id: string) => this.deleteInternal(this.currentSession.rooms, id));
     this._hubConnection.on("deleteSlot", (id: string) => this.deleteInternal(this.currentSession.slots, id));
+    this._hubConnection.on("deleteSession", () => this.sessionDeleted.next());
 
     this._hubConnection.start()
       .then(() => {
