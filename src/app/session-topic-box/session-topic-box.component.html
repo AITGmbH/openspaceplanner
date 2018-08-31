@@ -1,4 +1,4 @@
-<div class="topic box draggable" id="{{topic.id}}" appEditButton>
+<div class="topic box" [class.draggable]="enableDrag" id="{{topic.id}}" appEditButton>
     <div class="content topic-content" #content>
         <div class="topic-header">
             <div class="topic-title">

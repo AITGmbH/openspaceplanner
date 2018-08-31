@@ -19,20 +19,23 @@ export class SessionTopicBoxComponent implements OnInit {
   @Input()
   public showAdditionalInformation: boolean;
 
-  @Output('edit')
+  @Input()
+  public enableDrag = true;
+
+  @Output("edit")
   public edit = new EventEmitter<Event>();
 
   public errors: string[];
 
-  @ViewChild('ratingTooltip') ratingTooltip: ElementRef;
+  @ViewChild("ratingTooltip") ratingTooltip: ElementRef;
 
-  @ViewChild('ratingElement') ratingElement: ElementRef;
+  @ViewChild("ratingElement") ratingElement: ElementRef;
 
-  @ViewChild('errorTooltip') errorTooltip: ElementRef;
+  @ViewChild("errorTooltip") errorTooltip: ElementRef;
 
-  @ViewChild('errorElement') errorElement: ElementRef;
+  @ViewChild("errorElement") errorElement: ElementRef;
 
-  @ViewChild('topicAttendees') topicAttendees: ElementRef;
+  @ViewChild("topicAttendees") topicAttendees: ElementRef;
 
   public get rating() {
     return new RatingStatistic(this.topic.ratings);
@@ -44,10 +47,10 @@ export class SessionTopicBoxComponent implements OnInit {
 
   public get errorText() {
     if (this.errors == null || this.errors.length === 0) {
-      return '';
+      return "";
     }
 
-    return this.errors.join(' ');
+    return this.errors.join(" ");
   }
 
   public get hasError() {
@@ -96,7 +99,7 @@ export class SessionTopicBoxComponent implements OnInit {
 
     const hasError = room.seats < this.topic.attendees.length;
     if (hasError) {
-      this.errors.push('Too many attendees for the given room size.');
+      this.errors.push("Too many attendees for the given room size.");
     }
 
     return hasError;
@@ -114,7 +117,7 @@ export class SessionTopicBoxComponent implements OnInit {
 
     const hasError = topics.length > 1;
     if (hasError) {
-      this.errors.push('Owner with two or more topics in the same slot.');
+      this.errors.push("Owner with two or more topics in the same slot.");
     }
 
     return hasError;
