@@ -7,7 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using openspace.Hubs;
 using openspace.Repositories;
 using openspace.Services;
+using System;
 using System.IO;
+using System.Net.Http;
 
 namespace openspace
 {
@@ -67,6 +69,8 @@ namespace openspace
 
             services.AddSignalR();
 
+            services.AddHttpClient();
+
             if (Configuration["TableStorageAccount"] != null)
             {
                 services.AddSingleton<ISessionRepository, SessionRepository>();
@@ -76,7 +80,14 @@ namespace openspace
                 services.AddSingleton<ISessionRepository, LocalSessionRepository>();
             }
 
-            services.AddSingleton<ICalendarService>(provider => new CalendarService(provider.GetService<ISessionRepository>(), Configuration["Timezone"] ?? "Europe/Berlin"));
+            var hostName = Environment.GetEnvironmentVariable("WEBSITE_HOSTNAME") ?? "localhost:5001";
+            var sessionUrlFormat = $"https://{hostName}/sessions/{{0}}";
+
+            services.AddSingleton<ITeamsService>(provider =>
+                new TeamsService(provider.GetService<IHttpClientFactory>(), Configuration["TeamsWebhookUrl"], sessionUrlFormat));
+
+            services.AddSingleton<ICalendarService>(provider
+                => new CalendarService(provider.GetService<ISessionRepository>(), Configuration["Timezone"] ?? "Europe/Berlin"));
         }
     }
 }

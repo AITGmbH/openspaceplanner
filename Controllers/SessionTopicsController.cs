@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.SignalR;
 using openspace.Hubs;
 using openspace.Models;
 using openspace.Repositories;
+using openspace.Services;
 
 namespace openspace.Controllers
 {
@@ -14,11 +15,14 @@ namespace openspace.Controllers
     public class SessionTopicsController : Controller
     {
         private readonly ISessionRepository _sessionRepository;
+        private readonly ITeamsService _teamsService;
         private readonly IHubContext<SessionsHub, ISessionsHub> _sessionsHub;
 
-        public SessionTopicsController(ISessionRepository sessionRepository, IHubContext<SessionsHub, ISessionsHub> sessionsHub)
+        public SessionTopicsController(ISessionRepository sessionRepository, ITeamsService teamsService,
+            IHubContext<SessionsHub, ISessionsHub> sessionsHub)
         {
             _sessionRepository = sessionRepository;
+            _teamsService = teamsService;
             _sessionsHub = sessionsHub;
         }
 
@@ -30,14 +34,18 @@ namespace openspace.Controllers
                 return null;
             }
 
-            await _sessionRepository.Update(sessionId, (session) =>
+            var session = await _sessionRepository.Get(sessionId);
+            var oldTopic = session.Topics.FirstOrDefault(t => t.Id == topicId);
+
+            await _sessionRepository.Update(sessionId, (s) =>
             {
-                var currentTopic = session.Topics.FirstOrDefault(t => t.Id == topicId);
-                session.Topics.Remove(currentTopic);
-                session.Topics.Add(topic);
+                var currentTopic = s.Topics.FirstOrDefault(t => t.Id == topicId);
+                s.Topics.Remove(currentTopic);
+                s.Topics.Add(topic);
             });
 
             await _sessionsHub.Clients.Group(sessionId.ToString()).UpdateTopic(topic);
+            await _teamsService.SendCardAsync(session, oldTopic, topic);
 
             return topic;
         }

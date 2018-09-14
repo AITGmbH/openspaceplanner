@@ -23,7 +23,7 @@ namespace openspace.Repositories
                 configuration["TableStorageKey"]), true);
 
             var blobClient = storageAccount.CreateCloudBlobClient();
-            _container = blobClient.GetContainerReference("database");
+            _container = blobClient.GetContainerReference(configuration["TableStorageContainer"]);
 
             if (_sessions == null)
             {
