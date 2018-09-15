@@ -13,22 +13,36 @@ namespace openspace.Repositories
 {
     public class SessionRepository : SessionRepositoryBase
     {
-        private readonly CloudBlobContainer _container;
+        private bool _sessionsInitialized = false;
+        private CloudBlobContainer _container;
+        private readonly IConfiguration _configuration;
 
         public SessionRepository(IConfiguration configuration)
         {
+            _configuration = configuration;
+            _sessions = new List<Session>();
+        }
+
+        public async Task InitializeAsync()
+        {
             var storageAccount = new CloudStorageAccount(
                 new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
-                configuration["TableStorageAccount"],
-                configuration["TableStorageKey"]), true);
+                _configuration["TableStorageAccount"],
+                _configuration["TableStorageKey"]), true);
 
             var blobClient = storageAccount.CreateCloudBlobClient();
-            _container = blobClient.GetContainerReference(configuration["TableStorageContainer"]);
+            _container = blobClient.GetContainerReference(_configuration["TableStorageContainer"]);
+            await _container.CreateIfNotExistsAsync();
 
-            if (_sessions == null)
+            if (!_sessionsInitialized)
             {
+                _sessionsInitialized = true;
+
                 var blockBlob = _container.GetBlockBlobReference("sessions");
-                _sessions = new List<Session>(JsonConvert.DeserializeObject<Session[]>(blockBlob.DownloadTextAsync().Result));
+                if (await blockBlob.ExistsAsync())
+                {
+                    _sessions = new List<Session>(JsonConvert.DeserializeObject<Session[]>(blockBlob.DownloadTextAsync().Result));
+                }
             }
         }
 

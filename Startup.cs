@@ -73,7 +73,11 @@ namespace openspace
 
             if (Configuration["TableStorageAccount"] != null)
             {
-                services.AddSingleton<ISessionRepository, SessionRepository>();
+                services.AddSingleton<ISessionRepository>(_ => {
+                    var repository = new SessionRepository(Configuration);
+                    repository.InitializeAsync().GetAwaiter().GetResult();
+                    return repository;
+                });
             }
             else
             {
