@@ -1,0 +1,23 @@
+FROM microsoft/dotnet:2.1-aspnetcore-runtime AS base
+WORKDIR /app
+EXPOSE 80
+
+FROM microsoft/dotnet:2.1-sdk AS build
+WORKDIR /src
+COPY Web/Web.csproj Web/
+COPY Domain/Domain.csproj Domain/
+COPY Common/Common.csproj Common/
+COPY DataAccess/DataAccess.csproj DataAccess/
+COPY . .
+WORKDIR /src/Web
+RUN dotnet build Web.csproj -c Release -o /app
+RUN npm install
+RUN npm run build
+
+FROM build AS publish
+RUN dotnet publish Web.csproj -c Release -o /app
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app .
+ENTRYPOINT ["dotnet", "openspace.Web.dll"]

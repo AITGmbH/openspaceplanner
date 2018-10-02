@@ -5,19 +5,29 @@
     <UserSecretsId>openspacesecrets</UserSecretsId>
     <AssemblyName>openspace.Web</AssemblyName>
     <RootNamespace>openspace.Web</RootNamespace>
+    <DockerTargetOS>Linux</DockerTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="dist\**" />
+    <Compile Remove="node_modules\**" />
     <Compile Remove="Tests\**" />
     <Content Remove="dist\**" />
+    <Content Remove="node_modules\**" />
     <Content Remove="Tests\**" />
     <EmbeddedResource Remove="dist\**" />
+    <EmbeddedResource Remove="node_modules\**" />
     <EmbeddedResource Remove="Tests\**" />
     <None Remove="dist\**" />
+    <None Remove="node_modules\**" />
     <None Remove="Tests\**" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.0.1916590" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
