@@ -1,0 +1,135 @@
+<div class="topic box" [class.draggable]="enableDrag" id="{{topic.id}}" appEditButton>
+    <div class="content topic-content" #content>
+        <div class="topic-header">
+            <div class="topic-title">
+                <span [hidden]="!hasError">
+                    <span class="fa fa-exclamation-triangle topic-error" #errorElement></span>
+                </span>
+                <div #errorTooltip>{{ errorText }}</div>
+                <strong>{{ topic.name }}</strong>
+            </div>
+
+            <div class="topic-owner">
+                <small>{{ topic.owner }}</small>
+            </div>
+        </div>
+
+        <p class="topic-description" [hidden]="!description.expanded" #description>
+            <i *ngIf="!topic.description">no description</i>
+            {{ topic.description }}
+        </p>
+    </div>
+
+    <div class="topic-additional-informations">
+        <div class="">
+            <div class="topic-additional-information" *ngIf="session.attendanceEnabled">
+                <span class="fa fa-users"></span>
+
+                <div *ngIf="session.freeForAll" class="topic-attendees">
+                    <a (click)="increaseAttendees()">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                    </a>
+
+                    <span class="topic-attendees-value" (click)="toggleAttendeesInput()" [hidden]="showAttendeesInput">{{
+                        topic.attendees.length }}</span>
+                    <input type="text" class="topic-attendees-value-box" #topicAttendees [hidden]="!showAttendeesInput" [value]="topic.attendees.length"
+                        (keyup.enter)="updateAttendees(topicAttendees.value)" (blur)="updateAttendees(topicAttendees.value)"
+                    />
+
+                    <a (click)="decreaseAttendees()">
+                        <i class="fa fa-minus" aria-hidden="true"></i>
+                    </a>
+                </div>
+
+                <div *ngIf="!session.freeForAll" class="topic-attendees">
+                    <span class="topic-attendees-value">{{ topic.attendees.length }}</span>
+
+                    <a (click)="increaseAttendees()" *ngIf="!isAttendee()">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                    </a>
+
+                    <a (click)="decreaseAttendees()" *ngIf="isAttendee()">
+                        <i class="fa fa-minus" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="topic-additional-information">
+                <span class="fa fa-star"></span>
+                <div #ratingElement>
+                    <span class="topic-ratings-value">{{ rating.mean }}</span>
+
+                    <div class="topic-rating-tooltip" #ratingTooltip>
+                        <div>
+                            <span>Min:</span>
+                            <span class="pull-right">{{rating.min}}</span>
+                        </div>
+                        <div>
+                            <span>Median:</span>
+                            <span class="pull-right">{{rating.median}}</span>
+                        </div>
+                        <div>
+                            <span>Mean:</span>
+                            <span class="pull-right">{{rating.mean}}</span>
+                        </div>
+                        <div>
+                            <span>Max:</span>
+                            <span class="pull-right">{{rating.max}}</span>
+                        </div>
+                        <div>
+                            <span>Count:</span>
+                            <span class="pull-right">{{rating.count}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="showAdditionalInformation">
+            <div class="topic-additional-information">
+                <span class="fa fa-clock-o"></span>
+                <span>{{slot.name}} {{slot.time != null ? "(" + slot.time + ")" : ""}}</span>
+            </div>
+
+            <div class="topic-additional-information">
+                <span class="fa fa-home"></span>
+                <span>{{room.name}}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="topic-buttons">
+        <p class="topic-description-expander">
+            <a (click)="expandDescription(content, description)" *ngIf="!description.expanded">
+                <i class="fa fa-expand"></i>
+            </a>
+            <a (click)="collapseDescription(content, description)" *ngIf="description.expanded">
+                <i class="fa fa-compress"></i>
+            </a>
+        </p>
+
+        <p class="topic-edit-button">
+            <a (click)="$event.topic = topic; edit.emit($event)">
+                <i class="fa fa-edit edit-button"></i>
+            </a>
+        </p>
+    </div>
+
+    <div class="topic-ratings-stars" *ngIf="session.votingEnabled">
+        <input type="radio" id="star4-{{topic.id}}" name="rating-{{topic.id}}" value="4" (click)="ratingChange($event.target.value)"
+            [checked]="getRating() == 4" />
+        <label for="star4-{{topic.id}}"></label>
+
+        <input type="radio" id="star3-{{topic.id}}" name="rating-{{topic.id}}" value="3" (click)="ratingChange($event.target.value)"
+            [checked]="getRating() == 3" />
+        <label for="star3-{{topic.id}}"></label>
+
+        <input type="radio" id="star2-{{topic.id}}" name="rating-{{topic.id}}" value="2" (click)="ratingChange($event.target.value)"
+            [checked]="getRating() == 2" />
+        <label for="star2-{{topic.id}}"></label>
+
+        <input type="radio" id="star1-{{topic.id}}" name="rating-{{topic.id}}" value="1" (click)="ratingChange($event.target.value)"
+            [checked]="getRating() == 1" />
+        <label for="star1-{{topic.id}}"></label>
+    </div>
+</div>

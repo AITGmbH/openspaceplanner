@@ -1,0 +1,16 @@
+.navbar {
+    background-color: #209cee;
+}
+
+.navbar .container {
+    margin-left: 30px;
+}
+
+.navbar .subtitle {
+    position: absolute;
+    top: 13px;
+}
+
+.navbar .subtitle a {    
+    color: #fff;
+}

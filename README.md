@@ -9,9 +9,10 @@ This tool allows you to plan, for example, fully packed conference days, which c
 After cloning the project:
 
 1.  Run `npm install`
-2.  Add Azure Storage Credentials (_otherwise the data will be saved in a local file_)
-    `dotnet user-secrets set TableStorageAccount <account>`
-    `dotnet user-secrets set TableStorageKey <key>`
+2.  Add Azure Storage Credentials (_otherwise the data will be saved in a local file_)  
+    `dotnet user-secrets set TableStorageAccount <account>`  
+    `dotnet user-secrets set TableStorageKey <key>`  
+    `dotnet user-secrets set TableStorageContainer <container>` (_optional, otherwise the container will be named database_)
 
 ### Debugging
 
@@ -22,19 +23,3 @@ After cloning the project:
 ## Publishing
 
 Run `npm run dist` to publish the project. This will produce the Angular production aot build and the ASP.NET Core release build which can then be published to a webserver. The files are located in the _bin\Release\netcoreapp2.1\publish_ folder.
-
-## Used Technology
-
-## **Backend**
-
-ASP.NET Core Web API  
-SignalR Core
-
-## **Frontend**
-
-Angular  
-Bulma
-
-## **Database**
-
-Azure Blog Storage
