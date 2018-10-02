@@ -1,6 +1,7 @@
-Microsoft.ApplicationInsights.AspNetCore
-Microsoft.AspNetCore.App
-Microsoft.VisualStudio.Web.CodeGeneration.Design
-Microsoft.AspNetCore.SignalR
 Microsoft.Extensions.Http
 Newtonsoft.Json
+
+group Web
+	Microsoft.ApplicationInsights.AspNetCore
+	Microsoft.AspNetCore.App
+	Microsoft.AspNetCore.SignalR

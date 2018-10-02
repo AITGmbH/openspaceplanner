@@ -1,10 +1,11 @@
-FluentAssertions
-Selenium.Chrome.WebDriver
-Selenium.Firefox.WebDriver
-Selenium.InternetExplorer.WebDriver
-Selenium.Support
-Selenium.WebDriver
-System.Text.Encoding.CodePages
-xunit
-xunit.runner.visualstudio
-Microsoft.NET.Test.Sdk
+group Test 
+	FluentAssertions
+	Selenium.Chrome.WebDriver
+	Selenium.Firefox.WebDriver
+	Selenium.InternetExplorer.WebDriver
+	Selenium.Support
+	Selenium.WebDriver
+	System.Text.Encoding.CodePages
+	xunit
+	xunit.runner.visualstudio
+	Microsoft.NET.Test.Sdk
