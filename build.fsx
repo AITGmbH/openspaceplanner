@@ -54,9 +54,14 @@ Target.create "Build.Frontend" (fun _ ->
 
 Target.create "All" ignore
 
-"Clean"
-  ==> "Build.Frontend"
+Target.create "Build" ignore
+
+"Build.Frontend"
   ==> "Build.Backend"
+  ==> "Build"
+
+"Clean"
+  ==> "Build"
   ==> "Publish"
   ==> "All"
 
