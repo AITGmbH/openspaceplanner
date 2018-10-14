@@ -1,7 +1,7 @@
-import { Topic } from './topic';
-import { Room } from './room';
-import { Slot } from './slot';
-import * as _ from 'lodash';
+import { Topic } from "./topic";
+import { Room } from "./room";
+import { Slot } from "./slot";
+import * as _ from "lodash";
 
 export class Session {
     public id: number;
@@ -13,4 +13,10 @@ export class Session {
     public freeForAll: boolean;
     public votingEnabled: boolean;
     public attendanceEnabled: boolean;
+
+    constructor() {
+        this.topics = [];
+        this.slots = [];
+        this.rooms = [];
+    }
 }
