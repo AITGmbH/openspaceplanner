@@ -1,0 +1,6 @@
+{
+    "jest.pathToJest": "npm test --",
+    "jest.debugMode": true,
+    "jest.rootPath": "Web",
+    "editor.formatOnSave": true
+}
