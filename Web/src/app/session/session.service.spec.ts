@@ -3,6 +3,9 @@ import { HttpClient } from "@angular/common/http";
 import * as typemoq from "typemoq";
 import { of } from "rxjs";
 
+import { HubConnectionBuilder, HubConnection } from "@aspnet/signalr";
+jest.mock("@aspnet/signalr");
+
 describe("session service", () => {
     it("get session should set it as the current session", async () => {
         const httpClientMock = typemoq.Mock.ofType<HttpClient>();
