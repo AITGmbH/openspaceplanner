@@ -1,4 +1,4 @@
-<div class="modal add-topic-modal" [class.is-active]="isShown" (keyup)="keyup($event)" tabindex="0">
+<div class="modal" [class.is-active]="isShown" (keyup)="keyup($event)" tabindex="0">
   <div class="modal-background"></div>
   <div class="modal-card">
     <header class="modal-card-head">
@@ -9,9 +9,9 @@
       <ng-content></ng-content>
     </section>
     <footer class="modal-card-foot buttons is-right">
-      <button class="button is-success" (click)="saveInternal()">Save changes</button>
-      <button *ngIf="showDeleteButton" class="button is-danger" (click)="deleteInternal()">Delete</button>
-      <button class="button" (click)="closeInternal()">Cancel</button>
+      <button id="save" class="button is-success" (click)="saveInternal()">Save changes</button>
+      <button id="delete" *ngIf="showDeleteButton" class="button is-danger" (click)="deleteInternal()">Delete</button>
+      <button id="close" class="button" (click)="closeInternal()">Cancel</button>
     </footer>
   </div>
 </div>

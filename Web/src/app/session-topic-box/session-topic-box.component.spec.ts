@@ -32,10 +32,6 @@ describe("session topic box", () => {
         sessionServiceMock.setup(s => s.currentSession).returns(() => session);
 
         TestBed.configureTestingModule({
-            imports: [
-                BrowserModule,
-                FormsModule,
-            ],
             declarations: [
                 SessionTopicBoxComponent
             ],
@@ -55,5 +51,30 @@ describe("session topic box", () => {
             = debugElement.query(By.css(".topic-error")).parent.nativeElement;
 
         expect(errorContainerElement.style.display).toBe("");
+    });
+
+    it("should set error message when there is one owner with two topics in the same slot (create component)", () => {
+        const session = new Session();
+        session.topics.push(<Topic>{ owner: "Test", slotId: "1", roomId: "1" });
+        session.topics.push(<Topic>{ owner: "Test", slotId: "1", roomId: "2" });
+
+        const sessionServiceMock = moq.Mock.ofType<SessionService>();
+        sessionServiceMock.setup(s => s.currentSession).returns(() => session);
+
+        TestBed.configureTestingModule({
+            declarations: [
+                SessionTopicBoxComponent
+            ],
+            providers: [
+                { provide: SessionService, useFactory: () => sessionServiceMock.object }
+            ]
+        }).compileComponents();
+
+        const fixture = TestBed.createComponent(SessionTopicBoxComponent);
+        const comp = fixture.componentInstance;
+        comp.topic = session.topics[0];
+
+        expect(comp.hasError).toBeTruthy();
+        expect(comp.errors[0]).toBe("Owner with two or more topics in the same slot.");
     });
 });
