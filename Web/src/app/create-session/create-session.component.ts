@@ -10,6 +10,8 @@ import { Session } from "../models/session";
   styleUrls: ["create-session.component.css"]
 })
 export class CreateSessionComponent {
+  public isLoadingSessions: boolean = false;
+
   public model = {
     sessionId: ""
   };
@@ -17,7 +19,13 @@ export class CreateSessionComponent {
   public lastSessions$: Observable<Session[]>;
 
   constructor(private sessionService: SessionService, private router: Router) {
+    const busyTimeout = setTimeout(() => { this.isLoadingSessions = true; }, 300);
+
     this.lastSessions$ = this.sessionService.getLastSessions();
+    this.lastSessions$.subscribe(() => {
+      clearTimeout(busyTimeout);
+      this.isLoadingSessions = false;
+    });
   }
 
   public async createSession() {

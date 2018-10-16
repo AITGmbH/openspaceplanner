@@ -1,0 +1,26 @@
+.busy-spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+}
+
+.busy-spinner:after {
+  content: " ";
+  display: block;
+  width: 24px;
+  height: 24px;
+  margin: 1px;
+  border-radius: 50%;
+  border: 5px solid #000;
+  border-color: #000 transparent #000 transparent;
+  animation: busy-spinner 1.2s linear infinite;
+}
+
+@keyframes busy-spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

@@ -18,6 +18,7 @@ import { SessionOverviewComponent } from './session-overview/session-overview.co
 import { SessionModalComponent } from './session-modal/session-modal.component';
 import { ApplicationInsightsModule } from '@markpieszak/ng-application-insights';
 import { EditButtonDirective } from './shared/edit-button/edit-button.directive';
+import { BusySpinnerComponent } from './shared/busy-spinner/busy-spinner.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { EditButtonDirective } from './shared/edit-button/edit-button.directive'
     SessionModalComponent,
     ModalDialogComponent,
     SessionOverviewComponent,
-    EditButtonDirective
+    EditButtonDirective,
+    BusySpinnerComponent
   ],
   imports: [
     BrowserModule,

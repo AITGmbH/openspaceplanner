@@ -15,7 +15,9 @@ namespace openspace.Domain.Services
         public TeamsService(IHttpClientFactory clientFactory, string apiUrl, string urlFormat)
         {
             _httpClient = clientFactory.CreateClient();
-            _httpClient.BaseAddress = new Uri(apiUrl);
+
+            if (!string.IsNullOrEmpty(apiUrl))
+                _httpClient.BaseAddress = new Uri(apiUrl);
 
             _urlFormat = urlFormat;
         }
@@ -24,6 +26,8 @@ namespace openspace.Domain.Services
         {
             try
             {
+                if (_httpClient.BaseAddress == null) return;
+
                 var changeText = GetChangeText(oldTopic, topic);
                 if (changeText == null) return;
 

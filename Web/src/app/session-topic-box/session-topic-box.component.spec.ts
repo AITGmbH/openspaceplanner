@@ -53,7 +53,7 @@ describe("session topic box", () => {
         expect(errorContainerElement.style.display).toBe("");
     });
 
-    it("should set error message when there is one owner with two topics in the same slot (create component)", () => {
+    it("should set error message when there is one owner with two topics in the same slot (snapshot)", () => {
         const session = new Session();
         session.topics.push(<Topic>{ owner: "Test", slotId: "1", roomId: "1" });
         session.topics.push(<Topic>{ owner: "Test", slotId: "1", roomId: "2" });
@@ -74,7 +74,8 @@ describe("session topic box", () => {
         const comp = fixture.componentInstance;
         comp.topic = session.topics[0];
 
-        expect(comp.hasError).toBeTruthy();
-        expect(comp.errors[0]).toBe("Owner with two or more topics in the same slot.");
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement).toMatchSnapshot();
     });
 });

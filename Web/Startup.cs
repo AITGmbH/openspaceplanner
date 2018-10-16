@@ -68,6 +68,7 @@ namespace openspace
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            services.AddHttpClient();
             services.AddSignalR();
 
             if (Configuration["TableStorageAccount"] != null)
@@ -84,11 +85,8 @@ namespace openspace
 
             var sessionUrlFormat = $"https://{Environment.GetEnvironmentVariable("WEBSITE_HOSTNAME")}/sessions/{{0}}";
 
-            if (!string.IsNullOrEmpty(Configuration["TeamsWebhookUrl"]))
-            {
-                services.AddSingleton<ITeamsService>(provider =>
-                    new TeamsService(provider.GetService<IHttpClientFactory>(), Configuration["TeamsWebhookUrl"], sessionUrlFormat));
-            }
+            services.AddSingleton<ITeamsService>(provider =>
+                new TeamsService(provider.GetService<IHttpClientFactory>(), Configuration["TeamsWebhookUrl"], sessionUrlFormat));
 
             services.AddSingleton<ICalendarService>(provider
                 => new CalendarService(provider.GetService<ISessionRepository>(), Configuration["Timezone"] ?? "Europe/Berlin"));
