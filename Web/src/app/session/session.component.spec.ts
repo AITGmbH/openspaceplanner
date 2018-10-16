@@ -30,7 +30,6 @@ describe("SessionComponent", () => {
         });
 
         sessionServiceMock = typemoq.Mock.ofType<SessionService>();
-
         sessionServiceMock.setup(s => s.get(typemoq.It.isValue(session.id)))
             .returns(() => Promise.resolve(session));
 
@@ -57,7 +56,7 @@ describe("SessionComponent", () => {
                 {provide: SessionService, useFactory: () => sessionServiceMock.object},
                 {provide: Router, useFactory: () => routerMock.object},
                 {provide: ActivatedRoute, useValue: {
-                    snapshot: { 
+                    snapshot: {
                         paramMap: {
                             get: () => session.id
                         }

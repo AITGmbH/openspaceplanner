@@ -1,11 +1,10 @@
 import { TestBed } from "@angular/core/testing";
+import { By } from "@angular/platform-browser";
 import { SessionTopicBoxComponent } from "./session-topic-box.component";
 import { SessionService } from "../session/session.service";
 import { Session } from "../models/session";
 import { Topic } from "../models/topic";
 import * as moq from "typemoq";
-import { By, BrowserModule } from "@angular/platform-browser";
-import { FormsModule } from "@angular/forms";
 
 describe("session topic box", () => {
     it("should set error message when there is one owner with two topics in the same slot", () => {
