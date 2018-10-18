@@ -1,5 +1,7 @@
 # Open Space Planner
 
+[![Build status](https://ait.visualstudio.com/AIT/_apis/build/status/Tools/OpenSpacePlanner/OpenSpacePlanner.CI)](https://ait.visualstudio.com/AIT/_build/latest?definitionId=288)
+
 ## Introduction
 
 This tool allows you to plan, for example, fully packed conference days, which can contain any number of rooms, slots and so on. It offers an easy and fast handling both for the planner of the day and for the participants. Within a few clicks a new session is created, times and topic blocks are entered and the participants can register. After a topic participants can give feedback to the speaker.
