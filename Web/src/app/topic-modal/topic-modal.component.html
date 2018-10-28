@@ -1,11 +1,11 @@
 <app-modal-dialog title="Topic" (save)="save()" (close)="onClose()" (delete)="delete()" [showDeleteButton]="item.id != null"
     [isShown]="isShown">
-    <div class="tabs">
+    <div class="tabs" *ngIf="item.id != null">
         <ul>
             <li [class.is-active]="selectedTab == 'topic'" (click)="selectTab('topic')">
                 <a>Topic</a>
             </li>
-            <li [class.is-active]="selectedTab == 'feedback'" (click)="selectTab('feedback')" *ngIf="item.id != null">
+            <li [class.is-active]="selectedTab == 'feedback'" (click)="selectTab('feedback')">
                 <a>Feedback</a>
             </li>
         </ul>

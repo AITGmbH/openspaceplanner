@@ -19,6 +19,8 @@ namespace openspace.Common.Entities
 
         public ICollection<Slot> Slots { get; set; } = new List<Slot>();
 
+        public bool TeamsAnnouncementsEnabled { get; set; } = false;
+
         public ICollection<Topic> Topics { get; set; } = new List<Topic>();
 
         public bool VotingEnabled { get; set; }

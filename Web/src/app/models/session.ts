@@ -13,6 +13,7 @@ export class Session {
     public freeForAll: boolean;
     public votingEnabled: boolean;
     public attendanceEnabled: boolean;
+    public teamsAnnouncementsEnabled: boolean;
 
     constructor() {
         this.topics = [];

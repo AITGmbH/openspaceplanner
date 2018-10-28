@@ -26,6 +26,7 @@ namespace openspace.Domain.Services
         {
             try
             {
+                if (!session.TeamsAnnouncementsEnabled) return;
                 if (_httpClient.BaseAddress == null) return;
 
                 var changeText = GetChangeText(oldTopic, topic);
