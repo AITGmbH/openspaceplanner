@@ -51,7 +51,7 @@ export class SessionComponent implements OnInit, OnDestroy {
         private sessionService: SessionService,
         private router: Router,
         private route: ActivatedRoute
-    ) {}
+    ) { }
 
     public async ngOnInit() {
         const id = +this.route.snapshot.paramMap.get("id");
@@ -72,6 +72,7 @@ export class SessionComponent implements OnInit, OnDestroy {
         interact(".draggable").draggable({
             autoScroll: true,
             inertia: true,
+            onstart: event => this.onTopicMoveStart(event),
             onmove: event => this.onTopicMove(event),
             onend: event => this.onTopicMoveEnd(event)
         });
@@ -141,6 +142,13 @@ export class SessionComponent implements OnInit, OnDestroy {
         return this.hasModalParent(element.parentElement);
     }
 
+    private onTopicMoveStart(event) {
+        event.target.style.width = "150px";
+        event.target.style.height = "80px";
+
+        this.pauseEvent(event);
+    }
+
     private onTopicMoveEnd(event) {
         if (event.interaction.dropTarget == null) {
             this.updateTarget(
@@ -165,11 +173,14 @@ export class SessionComponent implements OnInit, OnDestroy {
 
         target.setAttribute("data-x", x);
         target.setAttribute("data-y", y);
+
+        this.pauseEvent(event);
     }
 
     private onTopicDrop(event) {
         const isSwappingTopics =
             event.target.children.length > 0 &&
+            event.target.children[0] !== event.relatedTarget.parentElement &&
             !event.target.classList.contains("topics-unassigned");
 
         if (isSwappingTopics) {
@@ -256,5 +267,13 @@ export class SessionComponent implements OnInit, OnDestroy {
         $event.stopPropagation();
         this.floatingActionButton.nativeElement.expanded = !this
             .floatingActionButton.nativeElement.expanded;
+    }
+
+    private pauseEvent(e) {
+        if (e.stopPropagation) e.stopPropagation();
+        if (e.preventDefault) e.preventDefault();
+        e.cancelBubble = true;
+        e.returnValue = false;
+        return false;
     }
 }
