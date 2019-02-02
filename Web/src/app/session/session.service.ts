@@ -62,6 +62,10 @@ export class SessionService {
     return this.http.get<Session[]>(`/api/sessions/last`);
   }
 
+  public getAll(): Observable<Session[]> {
+    return this.http.get<Session[]>('/api/sessions');
+  }
+
   public get(sessionId: number): Promise<Session> {
     return this.http.get(`/api/sessions/${sessionId}`)
       .toPromise()
