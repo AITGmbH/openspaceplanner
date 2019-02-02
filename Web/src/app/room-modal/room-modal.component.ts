@@ -1,7 +1,8 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Room } from '../models/room';
 import { SessionService } from '../session/session.service';
 import * as _ from 'lodash';
+import { NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-room-modal',
@@ -10,6 +11,8 @@ import * as _ from 'lodash';
 export class RoomModalComponent {
   private _item: Room;
   private _capabilities: string[];
+
+  @ViewChild('capabilitiesElement') public capabilitiesElement: NgSelectComponent;
 
   @Output()
   public close = new EventEmitter();
@@ -56,6 +59,7 @@ export class RoomModalComponent {
   }
 
   public onClose() {
+    this.capabilitiesElement.close();
     this.close.next();
   }
 }

@@ -116,6 +116,20 @@ export class SessionComponent implements OnInit, OnDestroy {
 
         return null;
     }
+    
+    @HostListener('document:keyup', ['$event'])
+    public keyup(event: KeyboardEvent) {
+        if (event.shiftKey) {
+            console.log(event.key);
+            if (event.key == 'T') {
+                this.modalShown['topic'] = {};
+            } else if (event.key == 'R') {
+                this.modalShown['room'] = {};
+            } else if (event.key == 'S') {
+                this.modalShown['slot'] = {};
+            }
+        }
+    }
 
     @HostListener("document:click", ["$event"])
     public documentClick(event: MouseEvent) {

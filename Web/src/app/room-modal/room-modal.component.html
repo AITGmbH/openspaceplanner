@@ -15,7 +15,7 @@
   <div class="field">
       <label class="label">Capabilities</label>
       <div class="control">
-          <ng-select [items]="capabilities" [(ngModel)]="item.capabilities" [addTag]="true" [hideSelected]="true" multiple="true" appendTo="body">
+          <ng-select [items]="capabilities" [(ngModel)]="item.capabilities" [addTag]="true" [hideSelected]="true" multiple="true" appendTo="body" #capabilitiesElement>
       </ng-select>
       </div>
   </div>

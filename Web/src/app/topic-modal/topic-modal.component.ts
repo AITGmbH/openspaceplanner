@@ -1,8 +1,9 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Topic } from '../models/topic';
 import { ModalDialogComponent } from '../modal-dialog/modal-dialog.component';
 import { SessionService } from '../session/session.service';
 import * as _ from 'lodash';
+import { NgSelectComponent } from '@ng-select/ng-select';
 
 @Component({
   selector: 'app-topic-modal',
@@ -30,6 +31,8 @@ export class TopicModalComponent {
   public set item(value) {
     this._item = value;
   }
+
+  @ViewChild('capabilitiesElement') public capabilitiesElement: NgSelectComponent;
 
   public get capabilities() {
     if (this.sessionService.currentSession == null) {
@@ -63,6 +66,7 @@ export class TopicModalComponent {
   }
 
   public onClose() {
+    this.capabilitiesElement.close();
     this.close.next();
   }
 

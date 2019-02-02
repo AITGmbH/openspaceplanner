@@ -1,10 +1,12 @@
-import { Component, OnInit, EventEmitter, Output, Input, HostListener } from '@angular/core';
+import { Component, EventEmitter, Output, Input, HostListener, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-modal-dialog',
   templateUrl: './modal-dialog.component.html'
 })
 export class ModalDialogComponent {
+  private _isShown = false;
+
   @Output()
   public save = new EventEmitter();
 
@@ -15,7 +17,26 @@ export class ModalDialogComponent {
   public delete = new EventEmitter();
 
   @Input()
-  public isShown = false;
+  public set isShown(value: boolean) {
+    this._isShown = value;
+
+    if (this._isShown) {      
+      const firstInput = this._elementRef.nativeElement.querySelector('input');
+      if (firstInput != null) {
+        setTimeout(() => {
+          firstInput.focus();
+        });
+      }
+    }
+    
+    if (!this._isShown && value) {
+      this.close.next();
+    }
+  }
+
+  public get isShown() {
+    return this._isShown;
+  }
 
   @Input()
   public title: string;
@@ -23,10 +44,12 @@ export class ModalDialogComponent {
   @Input()
   public showDeleteButton = true;
 
+  constructor(private _elementRef: ElementRef) {}
+
   @HostListener('document:keyup', ['$event'])
   public keyup(event: KeyboardEvent) {
     if (this.isShown) {
-      if (event.ctrlKey && event.key === 'Enter') {
+      if ((event.ctrlKey || event.shiftKey) && event.key === 'Enter') {
         this.saveInternal();
       }
 
@@ -43,7 +66,6 @@ export class ModalDialogComponent {
 
   public closeInternal() {
     this.isShown = false;
-    this.close.next();
   }
 
   public deleteInternal() {
