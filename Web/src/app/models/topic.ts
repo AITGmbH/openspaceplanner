@@ -5,6 +5,7 @@ import { Feedback } from './feedback';
 export class Topic {
     public id: string;
     public name: string;
+    public demands: string[];
     public description: string;
     public owner: string;
     public attendees: Attendance[];

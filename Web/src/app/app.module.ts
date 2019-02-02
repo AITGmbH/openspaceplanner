@@ -19,6 +19,7 @@ import { SessionModalComponent } from './session-modal/session-modal.component';
 import { ApplicationInsightsModule } from '@markpieszak/ng-application-insights';
 import { EditButtonDirective } from './shared/edit-button/edit-button.directive';
 import { BusySpinnerComponent } from './shared/busy-spinner/busy-spinner.component';
+import { NgSelectModule } from "@ng-select/ng-select";
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { BusySpinnerComponent } from './shared/busy-spinner/busy-spinner.compone
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    NgSelectModule,
     FormsModule,
     ApplicationInsightsModule.forRoot({
       instrumentationKeySetLater: true

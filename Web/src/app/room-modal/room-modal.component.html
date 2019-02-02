@@ -12,4 +12,11 @@
       <input class="input" type="number" placeholder="Seats" id="seats" [(ngModel)]="item.seats" />
     </div>
   </div>
+  <div class="field">
+      <label class="label">Capabilities</label>
+      <div class="control">
+          <ng-select [items]="capabilities" [(ngModel)]="item.capabilities" [addTag]="true" [hideSelected]="true" multiple="true" appendTo="body">
+      </ng-select>
+      </div>
+  </div>
 </app-modal-dialog>

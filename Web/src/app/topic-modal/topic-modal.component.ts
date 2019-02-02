@@ -11,6 +11,7 @@ import * as _ from 'lodash';
 })
 export class TopicModalComponent {
   private _item: Topic;
+  private _capabilities: string[];
 
   public selectedTab: string;
   public feedback = '';
@@ -28,6 +29,25 @@ export class TopicModalComponent {
 
   public set item(value) {
     this._item = value;
+  }
+
+  public get capabilities() {
+    if (this.sessionService.currentSession == null) {
+      return [];
+    }
+
+    if (this._capabilities != null) {
+      return this._capabilities;
+    }
+
+    try {
+      this._capabilities = _.uniq(this.sessionService.currentSession.rooms.map(r => r.capabilities).reduce((a, b) => a.concat(b))
+        .concat(this.sessionService.currentSession.topics.map(r => r.demands).reduce((a, b) => a.concat(b))));
+    } catch {
+      this._capabilities = [];
+    }
+
+    return this._capabilities;
   }
 
   constructor(private sessionService: SessionService) {

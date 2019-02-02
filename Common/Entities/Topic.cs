@@ -7,6 +7,8 @@ namespace openspace.Common.Entities
     {
         public ICollection<Attendance> Attendees { get; set; } = new List<Attendance>();
 
+        public ICollection<string> Demands { get; set; } = new List<string>();
+
         public string Description { get; set; }
 
         public ICollection<Feedback> Feedback { get; set; } = new List<Feedback>();

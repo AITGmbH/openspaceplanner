@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Room } from '../models/room';
-import { ModalDialogComponent } from '../modal-dialog/modal-dialog.component';
 import { SessionService } from '../session/session.service';
+import * as _ from 'lodash';
 
 @Component({
   selector: 'app-room-modal',
@@ -9,6 +9,7 @@ import { SessionService } from '../session/session.service';
 })
 export class RoomModalComponent {
   private _item: Room;
+  private _capabilities: string[];
 
   @Output()
   public close = new EventEmitter();
@@ -23,6 +24,25 @@ export class RoomModalComponent {
 
   public set item(value) {
     this._item = value;
+  }
+
+  public get capabilities() {
+    if (this.sessionService.currentSession == null) {
+      return [];
+    }
+
+    if (this._capabilities != null) {
+      return this._capabilities;
+    }
+
+    try {
+      this._capabilities = _.uniq(this.sessionService.currentSession.rooms.map(r => r.capabilities).reduce((a, b) => a.concat(b))
+        .concat(this.sessionService.currentSession.topics.map(r => r.demands).reduce((a, b) => a.concat(b))));
+    } catch {
+      this._capabilities = [];
+    }
+
+    return this._capabilities;
   }
 
   constructor(private sessionService: SessionService) { }

@@ -1,5 +1,4 @@
-<app-modal-dialog title="Topic" (save)="save()" (close)="onClose()" (delete)="delete()" [showDeleteButton]="item.id != null"
-    [isShown]="isShown">
+<app-modal-dialog title="Topic" (save)="save()" (close)="onClose()" (delete)="delete()" [showDeleteButton]="item.id != null" [isShown]="isShown">
     <div class="tabs" *ngIf="item.id != null">
         <ul>
             <li [class.is-active]="selectedTab == 'topic'" (click)="selectTab('topic')">
@@ -28,6 +27,13 @@
             <label class="label">Description</label>
             <div class="control">
                 <textarea class="textarea" placeholder="Description" id="description" [(ngModel)]="item.description"></textarea>
+            </div>
+        </div>
+        <div class="field">
+            <label class="label">Demands</label>
+            <div class="control">
+                <ng-select [items]="capabilities" [(ngModel)]="item.demands" [addTag]="true" [hideSelected]="true" multiple="true" appendTo="body">
+            </ng-select>
             </div>
         </div>
     </div>

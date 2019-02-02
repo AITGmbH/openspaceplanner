@@ -3,12 +3,11 @@ import {
     OnInit,
     HostListener,
     ViewChild,
-    ElementRef
+    OnDestroy
 } from "@angular/core";
 import { SessionService } from "./session.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Topic } from "../models/topic";
-import { OnDestroy } from "@angular/core/src/metadata/lifecycle_hooks";
 import * as _ from "lodash";
 import * as interact from "interactjs";
 
@@ -132,6 +131,11 @@ export class SessionComponent implements OnInit, OnDestroy {
 
     private hasModalParent(element: Element) {
         if (element.classList.contains("modal")) {
+            return true;
+        }
+
+        // ignore the ng-select dropdown panel which is appended to the body
+        if (element.classList.contains("ng-dropdown-panel") || element.classList.contains("ng-value")) {
             return true;
         }
 

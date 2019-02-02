@@ -68,7 +68,8 @@ export class SessionTopicBoxComponent implements OnInit {
 
     const hasErrors = [
       this.hasSameOwnerSlotConflict(),
-      this.hasRoomSeatsConflict()
+      this.hasRoomSeatsConflict(),
+      this.hasRoomCapabilitiesConflict()
     ];
 
     return _.some(hasErrors);
@@ -133,6 +134,28 @@ export class SessionTopicBoxComponent implements OnInit {
     const hasError = topics.length > 1;
     if (hasError) {
       this.errors.push("Owner with two or more topics in the same slot.");
+    }
+
+    return hasError;
+  }
+
+  public hasRoomCapabilitiesConflict() {
+    if (this.topic == null || this.topic.slotId == null || this.topic.roomId == null || this.topic.owner == null) {
+      return false;
+    }
+    
+    if (this.topic.demands == null || this.topic.demands.length == 0) {
+      return false;
+    }
+
+    const room = _.find(this.sessionService.currentSession.rooms, { id: this.topic.roomId });
+    if (room == null) {
+      return false;
+    }
+
+    const hasError = !_.every(this.topic.demands, d => room.capabilities.findIndex(c => c == d) > 0);
+    if (hasError) {
+      this.errors.push("The room does not have the capabilities required by the topic.");
     }
 
     return hasError;
