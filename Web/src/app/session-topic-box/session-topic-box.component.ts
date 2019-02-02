@@ -37,6 +37,16 @@ export class SessionTopicBoxComponent implements OnInit {
 
   @ViewChild("topicAttendees") topicAttendees: ElementRef;
 
+  public get isFavorite() {
+    return this.sessionService.sessionOptions != null 
+      && this.sessionService.sessionOptions.topicsFavorite != null 
+      && this.sessionService.sessionOptions.topicsFavorite[this.topic.id] || false;
+  }
+
+  public get hasComments() {
+    return this.topic != null && this.topic.feedback != null && this.topic.feedback.length > 0;
+  }
+
   public get rating() {
     return new RatingStatistic(this.topic.ratings);
   }
@@ -85,6 +95,11 @@ export class SessionTopicBoxComponent implements OnInit {
   public ngOnInit() {
     tippy(this.ratingElement.nativeElement, { content: this.ratingTooltip.nativeElement, interactive: true });
     tippy(this.errorElement.nativeElement, { content: this.errorTooltip.nativeElement, interactive: true });
+  }
+
+  public favorite() {
+    this.sessionService.sessionOptions.topicsFavorite[this.topic.id] = !this.isFavorite;
+    this.sessionService.saveSessionOptions();
   }
 
   public hasRoomSeatsConflict() {

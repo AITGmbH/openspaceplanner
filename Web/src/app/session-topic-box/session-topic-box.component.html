@@ -1,4 +1,9 @@
-<div class="topic box" [class.draggable]="enableDrag" id="{{topic.id}}" appEditButton>
+<div class="topic box" [class.draggable]="enableDrag" id="{{topic.id}}" appEditButton [class.topic-favorite]="isFavorite">
+    <div class="topic-indicators">
+        <span class="fa fa-comments" *ngIf="hasComments"></span>
+        <span class="fa fa-heart" *ngIf="isFavorite"></span>        
+    </div>
+
     <div class="content topic-content" #content>
         <div class="topic-header">
             <div class="topic-title">
@@ -30,11 +35,9 @@
                         <i class="fa fa-plus" aria-hidden="true"></i>
                     </a>
 
-                    <span class="topic-attendees-value" (click)="toggleAttendeesInput()" [hidden]="showAttendeesInput">{{
-                        topic.attendees.length }}</span>
+                    <span class="topic-attendees-value" (click)="toggleAttendeesInput()" [hidden]="showAttendeesInput">{{ topic.attendees.length }}</span>
                     <input type="text" class="topic-attendees-value-box" #topicAttendees [hidden]="!showAttendeesInput" [value]="topic.attendees.length"
-                        (keyup.enter)="updateAttendees(topicAttendees.value)" (blur)="updateAttendees(topicAttendees.value)"
-                    />
+                        (keyup.enter)="updateAttendees(topicAttendees.value)" (blur)="updateAttendees(topicAttendees.value)" />
 
                     <a (click)="decreaseAttendees()">
                         <i class="fa fa-minus" aria-hidden="true"></i>
@@ -55,8 +58,8 @@
             </div>
 
             <div class="topic-additional-information">
-                <span class="fa fa-star"></span>
                 <div #ratingElement>
+                    <span class="fa fa-star"></span>
                     <span class="topic-ratings-value">{{ rating.mean }}</span>
 
                     <div class="topic-rating-tooltip" #ratingTooltip>
@@ -108,9 +111,13 @@
             </a>
         </p>
 
-        <p class="topic-edit-button">
+        <p class="topic-edit-button" *ngIf="!showAdditionalInformation">
             <a (click)="$event.topic = topic; edit.emit($event)">
                 <i class="fa fa-edit edit-button"></i>
+            </a>
+
+            <a (click)="favorite()">
+                <i class="fa fa-heart edit-button" [class.fa-heart]="!isFavorite" [class.fa-heart-o]="isFavorite"></i>
             </a>
         </p>
     </div>

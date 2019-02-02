@@ -41,7 +41,7 @@ import { BusySpinnerComponent } from './shared/busy-spinner/busy-spinner.compone
     HttpClientModule,
     FormsModule,
     ApplicationInsightsModule.forRoot({
-      instrumentationKeySetlater: true
+      instrumentationKeySetLater: true
     })
   ],
   providers: [

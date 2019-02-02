@@ -6,6 +6,13 @@
     margin: 5px;
 }
 
+.topic-indicators {
+    position: relative;
+    top: -20px;
+    right: -15px;
+    float: right;
+}
+
 .topic-content {
     position: relative;
 }
@@ -41,7 +48,7 @@
 
 .topic-edit-button {
     position: absolute;
-    right: 20px;
+    right: 23px;
 }
 
 .topic-additional-informations {
@@ -165,4 +172,16 @@ a {
 .topic-error {
     color: orange;
     margin-right: 5px;
+}
+
+.topic-indicators span+span {
+    margin-left: 5px;
+}
+
+.topic-indicators .fa-heart {
+    color: red;
+}
+
+.topic-ratings-value {
+    margin-left: 5px;
 }

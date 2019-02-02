@@ -28,6 +28,7 @@ export class SessionService {
 
     try {
       this._sessionOptions = JSON.parse(localStorage.getItem(`sessions${this.currentSession.id}`)) || new SessionOptions();
+      this._sessionOptions = Object.assign(new SessionOptions(), this._sessionOptions);
       this.saveSessionOptions();
     } catch {
       this._sessionOptions = new SessionOptions();
