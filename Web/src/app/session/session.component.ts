@@ -6,7 +6,7 @@ import {
     OnDestroy
 } from "@angular/core";
 import { SessionService } from "./session.service";
-import { Router, ActivatedRoute } from "@angular/router";
+import { Router, ActivatedRoute, RouterModule } from "@angular/router";
 import { Topic } from "../models/topic";
 import * as _ from "lodash";
 import * as interact from "interactjs";
@@ -164,6 +164,31 @@ export class SessionComponent implements OnInit, OnDestroy {
         event.target.style.width = "150px";
         event.target.style.height = "80px";
 
+        const topic = this.getTopicByElement(event.target);
+        
+        const topicSpaces = document.querySelectorAll('.topic-space');
+        for (let i = 0; i < topicSpaces.length; i++) {
+            const topicSpace = <HTMLElement>topicSpaces[i];
+
+            const room = this.rooms.find(r => r.id == topicSpace.dataset.roomId);
+            const slot = this.slots.find(s => s.id == topicSpace.dataset.slotId);
+
+            let suitableSpace = true;
+            suitableSpace = suitableSpace && topicSpace.children.length == 0;
+            suitableSpace = suitableSpace && room.seats >= topic.attendees.length;
+            suitableSpace = suitableSpace && _.every(this.session.topics.filter(t => t.slotId == slot.id), t => t.id == topic.id || t.owner == null || t.owner != topic.owner);
+            suitableSpace = suitableSpace && _.every(topic.demands, d => room.capabilities.findIndex(c => c == d) >= 0);
+            
+            if (room.id == topic.roomId && slot.id == topic.slotId) {
+                // dropping the topic on the same space as it is now is suitable
+                suitableSpace = true;
+            }
+
+            if (suitableSpace) {
+                topicSpace.classList.add('suitable-topic-space');
+            }
+        }
+
         this.pauseEvent(event);
     }
 
@@ -174,6 +199,8 @@ export class SessionComponent implements OnInit, OnDestroy {
                 event.target
             );
         }
+
+        document.querySelectorAll('.topic-space').forEach(t => t.classList.remove('suitable-topic-space'));
     }
 
     private onTopicMove(event) {

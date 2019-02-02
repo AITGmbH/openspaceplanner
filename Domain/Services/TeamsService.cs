@@ -100,12 +100,14 @@ namespace openspace.Domain.Services
 
         private string GetChangeText(Topic oldTopic, Topic topic)
         {
-            if (oldTopic.SlotId != topic.SlotId && oldTopic.RoomId != topic.RoomId)
+            if (oldTopic.RoomId == null || oldTopic.SlotId == null)
+                return null;
+            else if (oldTopic.SlotId != topic.SlotId && oldTopic.RoomId != topic.RoomId)
                 return "The slot and room of the following topic changed!";
             else if (oldTopic.SlotId != topic.SlotId && oldTopic.RoomId == topic.RoomId)
-                return "The slot and room of the following topic changed!";
+                return "The slot of the following topic changed!";
             else if (oldTopic.SlotId == topic.SlotId && oldTopic.RoomId != topic.RoomId)
-                return "The slot and room of the following topic changed!";
+                return "The room of the following topic changed!";
 
             return null;
         }

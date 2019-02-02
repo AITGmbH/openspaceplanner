@@ -38,7 +38,7 @@
                     <br /> {{ slot.time }}
                 </td>
 
-                <td *ngFor="let room of rooms" class="table-cell dropable">
+                <td *ngFor="let room of rooms" class="table-cell dropable topic-space" [attr.data-slot-id]="slot.id" [attr.data-room-id]="room.id">
                     <app-session-topic-box *ngFor="let topic of getTopics(slot.id, room.id)" [topic]="topic" (edit)="showModal($event, 'topic', $event.topic)"
                         (dblclick)="showModal($event, 'topic', topic)">
                     </app-session-topic-box>

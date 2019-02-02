@@ -23,6 +23,10 @@
     margin-left: 10px;
 }
 
+.suitable-topic-space {
+    background-color: #eaffea;
+}
+
 .drop-target {
     background-color: lightyellow;
 }

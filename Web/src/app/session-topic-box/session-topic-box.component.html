@@ -1,7 +1,7 @@
 <div class="topic box" [class.draggable]="enableDrag" id="{{topic.id}}" appEditButton [class.topic-favorite]="isFavorite">
     <div class="topic-indicators">
         <span class="fa fa-comments" *ngIf="hasComments"></span>
-        <span class="fa fa-heart" *ngIf="isFavorite"></span>        
+        <a (click)="favorite()"><i class="fa fa-heart" *ngIf="isFavorite"></i></a>
     </div>
 
     <div class="content topic-content" #content>
