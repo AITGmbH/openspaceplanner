@@ -10,16 +10,15 @@ This tool allows you to plan, for example, fully packed conference days, which c
 
 After cloning the project:
 
-1.  Run `npm install`
-2.  Add Azure Storage Credentials (_otherwise the data will be saved in a local file_)  
+1.  Run `npm ci`
+2.  Optional: Add Azure Storage Credentials (_otherwise the data will be saved in a local file_)  
     `dotnet user-secrets set TableStorageAccount <account>`  
     `dotnet user-secrets set TableStorageKey <key>`  
     `dotnet user-secrets set TableStorageContainer <container>` (_optional, otherwise the container will be named database_)
 
 ### Debugging
 
-1.  Run the backend first with `dotnet run watch`
-2.  After the backend is built, run the frontend with `ng build --watch` (_make sure the backend is built first, otherwise you might get a 404 error_)
+1.  Run `npm run watch` build the frontend and backend in watch mode
 3.  Open the website at http://localhost:5000/
 
 ## Publishing
