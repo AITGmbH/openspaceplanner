@@ -83,8 +83,8 @@ export class SessionTopicBoxComponent implements OnInit {
   constructor(private sessionService: SessionService) { }
 
   public ngOnInit() {
-    tippy(this.ratingElement.nativeElement, { html: this.ratingTooltip.nativeElement, interactive: true });
-    tippy(this.errorElement.nativeElement, { html: this.errorTooltip.nativeElement, interactive: true });
+    tippy(this.ratingElement.nativeElement, { content: this.ratingTooltip.nativeElement, interactive: true });
+    tippy(this.errorElement.nativeElement, { content: this.errorTooltip.nativeElement, interactive: true });
   }
 
   public hasRoomSeatsConflict() {
