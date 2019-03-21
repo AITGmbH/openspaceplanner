@@ -66,6 +66,7 @@ export class ModalDialogComponent {
 
   public closeInternal() {
     this.isShown = false;
+    this.close.next();
   }
 
   public deleteInternal() {

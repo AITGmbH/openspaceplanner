@@ -119,8 +119,10 @@ export class SessionComponent implements OnInit, OnDestroy {
     
     @HostListener('document:keyup', ['$event'])
     public keyup(event: KeyboardEvent) {
-        if (event.shiftKey) {
-            console.log(event.key);
+        const hasNoModalOpen = this.getOpenModal() == null;
+        console.log(`getOpenModal = ${this.getOpenModal()}`);
+
+        if (event.shiftKey && hasNoModalOpen) {
             if (event.key == 'T') {
                 this.modalShown['topic'] = {};
             } else if (event.key == 'R') {
