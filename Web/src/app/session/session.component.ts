@@ -1,15 +1,17 @@
-import {
-    Component,
-    OnInit,
-    HostListener,
-    ViewChild,
-    OnDestroy
-} from "@angular/core";
-import { SessionService } from "./session.service";
-import { Router, ActivatedRoute, RouterModule } from "@angular/router";
-import { Topic } from "../models/topic";
 import * as _ from "lodash";
 import * as interact from "interactjs";
+import { ActivatedRoute, Router, RouterModule } from "@angular/router";
+import {
+    Component,
+    HostListener,
+    OnDestroy,
+    OnInit,
+    ViewChild
+    } from "@angular/core";
+import { Room } from "../models/room";
+import { SessionService } from "./session.service";
+import { Slot } from "../models/slot";
+import { Topic } from "../models/topic";
 
 @Component({
     selector: "app-session",
@@ -26,24 +28,24 @@ export class SessionComponent implements OnInit, OnDestroy {
         return this.sessionService.currentSession;
     }
 
-    public get unassignedTopics() {
-        return _(this.session.topics)
+    public get unassignedTopics(): Topic[] {
+        return (_(this.session.topics)
             .filter(t => t.roomId == null || t.slotId == null)
             .sortBy(t => t.attendees)
-            .value()
+            .value() as Topic[])
             .reverse();
     }
 
-    public get slots() {
+    public get slots(): Slot[] {
         return _(this.session.slots)
             .sortBy(s => s.time)
-            .value();
+            .value() as Slot[];
     }
 
-    public get rooms() {
+    public get rooms(): Room[] {
         return _(this.session.rooms)
             .orderBy(r => (r ? r.seats : 0), ["desc"])
-            .value();
+            .value() as Room[];
     }
 
     constructor(
@@ -68,7 +70,9 @@ export class SessionComponent implements OnInit, OnDestroy {
         await this.sessionService.get(id);
         this.isLoading = false;
 
-        interact(".draggable").draggable({
+        const interactHandler = <any>interact;
+
+        interactHandler(".draggable").draggable({
             autoScroll: true,
             inertia: true,
             onstart: event => this.onTopicMoveStart(event),
@@ -76,7 +80,7 @@ export class SessionComponent implements OnInit, OnDestroy {
             onend: event => this.onTopicMoveEnd(event)
         });
 
-        interact(".dropable").dropzone({
+        interactHandler(".dropable").dropzone({
             accept: ".draggable",
             overlap: 0.5,
             ondrop: event => this.onTopicDrop(event),
@@ -86,8 +90,10 @@ export class SessionComponent implements OnInit, OnDestroy {
     }
 
     public ngOnDestroy() {
-        (<any>interact(".draggable")).unset();
-        (<any>interact(".dropable")).unset();
+        const interactHandler = <any>interact;
+
+        interactHandler(".draggable").unset();
+        interactHandler(".dropable").unset();
     }
 
     public navigateToOverview() {
@@ -116,7 +122,7 @@ export class SessionComponent implements OnInit, OnDestroy {
 
         return null;
     }
-    
+
     @HostListener('document:keyup', ['$event'])
     public keyup(event: KeyboardEvent) {
         const hasNoModalOpen = this.getOpenModal() == null;
@@ -167,7 +173,7 @@ export class SessionComponent implements OnInit, OnDestroy {
         event.target.style.height = "80px";
 
         const topic = this.getTopicByElement(event.target);
-        
+
         const topicSpaces = document.querySelectorAll('.topic-space');
         for (let i = 0; i < topicSpaces.length; i++) {
             const topicSpace = <HTMLElement>topicSpaces[i];
@@ -180,7 +186,7 @@ export class SessionComponent implements OnInit, OnDestroy {
             suitableSpace = suitableSpace && room.seats >= topic.attendees.length;
             suitableSpace = suitableSpace && _.every(this.session.topics.filter(t => t.slotId == slot.id), t => t.id == topic.id || t.owner == null || t.owner != topic.owner);
             suitableSpace = suitableSpace && _.every(topic.demands, d => room.capabilities.findIndex(c => c == d) >= 0);
-            
+
             if (room.id == topic.roomId && slot.id == topic.slotId) {
                 // dropping the topic on the same space as it is now is suitable
                 suitableSpace = true;

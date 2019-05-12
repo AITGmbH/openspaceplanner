@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { SessionService } from '../session/session.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import * as _ from 'lodash';
-import { Topic } from '../models/topic';
-import { Room } from '../models/room';
-import { Rating } from '../models/rating';
-import { Slot } from '../models/slot';
+import * as _ from "lodash";
+import { ActivatedRoute, Router } from "@angular/router";
+import { Component, OnInit } from "@angular/core";
+import { Room } from "../models/room";
+import { SessionService } from "../session/session.service";
+import { Slot } from "../models/slot";
+import { Topic } from "../models/topic";
 
 @Component({
   selector: 'app-session-overview',
@@ -22,7 +21,7 @@ export class SessionOverviewComponent implements OnInit {
       return null;
     }
 
-    return _(this.sessionService.currentSession.slots).sortBy(s => s.time).value();
+    return _.sortBy(this.sessionService.currentSession.slots, s => s.time);
   }
 
   public getTopics(slotId: string): Topic[] {
@@ -30,10 +29,9 @@ export class SessionOverviewComponent implements OnInit {
       return null;
     }
 
-    return _(this.sessionService.currentSession.topics)
-      .filter((t) => t.slotId === slotId)
-      .sortBy([t => this.getRoom(t.roomId).seats, t => this.getSlot(t.slotId).name], ['desc', 'asc'])
-      .value();
+    return _.sortBy(
+        _.filter(this.sessionService.currentSession.topics, (t) => t.slotId === slotId),
+        [t => this.getRoom(t.roomId).seats, t => this.getSlot(t.slotId).name], ['desc', 'asc']);
   }
 
   public getRating(topic: Topic): number {
