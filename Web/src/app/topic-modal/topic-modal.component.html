@@ -4,8 +4,8 @@
             <li [class.is-active]="selectedTab == 'topic'" (click)="selectTab('topic')">
                 <a>Topic</a>
             </li>
-            <li [class.is-active]="selectedTab == 'feedback'" (click)="selectTab('feedback')">
-                <a>Feedback</a>
+            <li [class.is-active]="selectedTab == 'comments'" (click)="selectTab('comments')">
+                <a>Comments</a>
             </li>
         </ul>
     </div>
@@ -37,18 +37,18 @@
         </div>
     </div>
 
-    <div *ngIf="selectedTab == 'feedback' && item.id != null">
-        <div class="feedback">
-            <span *ngIf="item?.feedback?.length == 0">
-                <i>No feedback available. Be the first to give feedback to the speaker!</i>
+    <div *ngIf="selectedTab == 'comments' && item.id != null">
+        <div class="comments">
+            <span *ngIf="item?.comments?.length == 0">
+                <i>No comments available. Be the first to give a comment to the speaker!</i>
             </span>
 
-            <div class="box" *ngFor="let feedback of item.feedback">
+            <div class="box" *ngFor="let comment of item.comments">
                 <article class="media">
                     <div class="media-content">
-                        <div class="content">{{ feedback.value }}</div>
-                        <div class="feedback-buttons">
-                            <a (click)="deleteFeedback(feedback.id)">
+                        <div class="content">{{ comment.value }}</div>
+                        <div class="comment-buttons">
+                            <a (click)="deleteComment(comment.id)">
                                 <i class="fa fa-trash"></i>
                             </a>
                         </div>
@@ -58,12 +58,12 @@
         </div>
 
         <div class="field">
-            <label class="label">Feedback</label>
+            <label class="label">Comment</label>
             <div class="control">
-                <textarea class="textarea" placeholder="Feedback" [(ngModel)]="feedback"></textarea>
+                <textarea class="textarea" placeholder="Comment" [(ngModel)]="comment"></textarea>
             </div>
         </div>
 
-        <button class="button pull-right" (click)="addFeedback()">Add</button>
+        <button class="button pull-right" (click)="addComment()">Add</button>
     </div>
 </app-modal-dialog>

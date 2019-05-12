@@ -1,9 +1,15 @@
-import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { Topic } from '../models/topic';
-import { ModalDialogComponent } from '../modal-dialog/modal-dialog.component';
-import { SessionService } from '../session/session.service';
-import * as _ from 'lodash';
-import { NgSelectComponent } from '@ng-select/ng-select';
+import * as _ from "lodash";
+import {
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    ViewChild
+    } from "@angular/core";
+import { ModalDialogComponent } from "../modal-dialog/modal-dialog.component";
+import { NgSelectComponent } from "@ng-select/ng-select";
+import { SessionService } from "../session/session.service";
+import { Topic } from "../models/topic";
 
 @Component({
   selector: 'app-topic-modal',
@@ -15,7 +21,7 @@ export class TopicModalComponent {
   private _capabilities: string[];
 
   public selectedTab: string;
-  public feedback = '';
+  public comment = '';
 
   @Output()
   public close = new EventEmitter();
@@ -66,7 +72,10 @@ export class TopicModalComponent {
   }
 
   public onClose() {
-    this.capabilitiesElement.close();
+    if (this.capabilitiesElement != null) {
+        this.capabilitiesElement.close();
+    }
+
     this.close.next();
   }
 
@@ -74,22 +83,22 @@ export class TopicModalComponent {
     this.selectedTab = tabName;
   }
 
-  public async addFeedback() {
-    if (this.feedback.trim() === '') {
+  public async addComment() {
+    if (this.comment.trim() === '') {
       return;
     }
 
-    const feedback = await this.sessionService.updateTopicFeedback(this.item.id, this.feedback);
-    this.item.feedback.splice(0, 0, feedback);
+    const comment = await this.sessionService.updateTopicComment(this.item.id, this.comment);
+    this.item.comments.splice(0, 0, comment);
   }
 
-  public async deleteFeedback(id) {
-    if (confirm('Do you really want to delete this feedback?')) {
-      await this.sessionService.deleteTopicFeedback(this.item.id, id);
+  public async deleteComment(id) {
+    if (confirm('Do you really want to delete this comment?')) {
+      await this.sessionService.deleteTopicComment(this.item.id, id);
 
-      const index = _.findIndex(this.item.feedback, { id });
+      const index = _.findIndex(this.item.comments, { id });
       if (index >= 0) {
-        this.item.feedback.splice(index, 1);
+        this.item.comments.splice(index, 1);
       }
     }
   }

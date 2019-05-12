@@ -24,5 +24,7 @@ namespace openspace.Common.Entities
         public ICollection<Topic> Topics { get; set; } = new List<Topic>();
 
         public bool VotingEnabled { get; set; }
+
+        public ICollection<FeedbackCategory> FeedbackCategories { get; set; } = new List<FeedbackCategory>();
     }
 }

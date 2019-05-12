@@ -8,36 +8,36 @@ using System.Threading.Tasks;
 
 namespace openspace.Web.Controllers
 {
-    [Route("api/sessions/{sessionId:int}/topics/{topicId}/feedback")]
-    public class SessionTopicsFeedbackController : Controller
+    [Route("api/sessions/{sessionId:int}/topics/{topicId}/comments")]
+    public class SessionTopicsCommentsController : Controller
     {
         private readonly ISessionRepository _sessionRepository;
         private readonly IHubContext<SessionsHub, ISessionsHub> _sessionsHub;
 
-        public SessionTopicsFeedbackController(ISessionRepository sessionRepository, IHubContext<SessionsHub, ISessionsHub> sessionsHub)
+        public SessionTopicsCommentsController(ISessionRepository sessionRepository, IHubContext<SessionsHub, ISessionsHub> sessionsHub)
         {
             _sessionRepository = sessionRepository;
             _sessionsHub = sessionsHub;
         }
 
-        [HttpDelete("{feedbackId}")]
-        public async Task Delete(int sessionId, string topicId, string feedbackId)
+        [HttpDelete("{commentId}")]
+        public async Task Delete(int sessionId, string topicId, string commentId)
         {
             await _sessionRepository.Update(sessionId, (session) =>
             {
                 var currentTopic = session.Topics.FirstOrDefault(t => t.Id == topicId);
-                var currentFeedback = currentTopic.Feedback.FirstOrDefault(r => r.Id == feedbackId);
+                var currentComment = currentTopic.Comments.FirstOrDefault(r => r.Id == commentId);
 
-                currentTopic.Feedback.Remove(currentFeedback);
+                currentTopic.Comments.Remove(currentComment);
 
                 _sessionsHub.Clients.Group(sessionId.ToString()).UpdateTopic(currentTopic);
             });
         }
 
         [HttpPost]
-        public async Task<Feedback> Post(int sessionId, string topicId, [FromBody] Feedback feedback)
+        public async Task<TopicComment> Post(int sessionId, string topicId, [FromBody] TopicComment comment)
         {
-            if (feedback == null)
+            if (comment == null)
             {
                 return null;
             }
@@ -45,12 +45,12 @@ namespace openspace.Web.Controllers
             await _sessionRepository.Update(sessionId, (session) =>
             {
                 var currentTopic = session.Topics.FirstOrDefault(t => t.Id == topicId);
-                currentTopic.Feedback.Add(feedback);
+                currentTopic.Comments.Add(comment);
 
                 _sessionsHub.Clients.Group(sessionId.ToString()).UpdateTopic(currentTopic);
             });
 
-            return feedback;
+            return comment;
         }
     }
 }

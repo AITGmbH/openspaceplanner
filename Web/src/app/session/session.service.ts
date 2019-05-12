@@ -1,17 +1,17 @@
-import { Injectable } from "@angular/core";
-import { Session } from "../models/session";
-import { HttpClient } from "@angular/common/http";
-import { Topic } from "../models/topic";
-import { Slot } from "../models/slot";
-import { Room } from "../models/room";
-import { HubConnectionBuilder, HubConnection } from "@aspnet/signalr";
 import * as _ from "lodash";
-import { SessionOptions } from "../models/sessionOptions";
-import { Rating } from "../models/rating";
 import { Attendance } from "../models/attendance";
 import { getRandomId } from "../shared/common";
-import { Feedback } from "../models/feedback";
+import { HttpClient } from "@angular/common/http";
+import { HubConnection, HubConnectionBuilder } from "@aspnet/signalr";
+import { Injectable } from "@angular/core";
 import { Observable, Subject } from "rxjs";
+import { Rating } from "../models/rating";
+import { Room } from "../models/room";
+import { Session } from "../models/session";
+import { SessionOptions } from "../models/sessionOptions";
+import { Slot } from "../models/slot";
+import { Topic } from "../models/topic";
+import { TopicComment } from "../models/topicComment";
 
 @Injectable()
 export class SessionService {
@@ -145,16 +145,16 @@ export class SessionService {
       ? this.http.put(`/api/sessions/${this.currentSession.id}/topics/${topicId}/ratings/${rating.id}`, rating)
       : this.http.post(`/api/sessions/${this.currentSession.id}/topics/${topicId}/ratings/`, rating);
 
-    return request.toPromise().then(obj => this.updateInternal(this.getTopic(topicId).ratings, rating));
+    return request.toPromise().then(_ => this.updateInternal(this.getTopic(topicId).ratings, rating));
   }
 
-  public updateTopicFeedback(topicId: string, value: string): Promise<Feedback> {
+  public updateTopicComment(topicId: string, value: string): Promise<TopicComment> {
     const id = getRandomId();
-    const feedback = <Feedback>{ id, value };
+    const comment = <TopicComment>{ id, value };
 
-    const request = this.http.post(`/api/sessions/${this.currentSession.id}/topics/${topicId}/feedback/`, feedback);
+    const request = this.http.post(`/api/sessions/${this.currentSession.id}/topics/${topicId}/comments/`, comment);
 
-    return request.toPromise().then(obj => this.updateInternal(this.getTopic(topicId).feedback, feedback));
+    return request.toPromise().then(_ => this.updateInternal(this.getTopic(topicId).comments, comment));
   }
 
   public deleteTopic(id: string): Promise<void> {
@@ -201,10 +201,10 @@ export class SessionService {
       .then(() => null);
   }
 
-  public deleteTopicFeedback(topicId: string, feedbackId: string): Promise<void> {
-    return this.http.delete(`/api/sessions/${this.currentSession.id}/topics/${topicId}/feedback/${feedbackId}`)
+  public deleteTopicComment(topicId: string, commentId: string): Promise<void> {
+    return this.http.delete(`/api/sessions/${this.currentSession.id}/topics/${topicId}/comments/${commentId}`)
       .toPromise()
-      .then(() => this.deleteInternal(this.getTopic(topicId).feedback, feedbackId))
+      .then(() => this.deleteInternal(this.getTopic(topicId).comments, commentId))
       .then(() => null);
   }
 

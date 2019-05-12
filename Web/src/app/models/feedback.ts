@@ -1,4 +1,6 @@
+import { FeedbackItem } from "./feedbackItem";
+
 export class Feedback {
-    public id: string;
-    public value: string;
+    id: string;
+    items: FeedbackItem[];
 }

@@ -1,6 +1,7 @@
-import { Rating } from './rating';
-import { Attendance } from './attendance';
-import { Feedback } from './feedback';
+import { Attendance } from "./attendance";
+import { Feedback } from "./feedback";
+import { Rating } from "./rating";
+import { TopicComment } from "./topicComment";
 
 export class Topic {
     public id: string;
@@ -9,6 +10,7 @@ export class Topic {
     public description: string;
     public owner: string;
     public attendees: Attendance[];
+    public comments: TopicComment[];
     public feedback: Feedback[];
     public ratings: Rating[];
     public roomId: string;

@@ -1,8 +1,14 @@
-import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { Room } from '../models/room';
-import { SessionService } from '../session/session.service';
-import * as _ from 'lodash';
-import { NgSelectComponent } from '@ng-select/ng-select';
+import * as _ from "lodash";
+import {
+    Component,
+    EventEmitter,
+    Input,
+    Output,
+    ViewChild
+    } from "@angular/core";
+import { NgSelectComponent } from "@ng-select/ng-select";
+import { Room } from "../models/room";
+import { SessionService } from "../session/session.service";
 
 @Component({
   selector: 'app-room-modal',
@@ -59,7 +65,10 @@ export class RoomModalComponent {
   }
 
   public onClose() {
-    this.capabilitiesElement.close();
+    if (this.capabilitiesElement != null) {
+        this.capabilitiesElement.close();
+    }
+
     this.close.next();
   }
 }

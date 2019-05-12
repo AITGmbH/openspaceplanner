@@ -51,7 +51,7 @@ export class SessionTopicBoxComponent implements OnInit {
   }
 
   public get hasComments() {
-    return this.topic != null && this.topic.feedback != null && this.topic.feedback.length > 0;
+    return this.topic != null && this.topic.comments != null && this.topic.comments.length > 0;
   }
 
   public get rating() {
