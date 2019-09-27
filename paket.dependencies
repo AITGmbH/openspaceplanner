@@ -1,27 +1,25 @@
 source https://nuget.org/api/v2
 
-nuget Microsoft.Extensions.Http 2.1.1
-nuget Newtonsoft.Json 11.0.2
-nuget NodaTime 2.4.0
-nuget WindowsAzure.Storage 9.2.0
+nuget Microsoft.Extensions.Http 3.0.0
+nuget Newtonsoft.Json 12.0.2
+nuget NodaTime 2.4.7
+nuget WindowsAzure.Storage 9.3.3
 
 group Web
     source https://nuget.org/api/v2
 
-    nuget Microsoft.ApplicationInsights.AspNetCore 2.3.0
-    nuget Microsoft.AspNetCore.App 2.1.2
-    nuget Microsoft.AspNetCore.SignalR 1.0.2
+    nuget Microsoft.ApplicationInsights.AspNetCore 2.8.0
 
 group Test
     source https://nuget.org/api/v2
 
-    nuget FluentAssertions 5.4.1
-    nuget xunit 2.4.0
-    nuget xunit.runner.visualstudio 2.4.0
-    nuget Selenium.Chrome.WebDriver 2.40.0
-    nuget Selenium.Firefox.WebDriver 0.21.0
-    nuget Selenium.InternetExplorer.WebDriver 3.13.0
-    nuget Selenium.Support 3.13.1
-    nuget Selenium.WebDriver 3.13.1
-    nuget System.Text.Encoding.CodePages 4.5.0
+    nuget FluentAssertions 5.9.0
+    nuget xunit 2.4.1
+    nuget xunit.runner.visualstudio 2.4.1
+    nuget Selenium.Chrome.WebDriver 76.0.0
+    nuget Selenium.Firefox.WebDriver 0.24.0
+    nuget Selenium.InternetExplorer.WebDriver 3.141.5
+    nuget Selenium.Support 3.141.0
+    nuget Selenium.WebDriver 3.141.0
+    nuget System.Text.Encoding.CodePages 4.6.0
     nuget Microsoft.NET.Test.Sdk 15.8.0
