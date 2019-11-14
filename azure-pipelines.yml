@@ -1,0 +1,47 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  buildConfiguration: 'Release'
+  npm_config_cache: $(Pipeline.Workspace)/.npm
+
+steps:
+- task: Cache@2
+  inputs:
+    key: npm | $(Agent.OS) | package-lock.json
+    path: $(npm_config_cache)
+  displayName: Cache npm
+- task: Npm@1
+  displayName: 'Install frontend packages'
+  inputs:
+    command: 'ci'
+    workingDir: 'Web'
+- task: DotNetCoreCLI@2
+  displayName: 'Build backend'
+  inputs:
+    command: 'build'
+    projects: '**/openspace.sln'
+    arguments: '--configuration $(buildConfiguration)'
+- task: Npm@1
+  displayName: 'Build frontend'
+  inputs:
+    command: 'custom'
+    workingDir: 'Web'
+    customCommand: 'run publish'
+- task: DotNetCoreCLI@2
+  displayName: 'Publish backend'
+  inputs:
+    command: 'publish'
+    publishWebProjects: true
+    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+    workingDirectory: 'Web'
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish build artifact'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+  
