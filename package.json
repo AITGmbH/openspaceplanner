@@ -12,7 +12,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "concurrently": "^3.5.1",
-    "wait-on": "^2.1.0"
+    "concurrently": "^5.0.0",
+    "wait-on": "^3.3.0"
   }
 }
