@@ -22,7 +22,7 @@ export class SessionComponent implements OnInit, OnDestroy {
     public isLoading = true;
     public modalShown = {};
 
-    @ViewChild("floatingActionButton") public floatingActionButton;
+    @ViewChild("floatingActionButton", { static: true }) public floatingActionButton;
 
     public get session() {
         return this.sessionService.currentSession;

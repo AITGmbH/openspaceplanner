@@ -34,15 +34,15 @@ export class SessionTopicBoxComponent implements OnInit {
 
   public errors: string[];
 
-  @ViewChild("ratingTooltip") ratingTooltip: ElementRef;
+  @ViewChild("ratingTooltip", { static: true }) ratingTooltip: ElementRef;
 
-  @ViewChild("ratingElement") ratingElement: ElementRef;
+  @ViewChild("ratingElement", { static: true }) ratingElement: ElementRef;
 
-  @ViewChild("errorTooltip") errorTooltip: ElementRef;
+  @ViewChild("errorTooltip", { static: true }) errorTooltip: ElementRef;
 
-  @ViewChild("errorElement") errorElement: ElementRef;
+  @ViewChild("errorElement", { static: true }) errorElement: ElementRef;
 
-  @ViewChild("topicAttendees") topicAttendees: ElementRef;
+  @ViewChild("topicAttendees", { static: false }) topicAttendees: ElementRef;
 
   public get isFavorite() {
     return this.sessionService.sessionOptions != null
