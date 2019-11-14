@@ -23,8 +23,7 @@ steps:
   displayName: 'Build backend'
   inputs:
     command: 'build'
-    projects: |
-      $(workingDirectory)/openspace.sln
+    projects: '**/openspace.sln'
     arguments: '--configuration $(buildConfiguration)'
 - task: Npm@1
   displayName: 'Build frontend'
