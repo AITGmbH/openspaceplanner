@@ -12,7 +12,7 @@ export class RoomModalComponent {
   private _item: Room;
   private _capabilities: string[];
 
-  @ViewChild('capabilitiesElement') public capabilitiesElement: NgSelectComponent;
+  @ViewChild('capabilitiesElement', { static: true }) public capabilitiesElement: NgSelectComponent;
 
   @Output()
   public close = new EventEmitter();

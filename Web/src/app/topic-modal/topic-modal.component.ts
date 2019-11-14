@@ -32,7 +32,7 @@ export class TopicModalComponent {
     this._item = value;
   }
 
-  @ViewChild('capabilitiesElement') public capabilitiesElement: NgSelectComponent;
+  @ViewChild('capabilitiesElement', { static: false }) public capabilitiesElement: NgSelectComponent;
 
   public get capabilities() {
     if (this.sessionService.currentSession == null) {

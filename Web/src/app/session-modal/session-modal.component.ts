@@ -19,7 +19,7 @@ export class SessionModalComponent implements OnInit {
 
   public sessions$: Observable<Session[]>;
   
-  @ViewChild('sessionsElement') public sessionsElement: NgSelectComponent;
+  @ViewChild('sessionsElement', { static: false }) public sessionsElement: NgSelectComponent;
 
   @Output()
   public close = new EventEmitter();
