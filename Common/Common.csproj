@@ -5,5 +5,4 @@
     <AssemblyName>openspace.Common</AssemblyName>
     <RootNamespace>openspace.Common</RootNamespace>
   </PropertyGroup>
-  <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

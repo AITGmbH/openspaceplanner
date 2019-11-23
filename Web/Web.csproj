@@ -34,5 +34,4 @@
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
-  <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>
