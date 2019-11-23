@@ -1,9 +1,16 @@
-import { Component, OnInit, Input, ElementRef, ViewChild, EventEmitter, Output, HostListener } from '@angular/core';
-import { Topic } from '../models/topic';
-import { SessionService } from '../session/session.service';
-import * as _ from 'lodash';
-import * as tippy from 'tippy.js/dist/tippy.all';
-import { RatingStatistic } from '../models/ratingStatistic';
+import * as _ from "lodash";
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output,
+    ViewChild
+    } from "@angular/core";
+import { RatingStatistic } from "../models/ratingStatistic";
+import { SessionService } from "../session/session.service";
+import { Topic } from "../models/topic";
 
 @Component({
   selector: 'app-session-topic-box',
@@ -38,8 +45,8 @@ export class SessionTopicBoxComponent implements OnInit {
   @ViewChild("topicAttendees", { static: false }) topicAttendees: ElementRef;
 
   public get isFavorite() {
-    return this.sessionService.sessionOptions != null 
-      && this.sessionService.sessionOptions.topicsFavorite != null 
+    return this.sessionService.sessionOptions != null
+      && this.sessionService.sessionOptions.topicsFavorite != null
       && this.sessionService.sessionOptions.topicsFavorite[this.topic.id] || false;
   }
 
@@ -143,7 +150,7 @@ export class SessionTopicBoxComponent implements OnInit {
     if (this.topic == null || this.topic.slotId == null || this.topic.roomId == null || this.topic.owner == null) {
       return false;
     }
-    
+
     if (this.topic.demands == null || this.topic.demands.length == 0) {
       return false;
     }

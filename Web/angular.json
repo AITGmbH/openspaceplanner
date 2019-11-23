@@ -23,9 +23,12 @@
                             "src/styles.css",
                             "node_modules/bulma/css/bulma.css",
                             "node_modules/font-awesome/css/font-awesome.css",
-                            "node_modules/tippy.js/dist/tippy.css"
+                            "node_modules/tippy.js/index.css"
                         ],
-                        "scripts": []
+                        "scripts": [
+                            "node_modules/popper.js/dist/umd/popper.js",
+                            "node_modules/tippy.js/umd/index.js"
+                        ]
                     },
                     "configurations": {
                         "production": {
@@ -67,12 +70,15 @@
                 "test": {
                     "builder": "@angular-builders/jest:run",
                     "options": {
-                        "scripts": [],
+                        "scripts": [
+                            "node_modules/popper.js/dist/umd/popper.js",
+                            "node_modules/tippy.js/umd/index.js"
+                        ],
                         "styles": [
                             "src/styles.css",
                             "node_modules/bulma/css/bulma.css",
                             "node_modules/font-awesome/css/font-awesome.css",
-                            "node_modules/tippy.js/dist/tippy.css"
+                            "node_modules/tippy.js/index.css"
                         ],
                         "assets": [
                             "src/assets",
