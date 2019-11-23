@@ -1,6 +1,12 @@
 trigger:
 - master
 
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - '*'
+
 pool: 
   vmImage: 'ubuntu-latest'
 
