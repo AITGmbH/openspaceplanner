@@ -41,7 +41,7 @@ stages:
             restoreKeys: |
               nuget | "$(Agent.OS)"
               nuget
-            path: $(NUGET_PACKAGES)
+            path: $(nuget_packages)
           displayName: Cache NuGet packages
         - script: dotnet tool restore
         - script: dotnet paket restore

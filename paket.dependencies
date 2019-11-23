@@ -1,14 +1,15 @@
 source https://nuget.org/api/v2
+framework: netcoreapp3.0, netstandard2.1
 
-nuget Microsoft.Extensions.Http 3.0.0
-nuget Newtonsoft.Json 12.0.2
+nuget Microsoft.Azure.Storage.Blob 11.1.1
+nuget Microsoft.Extensions.Http 3.0.1
+nuget Newtonsoft.Json 12.0.3
 nuget NodaTime 2.4.7
-nuget WindowsAzure.Storage 9.3.3
 
 group Web
     source https://nuget.org/api/v2
 
-    nuget Microsoft.ApplicationInsights.AspNetCore 2.8.0
+    nuget Microsoft.ApplicationInsights.AspNetCore 2.8.2
 
 group Test
     source https://nuget.org/api/v2
