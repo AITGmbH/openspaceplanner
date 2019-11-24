@@ -1,5 +1,5 @@
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.Azure.Storage;
+using Microsoft.Azure.Storage.Blob;
 using Newtonsoft.Json;
 using openspace.Common.Entities;
 using openspace.DataAccess.Configurations;
@@ -15,7 +15,7 @@ namespace openspace.DataAccess.Repositories
         public SessionRepository(BlobStorageConfiguration configuration)
         {
             var storageAccount = new CloudStorageAccount(
-                new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+                new Microsoft.Azure.Storage.Auth.StorageCredentials(
                 configuration.AccountName,
                 configuration.Key), true);
 

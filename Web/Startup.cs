@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using openspace.DataAccess.Configurations;
 using openspace.DataAccess.Repositories;
 using openspace.Domain.Services;
@@ -23,7 +24,7 @@ namespace openspace
             Configuration = configuration;
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -45,16 +46,16 @@ namespace openspace
                 await next();
             });
 
+            app.UseRouting();
             app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            app.UseMvc();
-
-            app.UseSignalR(routes =>
+            app.UseEndpoints(c =>
             {
-                routes.MapHub<SessionsHub>("/hubs/sessions");
+                c.MapControllers();
+                c.MapHub<SessionsHub>("/hubs/sessions");
             });
         }
 
@@ -66,8 +67,9 @@ namespace openspace
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddControllers();
 
+            services.AddApplicationInsightsTelemetry();
             services.AddHttpClient();
             services.AddSignalR();
 

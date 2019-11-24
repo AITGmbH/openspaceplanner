@@ -1,47 +1,102 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'windows-latest'
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - '*'
+
+pool: 
+  vmImage: 'ubuntu-latest'
 
 variables:
   buildConfiguration: 'Release'
-  npm_config_cache: $(Pipeline.Workspace)/.npm
+  azureSubscription: 'Azure AIT.Admin MS Sponsorship'
+  resourceGroup: 'Web.WestEurope'
+  appName: 'aitopenspace'
 
-steps:
-- task: Cache@2
-  inputs:
-    key: npm | $(Agent.OS) | package-lock.json
-    path: $(npm_config_cache)
-  displayName: Cache npm
-- task: Npm@1
-  displayName: 'Install frontend packages'
-  inputs:
-    command: 'ci'
-    workingDir: 'Web'
-- task: DotNetCoreCLI@2
-  displayName: 'Build backend'
-  inputs:
-    command: 'build'
-    projects: '**/openspace.sln'
-    arguments: '--configuration $(buildConfiguration)'
-- task: Npm@1
-  displayName: 'Build frontend'
-  inputs:
-    command: 'custom'
-    workingDir: 'Web'
-    customCommand: 'run publish'
-- task: DotNetCoreCLI@2
-  displayName: 'Publish backend'
-  inputs:
-    command: 'publish'
-    publishWebProjects: true
-    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
-    workingDirectory: 'Web'
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish build artifact'
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
+  npm_config_cache: $(Pipeline.Workspace)/.npm
+  nuget_packages: $(Pipeline.Workspace)/.nuget/packages
+
+stages:
+  - stage: Build
+    jobs:
+      - job: Build
+        steps:
+
+        # Restore npm packages
+        - task: Cache@2
+          inputs:
+            key: npm | $(Agent.OS) | package-lock.json
+            path: $(npm_config_cache)
+          displayName: Cache npm
+        - script: npm ci
+          workingDirectory: Web
+
+        # Restore nuget packages                
+        - task: Cache@2
+          inputs:
+            key: 'nuget | "$(Agent.OS)" | packages.lock.json'
+            restoreKeys: |
+              nuget | "$(Agent.OS)"
+              nuget
+            path: $(nuget_packages)
+          displayName: Cache NuGet packages
+        - script: dotnet tool restore
+        - script: dotnet paket restore
+        
+        # Build frontend and backend
+        - script: dotnet build openspace.sln --configuration $(buildConfiguration)
+        - script: npm run publish
+          workingDirectory: Web
+        
+        # Publish app
+        - script: dotnet publish Web.csproj --configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)
+          workingDirectory: Web
+        - publish: $(build.artifactstagingdirectory)
+          artifact: WebApp
   
+  - stage: Staging  
+    jobs:
+      - deployment: Staging
+        displayName: Deploy Web App
+        pool: 
+          vmImage: 'ubuntu-latest'
+        environment: 'openspaceplanner-staging'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: WebApp
+                - task: AzureRmWebAppDeployment@3
+                  displayName: 'Azure App Service Deploy: aitopenspace'
+                  inputs:
+                    azureSubscription: $(azureSubscription)
+                    WebAppName: $(appName)
+                    DeployToSlotFlag: true
+                    ResourceGroupName: $(resourceGroup)
+                    SlotName: Staging
+                    TakeAppOfflineFlag: true
+                    UseWebDeploy: true
+                    Package: $(Pipeline.Workspace)/WebApp/**/*.zip
+
+  - stage: Production
+    jobs:
+      - deployment: Production
+        displayName: Deploy Web App
+        pool: 
+          vmImage: 'ubuntu-latest'
+        environment: 'openspaceplanner-production'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: AzureAppServiceManage@0
+                  displayName: 'Swap Slots: aitopenspace'
+                  inputs:
+                    azureSubscription: $(azureSubscription)
+                    WebAppName: $(appName)
+                    ResourceGroupName: $(resourceGroup)
+                    SourceSlot: Staging
