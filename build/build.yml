@@ -1,8 +1,8 @@
 parameters: 
   buildConfiguration: 'Release'
   
-  npm_config_cache: ~/.npm
-  nuget_packages: ~/.nuget/packages
+  npm_config_cache: $(Pipeline.Workspace)/.npm
+  nuget_packages: $(Pipeline.Workspace)/.nuget/packages
 
 stages:
   - stage: Build
@@ -24,6 +24,8 @@ stages:
         - script: npm ci
           displayName: 'Restore npm packages'
           workingDirectory: Web
+          env:
+            npm_config_cache: ${{ parameters.npm_config_cache }}
 
         # Restore nuget packages                
         - task: Cache@2
@@ -38,6 +40,8 @@ stages:
           displayName: 'Restore dotnet tools'
         - script: dotnet paket restore
           displayName: 'Restore NuGet packages'
+          env:
+            NUGET_PACKAGES: ${{ parameters.nuget_packages }}
         
         # Build frontend and backend
         - script: dotnet build openspace.sln --configuration ${{ parameters.buildConfiguration }}
