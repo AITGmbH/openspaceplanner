@@ -1,12 +1,6 @@
 trigger:
 - master
 
-pr:
-  autoCancel: true
-  branches:
-    include:
-      - '*'
-
 pool: 
   vmImage: 'ubuntu-latest'
 
@@ -16,46 +10,10 @@ variables:
   resourceGroup: 'Web.WestEurope'
   appName: 'aitopenspace'
 
-  npm_config_cache: $(Pipeline.Workspace)/.npm
-  nuget_packages: $(Pipeline.Workspace)/.nuget/packages
-
 stages:
-  - stage: Build
-    jobs:
-      - job: Build
-        steps:
-
-        # Restore npm packages
-        - task: Cache@2
-          inputs:
-            key: npm | $(Agent.OS) | package-lock.json
-            path: $(npm_config_cache)
-          displayName: Cache npm
-        - script: npm ci
-          workingDirectory: Web
-
-        # Restore nuget packages                
-        - task: Cache@2
-          inputs:
-            key: 'nuget | "$(Agent.OS)" | packages.lock.json'
-            restoreKeys: |
-              nuget | "$(Agent.OS)"
-              nuget
-            path: $(nuget_packages)
-          displayName: Cache NuGet packages
-        - script: dotnet tool restore
-        - script: dotnet paket restore
-        
-        # Build frontend and backend
-        - script: dotnet build openspace.sln --configuration $(buildConfiguration)
-        - script: npm run publish
-          workingDirectory: Web
-        
-        # Publish app
-        - script: dotnet publish Web.csproj --configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)
-          workingDirectory: Web
-        - publish: $(build.artifactstagingdirectory)
-          artifact: WebApp
+  - template: 'build.yml'
+    parameters:
+      buildConfiguration: $(buildConfiguration)
   
   - stage: Staging
     dependsOn: Build

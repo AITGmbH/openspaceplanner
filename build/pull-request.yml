@@ -1,0 +1,23 @@
+trigger:
+  branches:
+    include:
+      - '*'
+    exclude:
+      - master
+
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - '*'
+
+pool: 
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+
+stages:
+  - template: 'build.yml'
+    parameters:
+      buildConfiguration: $(buildConfiguration)
