@@ -13,7 +13,6 @@ namespace openspace
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
-                        .UseKestrel()
                         .ConfigureAppConfiguration((hostingContext, config) =>
                         {
                             var env = hostingContext.HostingEnvironment;
