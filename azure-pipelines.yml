@@ -57,7 +57,9 @@ stages:
         - publish: $(build.artifactstagingdirectory)
           artifact: WebApp
   
-  - stage: Staging  
+  - stage: Staging
+    dependsOn: Build
+    condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
     jobs:
       - deployment: Staging
         displayName: Deploy Web App
@@ -83,6 +85,8 @@ stages:
                     Package: $(Pipeline.Workspace)/WebApp/**/*.zip
 
   - stage: Production
+    dependsOn: Staging
+    condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
     jobs:
       - deployment: Production
         displayName: Deploy Web App
