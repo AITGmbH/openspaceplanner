@@ -1,7 +1,6 @@
 parameters: 
   buildConfiguration: 'Release'
-
-variables:
+  
   npm_config_cache: $(Pipeline.Workspace)/.npm
   nuget_packages: $(Pipeline.Workspace)/.nuget/packages
 
@@ -15,7 +14,7 @@ stages:
         - task: Cache@2
           inputs:
             key: npm | $(Agent.OS) | Web\package-lock.json
-            path: $(npm_config_cache)
+            path: ${{ parameters.npm_config_cache }}
           displayName: Cache npm
         - script: npm ci
           workingDirectory: Web
@@ -27,18 +26,18 @@ stages:
             restoreKeys: |
               nuget | "$(Agent.OS)"
               nuget
-            path: $(nuget_packages)
+            path: ${{ parameters.nuget_packages }}
           displayName: Cache NuGet packages
         - script: dotnet tool restore
         - script: dotnet paket restore
         
         # Build frontend and backend
-        - script: dotnet build openspace.sln --configuration $(buildConfiguration)
+        - script: dotnet build openspace.sln --configuration ${{ parameters.buildConfiguration }}
         - script: npm run publish
           workingDirectory: Web
         
         # Publish app
-        - script: dotnet publish Web.csproj --configuration $(buildConfiguration) --output $(build.artifactstagingdirectory)
+        - script: dotnet publish Web.csproj --configuration ${{ parameters.buildConfiguration }} --output $(build.artifactstagingdirectory)
           workingDirectory: Web
         - publish: $(build.artifactstagingdirectory)
           artifact: WebApp
