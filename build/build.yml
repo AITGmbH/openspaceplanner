@@ -21,7 +21,6 @@ stages:
           inputs:
             key: npm | $(Agent.OS) | **/package-lock.json
             path: ${{ parameters.npm_config_cache }}
-          displayName: Cache npm
         - script: npm ci
           displayName: 'Restore npm packages'
           workingDirectory: Web
