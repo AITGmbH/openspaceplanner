@@ -9,6 +9,10 @@ stages:
     jobs:
       - job: Build
         steps:
+        - task: UseDotNet@2
+          inputs:
+            packageType: 'sdk'
+            useGlobalJson: true
 
         # Restore npm packages
         - task: Cache@2
