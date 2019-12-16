@@ -1,6 +1,6 @@
 # Open Space Planner
 
-[![Build status](https://ait.visualstudio.com/AIT/_apis/build/status/Tools/OpenSpacePlanner/OpenSpacePlanner.CI)](https://ait.visualstudio.com/AIT/_build/latest?definitionId=288)
+[![Build Status](https://dev.azure.com/ait/AIT/_apis/build/status/Tools/OpenSpacePlanner/OpenSpacePlanner.Pipeline?branchName=master)](https://dev.azure.com/ait/AIT/_build/latest?definitionId=334&branchName=master)
 
 ## Introduction
 
