@@ -75,10 +75,10 @@ stages:
                 - task: AzureRmWebAppDeployment@3
                   displayName: 'Azure App Service Deploy: aitopenspace'
                   inputs:
-                    azureSubscription: $(azureSubscription)
-                    WebAppName: $(appName)
+                    azureSubscription: '$(azureSubscription)'
+                    WebAppName: '$(appName)'
                     DeployToSlotFlag: true
-                    ResourceGroupName: $(resourceGroup)
+                    ResourceGroupName: '$(resourceGroup)'
                     SlotName: Staging
                     TakeAppOfflineFlag: true
                     UseWebDeploy: true
@@ -100,7 +100,7 @@ stages:
                 - task: AzureAppServiceManage@0
                   displayName: 'Swap Slots: aitopenspace'
                   inputs:
-                    azureSubscription: $(azureSubscription)
-                    WebAppName: $(appName)
-                    ResourceGroupName: $(resourceGroup)
+                    azureSubscription: '$(azureSubscription)'
+                    WebAppName: '$(appName)'
+                    ResourceGroupName: '$(resourceGroup)'
                     SourceSlot: Staging
