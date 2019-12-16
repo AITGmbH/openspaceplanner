@@ -10,38 +10,47 @@ stages:
       - job: Build
         steps:
         - task: UseDotNet@2
+          displayName: 'Download dotnet sdk'
           inputs:
             packageType: 'sdk'
             useGlobalJson: true
 
         # Restore npm packages
         - task: Cache@2
+          displayName: 'Cache npm packages'
           inputs:
             key: npm | $(Agent.OS) | **/package-lock.json
             path: ${{ parameters.npm_config_cache }}
           displayName: Cache npm
         - script: npm ci
+          displayName: 'Restore npm packages'
           workingDirectory: Web
 
         # Restore nuget packages                
         - task: Cache@2
+          displayName: 'Cache NuGet packages'
           inputs:
             key: 'nuget | "$(Agent.OS)" | **/paket.lock'
             restoreKeys: |
               nuget | "$(Agent.OS)"
               nuget
             path: ${{ parameters.nuget_packages }}
-          displayName: Cache NuGet packages
         - script: dotnet tool restore
+          displayName: 'Restore dotnet tools'
         - script: dotnet paket restore
+          displayName: 'Restore NuGet tools'
         
         # Build frontend and backend
         - script: dotnet build openspace.sln --configuration ${{ parameters.buildConfiguration }}
+          displayName: 'Build backend'
         - script: npm run publish
+          displayName: 'Build frontend'
           workingDirectory: Web
         
         # Publish app
         - script: dotnet publish Web.csproj --configuration ${{ parameters.buildConfiguration }} --output $(build.artifactstagingdirectory)
+          displayName: 'Publish solution'
           workingDirectory: Web
         - publish: $(build.artifactstagingdirectory)
+          displayName: 'Publish pipeline artifact'
           artifact: WebApp
