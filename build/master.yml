@@ -30,17 +30,17 @@ stages:
               steps:
                 - download: current
                   artifact: WebApp
-                - task: AzureRmWebAppDeployment@3
-                  displayName: 'Azure App Service Deploy: aitopenspace'
+                - task: AzureWebApp@1
+                  displayName: 'Azure Web App Deploy: aitopenspace'
                   inputs:
-                    azureSubscription: ${{ variables.azureSubscription }}
-                    WebAppName: $(appName)
-                    DeployToSlotFlag: true
-                    ResourceGroupName: $(resourceGroup)
-                    SlotName: Staging
-                    TakeAppOfflineFlag: true
-                    UseWebDeploy: true
-                    Package: $(Pipeline.Workspace)/WebApp/**/*.zip
+                    azureSubscription: $(azureSubscription)
+                    appType: webApp
+                    appName: aitopenspace
+                    deployToSlotOrASE: true
+                    resourceGroupName: $(resourceGroup)
+                    slotName: Staging
+                    package: '$(Pipeline.Workspace)/WebApp/**/*.zip'
+                    deploymentMethod: zipDeploy
 
   - stage: Production
     dependsOn: Staging
@@ -58,7 +58,7 @@ stages:
                 - task: AzureAppServiceManage@0
                   displayName: 'Swap Slots: aitopenspace'
                   inputs:
-                    azureSubscription: ${{ variables.azureSubscription }}
+                    azureSubscription: $(azureSubscription)
                     WebAppName: $(appName)
                     ResourceGroupName: $(resourceGroup)
                     SourceSlot: Staging
