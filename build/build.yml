@@ -1,8 +1,8 @@
 parameters: 
   buildConfiguration: 'Release'
   
-  npm_config_cache: $(Pipeline.Workspace)/.npm
-  nuget_packages: $(Build.SourcesDirectory)/packages
+  npm_config_cache: ~/.npm
+  nuget_packages: ~/.nuget/packages
 
 stages:
   - stage: Build
@@ -19,7 +19,7 @@ stages:
         - task: Cache@2
           displayName: 'Cache npm packages'
           inputs:
-            key: npm | $(Agent.OS) | **/package-lock.json
+            key: npm | $(Agent.OS) | $(Build.SourcesDirectory)/Web/package-lock.json
             path: ${{ parameters.npm_config_cache }}
         - script: npm ci
           displayName: 'Restore npm packages'
@@ -37,7 +37,7 @@ stages:
         - script: dotnet tool restore
           displayName: 'Restore dotnet tools'
         - script: dotnet paket restore
-          displayName: 'Restore NuGet tools'
+          displayName: 'Restore NuGet packages'
         
         # Build frontend and backend
         - script: dotnet build openspace.sln --configuration ${{ parameters.buildConfiguration }}
