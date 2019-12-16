@@ -1,9 +1,4 @@
-trigger:
-  branches:
-    include:
-      - '*'
-    exclude:
-      - master
+trigger: none
 
 pr:
   autoCancel: true
