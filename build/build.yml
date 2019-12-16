@@ -13,7 +13,7 @@ stages:
         # Restore npm packages
         - task: Cache@2
           inputs:
-            key: npm | $(Agent.OS) | Web\package-lock.json
+            key: npm | $(Agent.OS) | **/package-lock.json
             path: ${{ parameters.npm_config_cache }}
           displayName: Cache npm
         - script: npm ci
@@ -22,7 +22,7 @@ stages:
         # Restore nuget packages                
         - task: Cache@2
           inputs:
-            key: 'nuget | "$(Agent.OS)" | paket.lock'
+            key: 'nuget | "$(Agent.OS)" | **/paket.lock'
             restoreKeys: |
               nuget | "$(Agent.OS)"
               nuget
