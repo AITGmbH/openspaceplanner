@@ -2,7 +2,7 @@ parameters:
   buildConfiguration: 'Release'
   
   npm_config_cache: $(Pipeline.Workspace)/.npm
-  nuget_packages: $(Pipeline.Workspace)/.nuget/packages
+  nuget_packages: $(Build.SourcesDirectory)/packages
 
 stages:
   - stage: Build
