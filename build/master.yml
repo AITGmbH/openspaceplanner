@@ -55,6 +55,7 @@ stages:
           runOnce:
             deploy:
               steps:
+                - download: none
                 - task: AzureAppServiceManage@0
                   displayName: 'Swap Slots: aitopenspace'
                   inputs:
