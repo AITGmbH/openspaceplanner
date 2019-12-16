@@ -12,7 +12,7 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  azureSubscription: 'Azure AIT.Admin MS Sponsorship'
+  azureSubscription: 'Azure'
   resourceGroup: 'Web.WestEurope'
   appName: 'aitopenspace'
 
