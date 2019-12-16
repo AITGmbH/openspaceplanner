@@ -51,9 +51,12 @@ stages:
           workingDirectory: Web
         
         # Publish app
-        - script: dotnet publish Web.csproj --configuration ${{ parameters.buildConfiguration }} --output $(build.artifactstagingdirectory)
+        - task: DotNetCoreCLI@2
           displayName: 'Publish solution'
-          workingDirectory: Web
+          inputs:
+            command: publish
+            arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory) --no-build'
+            workingDirectory: Web
         - publish: $(build.artifactstagingdirectory)
           displayName: 'Publish pipeline artifact'
           artifact: WebApp
