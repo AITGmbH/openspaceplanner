@@ -28,6 +28,9 @@
                         "scripts": [
                             "node_modules/popper.js/dist/umd/popper.js",
                             "node_modules/tippy.js/umd/index.js"
+                        ],
+                        "allowedCommonJsDependencies": [
+                            "@markpieszak/ng-application-insights"
                         ]
                     },
                     "configurations": {
@@ -35,7 +38,6 @@
                             "optimization": true,
                             "outputHashing": "all",
                             "sourceMap": false,
-                            "extractCss": true,
                             "namedChunks": false,
                             "aot": true,
                             "extractLicenses": true,
@@ -50,7 +52,7 @@
                         },
                         "development": {}
                     },
-                    "defaultConfiguration": "production"
+                    "defaultConfiguration": "development"
                 },
                 "serve": {
                     "builder": "@angular-devkit/build-angular:dev-server",
@@ -91,14 +93,11 @@
                     }
                 },
                 "lint": {
-                    "builder": "@angular-devkit/build-angular:tslint",
+                    "builder": "@angular-eslint/builder:lint",
                     "options": {
-                        "tsConfig": [
-                            "src/tsconfig.app.json",
-                            "src/tsconfig.spec.json"
-                        ],
-                        "exclude": [
-                            "**/node_modules/**"
+                        "lintFilePatterns": [
+                            "src/**/*.ts",
+                            "src/**/*.html"
                         ]
                     }
                 }
@@ -108,8 +107,7 @@
     "defaultProject": "openspace",
     "schematics": {
         "@schematics/angular:component": {
-            "prefix": "app",
-            "styleext": "scss"
+            "prefix": "app"
         },
         "@schematics/angular:directive": {
             "prefix": "app"
