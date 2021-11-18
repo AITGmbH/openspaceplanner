@@ -15,7 +15,8 @@
 
     <table class="table session-table is-striped is-fullwidth is-hoverable">
         <thead>
-            <tr class="table-row">
+            <tr class="table-row-sticky">
+
                 <td class="table-cell"></td>
 
                 <td *ngFor="let room of rooms" class="table-cell" id="{{ room.id }}" (dblclick)="showModal($event, 'room', room)" appEditButton>

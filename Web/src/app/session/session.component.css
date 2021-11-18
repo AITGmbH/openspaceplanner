@@ -1,29 +1,41 @@
-.table-cell:first-child {
-    width: 180px;
+.table-cell:first-child {   
+    width: 180px;    
+}
+
+.table-row-sticky {
+    top: 0;
+    position: sticky;
+    z-index:1;
+    background-color:white;
+    width: 100%;
 }
 
 .table-row {
     width: 100%;
-}
+  }
 
 tbody .table-row {
-    height: 150px;
+    height: 150px;   
 }
 
-.session-table {
+.session-table {    
     margin-top: 20px;
-    table-layout: fixed;
+    table-layout: fixed;  
 }
-
-.session-table td, .session-table th {
+.session-table td {    
     border-width: 0 1px 1px 0;
 }
 
-.topics-unassigned {
+.session-table th {    
+    border-width: 0 1px 1px 0;
+}
+
+
+.topics-unassigned {    
     height: 150px;
 }
 
-.is-floating-action {
+.is-floating-action {    
     border-radius: 50%;
     width: 52px;
     height: 52px;
@@ -48,7 +60,7 @@ tbody .table-row {
     margin-bottom: 20px;
 }
 
-.is-floating-action,.is-floating-button-submenu > .fa {
+.is-floating-action, .is-floating-button-submenu > .fa {
     font-size: 16px;
 }
 
