@@ -1,20 +1,20 @@
 source https://nuget.org/api/v2
-framework: netcoreapp3.1, netstandard2.1
+framework: net6, netstandard2.1
 
-nuget Microsoft.Azure.Storage.Blob 11.1.1
-nuget Microsoft.Extensions.Http 3.1.0
-nuget Newtonsoft.Json 12.0.3
-nuget NodaTime 2.4.7
+nuget Microsoft.Azure.Storage.Blob 11.2.3
+nuget Microsoft.Extensions.Http 6.0.0
+nuget Newtonsoft.Json 13.0.1
+nuget NodaTime 3.0.9
 
 group Web
     source https://nuget.org/api/v2
 
-    nuget Microsoft.ApplicationInsights.AspNetCore 2.12.0
+    nuget Microsoft.ApplicationInsights.AspNetCore 2.20.0
 
 group Test
     source https://nuget.org/api/v2
 
-    nuget FluentAssertions 5.9.0
+    nuget FluentAssertions 6.3.0
     nuget xunit 2.4.1
     nuget xunit.runner.visualstudio 2.4.1
     nuget Selenium.Chrome.WebDriver 76.0.0
@@ -22,5 +22,5 @@ group Test
     nuget Selenium.InternetExplorer.WebDriver 3.141.5
     nuget Selenium.Support 3.141.0
     nuget Selenium.WebDriver 3.141.0
-    nuget System.Text.Encoding.CodePages 4.6.0
-    nuget Microsoft.NET.Test.Sdk 15.8.0
+    nuget System.Text.Encoding.CodePages 6.0.0
+    nuget Microsoft.NET.Test.Sdk 17.0.0
