@@ -6,7 +6,6 @@ import {
     ViewChild,
 } from "@angular/core";
 import { Topic } from "../models/topic";
-import { ModalDialogComponent } from "../modal-dialog/modal-dialog.component";
 import { SessionService } from "../session/session.service";
 import * as _ from "lodash";
 import { NgSelectComponent } from "@ng-select/ng-select";
@@ -69,38 +68,8 @@ export class TopicModalComponent {
         return this._capabilities;
     }
 
-<<<<<<< HEAD
-    return this._capabilities;
-  }
-
-  constructor(private sessionService: SessionService) {
-    this.selectedTab = 'topic';
-  }
-
-  public save() {
-    this.sessionService.updateTopic(this.item);
-  }
-
-  public delete() {
-    this.sessionService.deleteTopic(this.item.id);
-  }
-
-  public onClose() {
-    this.capabilitiesElement.close();
-    this.close.next(null);
-  }
-
-  public selectTab(tabName: string) {
-    this.selectedTab = tabName;
-  }
-
-  public async addFeedback() {
-    if (this.feedback.trim() === '') {
-      return;
-=======
     constructor(private sessionService: SessionService) {
         this.selectedTab = "topic";
->>>>>>> features/topic-multiple-slots
     }
 
     public async save() {
@@ -113,7 +82,7 @@ export class TopicModalComponent {
 
     public onClose() {
         this.capabilitiesElement.close();
-        this.close.next();
+        this.close.next(null);
     }
 
     public selectTab(tabName: string) {

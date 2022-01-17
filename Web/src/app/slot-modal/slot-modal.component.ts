@@ -36,13 +36,7 @@ export class SlotModalComponent {
         this.sessionService.deleteSlot(this.item.id);
     }
 
-<<<<<<< HEAD
-  public onClose() {
-    this.close.next(null);
-  }
-=======
     public onClose() {
-        this.close.next();
+        this.close.next(null);
     }
->>>>>>> features/topic-multiple-slots
 }

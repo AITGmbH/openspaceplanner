@@ -35,39 +35,9 @@ export class SessionModalComponent implements OnInit {
     @Input()
     public isShown = false;
 
-<<<<<<< HEAD
-  public set item(value) {
-    this._item = value;
-  }
-
-  constructor(private sessionService: SessionService, private router: Router) { }
-
-  public ngOnInit() {
-    this.sessions$ = this.sessionService.getAll().pipe(map(s => s.filter(s => s.id != this.sessionService.currentSession.id)));
-  }
-
-  public save() {
-    this.sessionService.update(this.item);
-  }
-
-  public onClose() {
-    this.sessionsElement.close();
-    this.close.next(null);
-  }
-
-  public selectTab(tabName: string) {
-    this.selectedTab = tabName;
-  }
-
-  public importAll() {
-    if (confirm("Do you really want to import the slots and rooms of the selected session? All slots and rooms in the current session will be deleted.")) {
-      this.sessionService.currentSession.rooms = this.selectedSession.rooms;
-      this.sessionService.currentSession.slots = this.selectedSession.slots;
-=======
     @Input()
     public get item() {
         return this._item || new Session();
->>>>>>> features/topic-multiple-slots
     }
 
     public set item(value) {
@@ -98,7 +68,7 @@ export class SessionModalComponent implements OnInit {
 
     public onClose() {
         this.sessionsElement.close();
-        this.close.next();
+        this.close.next(null);
     }
 
     public selectTab(tabName: string) {

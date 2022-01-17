@@ -22,13 +22,9 @@
                         "styles": [
                             "src/styles.css",
                             "node_modules/bulma/css/bulma.css",
-                            "node_modules/font-awesome/css/font-awesome.css",
-                            "node_modules/tippy.js/index.css"
+                            "node_modules/font-awesome/css/font-awesome.css"
                         ],
-                        "scripts": [
-                            "node_modules/popper.js/dist/umd/popper.js",
-                            "node_modules/tippy.js/umd/index.js"
-                        ],
+                        "scripts": [],
                         "allowedCommonJsDependencies": [
                             "@markpieszak/ng-application-insights"
                         ]

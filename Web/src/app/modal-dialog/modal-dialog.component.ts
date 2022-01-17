@@ -38,18 +38,12 @@ export class ModalDialogComponent {
         }
 
         if (!this._isShown && value) {
-            this.close.next();
+            this.close.next(null);
         }
     }
-<<<<<<< HEAD
-
-    if (!this._isShown && value) {
-      this.close.next(null);
-=======
 
     public get isShown() {
         return this._isShown;
->>>>>>> features/topic-multiple-slots
     }
 
     @Input()
@@ -74,18 +68,18 @@ export class ModalDialogComponent {
     }
 
     public saveInternal() {
-        this.save.next();
+        this.save.next(null);
         this.closeInternal();
     }
 
     public closeInternal() {
         this.isShown = false;
-        this.close.next();
+        this.close.next(null);
     }
 
     public deleteInternal() {
         if (confirm("Do you really want to delete this item?")) {
-            this.delete.next();
+            this.delete.next(null);
             this.closeInternal();
         }
     }
