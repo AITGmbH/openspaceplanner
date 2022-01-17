@@ -309,7 +309,7 @@ export class SessionService {
     this._hubConnection.on("deleteTopic", (id: string) => this.deleteInternal(this.currentSession.topics, id));
     this._hubConnection.on("deleteRoom", (id: string) => this.deleteInternal(this.currentSession.rooms, id));
     this._hubConnection.on("deleteSlot", (id: string) => this.deleteInternal(this.currentSession.slots, id));
-    this._hubConnection.on("deleteSession", () => this.sessionDeleted.next());
+    this._hubConnection.on("deleteSession", () => this.sessionDeleted.next(null));
 
     this._hubConnection.start()
       .then(() => {

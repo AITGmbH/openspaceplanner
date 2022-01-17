@@ -1,4 +1,5 @@
 @import "~@ng-select/ng-select/themes/default.theme.css";
+@import "~tippy.js/dist/tippy.css";
 
 @media screen and (min-width: 1408px) {
     .app-body .container {

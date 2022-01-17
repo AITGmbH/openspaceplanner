@@ -22,12 +22,11 @@
                         "styles": [
                             "src/styles.css",
                             "node_modules/bulma/css/bulma.css",
-                            "node_modules/font-awesome/css/font-awesome.css",
-                            "node_modules/tippy.js/index.css"
+                            "node_modules/font-awesome/css/font-awesome.css"
                         ],
-                        "scripts": [
-                            "node_modules/popper.js/dist/umd/popper.js",
-                            "node_modules/tippy.js/umd/index.js"
+                        "scripts": [],
+                        "allowedCommonJsDependencies": [
+                            "@markpieszak/ng-application-insights"
                         ]
                     },
                     "configurations": {
@@ -35,7 +34,6 @@
                             "optimization": true,
                             "outputHashing": "all",
                             "sourceMap": false,
-                            "extractCss": true,
                             "namedChunks": false,
                             "aot": true,
                             "extractLicenses": true,
@@ -47,19 +45,23 @@
                                     "with": "src/environments/environment.prod.ts"
                                 }
                             ]
-                        }
-                    }
+                        },
+                        "development": {}
+                    },
+                    "defaultConfiguration": "development"
                 },
                 "serve": {
                     "builder": "@angular-devkit/build-angular:dev-server",
-                    "options": {
-                        "browserTarget": "openspace:build"
-                    },
+                    "options": {},
                     "configurations": {
                         "production": {
                             "browserTarget": "openspace:build:production"
+                        },
+                        "development": {
+                            "browserTarget": "openspace:build:development"
                         }
-                    }
+                    },
+                    "defaultConfiguration": "development"
                 },
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -87,39 +89,11 @@
                     }
                 },
                 "lint": {
-                    "builder": "@angular-devkit/build-angular:tslint",
+                    "builder": "@angular-eslint/builder:lint",
                     "options": {
-                        "tsConfig": [
-                            "src/tsconfig.app.json",
-                            "src/tsconfig.spec.json"
-                        ],
-                        "exclude": [
-                            "**/node_modules/**"
-                        ]
-                    }
-                }
-            }
-        },
-        "openspace-e2e": {
-            "root": "",
-            "sourceRoot": "",
-            "projectType": "application",
-            "architect": {
-                "e2e": {
-                    "builder": "@angular-devkit/build-angular:protractor",
-                    "options": {
-                        "protractorConfig": "./protractor.conf.js",
-                        "devServerTarget": "openspace:serve"
-                    }
-                },
-                "lint": {
-                    "builder": "@angular-devkit/build-angular:tslint",
-                    "options": {
-                        "tsConfig": [
-                            "src/e2e/tsconfig.e2e.json"
-                        ],
-                        "exclude": [
-                            "**/node_modules/**"
+                        "lintFilePatterns": [
+                            "src/**/*.ts",
+                            "src/**/*.html"
                         ]
                     }
                 }
@@ -129,8 +103,7 @@
     "defaultProject": "openspace",
     "schematics": {
         "@schematics/angular:component": {
-            "prefix": "app",
-            "styleext": "scss"
+            "prefix": "app"
         },
         "@schematics/angular:directive": {
             "prefix": "app"

@@ -30,6 +30,12 @@
             </div>
         </div>
         <div class="field">
+            <label class="label">Slots</label>
+            <div class="control">
+                <input class="input" type="number" min="1" max="99" placeholder="Number of slots" id="slots" [(ngModel)]="item.slots" />
+            </div>
+        </div>
+        <div class="field">
             <label class="label">Demands</label>
             <div class="control">
                 <ng-select [items]="capabilities" [(ngModel)]="item.demands" [addTag]="true" [hideSelected]="true" multiple="true" appendTo="body" #capabilitiesElement></ng-select>
