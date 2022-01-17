@@ -74,19 +74,8 @@ export class RoomModalComponent {
         this.sessionService.deleteRoom(this.item.id);
     }
 
-<<<<<<< HEAD
-  public delete() {
-    this.sessionService.deleteRoom(this.item.id);
-  }
-
-  public onClose() {
-    this.capabilitiesElement.close();
-    this.close.next(null);
-  }
-=======
     public onClose() {
         this.capabilitiesElement.close();
         this.close.next();
     }
->>>>>>> features/topic-multiple-slots
 }
