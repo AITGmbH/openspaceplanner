@@ -48,7 +48,7 @@ export class SessionModalComponent implements OnInit {
 
   public onClose() {
     this.sessionsElement.close();
-    this.close.next();
+    this.close.next(null);
   }
 
   public selectTab(tabName: string) {

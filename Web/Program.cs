@@ -19,7 +19,7 @@ namespace openspace
                             config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
                                 .AddEnvironmentVariables("APPSETTING_")
-                                .AddUserSecrets<Program>();
+                                .AddUserSecrets<Program>(optional: true);
                         })
                         .ConfigureLogging((hostingContext, logging) =>
                         {

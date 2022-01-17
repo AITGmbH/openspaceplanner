@@ -60,6 +60,6 @@ export class RoomModalComponent {
 
   public onClose() {
     this.capabilitiesElement.close();
-    this.close.next();
+    this.close.next(null);
   }
 }

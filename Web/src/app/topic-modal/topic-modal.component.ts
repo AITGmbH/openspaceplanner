@@ -67,7 +67,7 @@ export class TopicModalComponent {
 
   public onClose() {
     this.capabilitiesElement.close();
-    this.close.next();
+    this.close.next(null);
   }
 
   public selectTab(tabName: string) {

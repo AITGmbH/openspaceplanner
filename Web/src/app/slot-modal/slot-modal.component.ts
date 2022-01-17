@@ -36,6 +36,6 @@ export class SlotModalComponent {
   }
 
   public onClose() {
-    this.close.next();
+    this.close.next(null);
   }
 }

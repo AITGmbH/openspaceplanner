@@ -30,7 +30,7 @@ export class ModalDialogComponent {
     }
     
     if (!this._isShown && value) {
-      this.close.next();
+      this.close.next(null);
     }
   }
 
@@ -61,18 +61,18 @@ export class ModalDialogComponent {
 
   public saveInternal() {
     this.closeInternal();
-    this.save.next();
+    this.save.next(null);
   }
 
   public closeInternal() {
     this.isShown = false;
-    this.close.next();
+    this.close.next(null);
   }
 
   public deleteInternal() {
     if (confirm('Do you really want to delete this item?')) {
       this.closeInternal();
-      this.delete.next();
+      this.delete.next(null);
     }
   }
 }
