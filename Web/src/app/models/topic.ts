@@ -1,6 +1,6 @@
-import { Rating } from './rating';
-import { Attendance } from './attendance';
-import { Feedback } from './feedback';
+import { Rating } from "./rating";
+import { Attendance } from "./attendance";
+import { Feedback } from "./feedback";
 
 export class Topic {
     public id: string;
@@ -13,6 +13,7 @@ export class Topic {
     public ratings: Rating[];
     public roomId: string;
     public slotId: string;
+    public slots: number;
 
     constructor(owner: string = null) {
         this.owner = owner;

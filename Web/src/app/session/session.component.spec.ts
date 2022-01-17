@@ -1,7 +1,7 @@
 import { SessionService } from "./session.service";
 import { ModalDialogComponent } from "./../modal-dialog/modal-dialog.component";
 import { SessionTopicBoxComponent } from "./../session-topic-box/session-topic-box.component";
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 import * as typemoq from "typemoq";
 
 import { SessionComponent } from "./session.component";
@@ -24,7 +24,7 @@ describe("SessionComponent", () => {
     let sessionServiceMock: typemoq.IMock<SessionService>;
     let routerMock: typemoq.IMock<Router>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         Object.defineProperty(window, "matchMedia", {
             value: jest.fn(() => { return { matches: false } })
         });

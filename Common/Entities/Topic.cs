@@ -24,5 +24,7 @@ namespace openspace.Common.Entities
         public string RoomId { get; set; }
 
         public string SlotId { get; set; }
+
+        public int Slots { get; set; } = 1;
     }
 }

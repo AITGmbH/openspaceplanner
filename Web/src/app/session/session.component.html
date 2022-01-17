@@ -1,7 +1,7 @@
-<div class="container is-loading" *ngIf="isLoading">Loading</div>
-<h2 class="subtitle" *ngIf="session == null && !isLoading">Session not found.</h2>
+<div class="container is-loading" *ngIf="isLoading$ | async">Loading</div>
+<h2 class="subtitle" *ngIf="session == null && !(isLoading$ | async)">Session not found.</h2>
 
-<div class="container" *ngIf="session != null && !isLoading">
+<div class="container" *ngIf="session != null && !(isLoading$ | async)">
     <h1 class="title" (dblclick)="showModal($event, 'session', session)" appEditButton>
         {{ session.name }}
         <a (click)="showModal($event, 'session', session)">
@@ -38,11 +38,13 @@
                     <br /> {{ slot.time }}
                 </td>
 
-                <td *ngFor="let room of rooms" class="table-cell dropable topic-space" [attr.data-slot-id]="slot.id" [attr.data-room-id]="room.id">
-                    <app-session-topic-box *ngFor="let topic of getTopics(slot.id, room.id)" [topic]="topic" (edit)="showModal($event, 'topic', $event.topic)"
-                        (dblclick)="showModal($event, 'topic', topic)">
-                    </app-session-topic-box>
-                </td>
+                <ng-container *ngFor="let topic of topics[slot.id]">
+                    <td *ngIf="topic != null" class="table-cell dropable topic-space" [attr.rowspan]="topic.slots" [attr.data-slot-id]="topic.slotId" [attr.data-room-id]="topic.roomId">
+                        <app-session-topic-box *ngIf="topic.id != null" [topic]="topic" (edit)="showModal($event, 'topic', $event.topic)"
+                            (dblclick)="showModal($event, 'topic', topic)">
+                        </app-session-topic-box>
+                    </td>
+                </ng-container>
             </tr>
         </tbody>
     </table>
@@ -78,10 +80,12 @@
     </li>
 </ul>
 
-<app-topic-modal [isShown]="modalShown['topic']" (close)="hideModal('topic')" [item]="modalShown['topic']"></app-topic-modal>
+<ng-container *ngIf="modalShown$ | async as modalShown">
+    <app-topic-modal [isShown]="modalShown['topic']" (close)="hideModal('topic')" [item]="modalShown['topic']"></app-topic-modal>
 
-<app-room-modal [isShown]="modalShown['room']" (close)="hideModal('room')" [item]="modalShown['room']"></app-room-modal>
+    <app-room-modal [isShown]="modalShown['room']" (close)="hideModal('room')" [item]="modalShown['room']"></app-room-modal>
 
-<app-slot-modal [isShown]="modalShown['slot']" (close)="hideModal('slot')" [item]="modalShown['slot']"></app-slot-modal>
+    <app-slot-modal [isShown]="modalShown['slot']" (close)="hideModal('slot')" [item]="modalShown['slot']"></app-slot-modal>
 
-<app-session-modal [isShown]="modalShown['session']" (close)="hideModal('session')" [item]="modalShown['session']"></app-session-modal>
+    <app-session-modal [isShown]="modalShown['session']" (close)="hideModal('session')" [item]="modalShown['session']"></app-session-modal>
+</ng-container>
