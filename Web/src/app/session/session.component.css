@@ -6,6 +6,18 @@
     width: 100%;
 }
 
+
+thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: white;
+}
+
+tbody {
+    z-index: 0;
+}
+
 tbody .table-row {
     height: 150px;
 }
