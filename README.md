@@ -35,9 +35,5 @@ Run `npm run dist` to publish the project. This will produce the Angular product
 
 ## Gitpod
 
-<<<<<<< HEAD
 You can also open the solution in Gitpod: [https://gitpod.io/#/github.com/aitgmbh/openspaceplanner/](https://gitpod.io/#/github.com/aitgmbh/openspaceplanner/).
 The link to open the open space planner will be printed in the Backend terminal. You can also open the Remote Explorer in the menu on the left side to see the open ports. Click on the browser icon next to port 5000 to open the website.
-=======
-You can also open the solution in Gitpod: [https://gitpod.io/#/github.com/aitgmbh/openspaceplanner/](https://gitpod.io/#/github.com/aitgmbh/openspaceplanner/)
->>>>>>> 2e3f1f9cb3c77812cf10081e0f3ee0679a0b6a03
