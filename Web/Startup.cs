@@ -33,6 +33,7 @@ namespace openspace
             else
             {
                 app.UseHsts();
+                app.UseHttpsRedirection();
             }
 
             app.Use(async (context, next) =>
@@ -47,9 +48,17 @@ namespace openspace
             });
 
             app.UseRouting();
-            app.UseHttpsRedirection();
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                OnPrepareResponse = (context) =>
+                {
+#if DEBUG
+                    context.Context.Response.Headers["Cache-Control"] = "no-cache, no-store";
+                    context.Context.Response.Headers["Pragma"] = "no-cache";
+                    context.Context.Response.Headers["Expires"] = "-1";
+#endif
+                }
+            });
             app.UseCookiePolicy();
 
             app.UseEndpoints(c =>

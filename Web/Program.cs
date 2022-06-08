@@ -27,6 +27,9 @@ namespace openspace
                             logging.AddConsole();
                             logging.AddDebug();
                         })
+#if DEBUG
+                        .UseUrls("http://localhost:5000")
+#endif
                         .UseStartup<Startup>();
                 });
 

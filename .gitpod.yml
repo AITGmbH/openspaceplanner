@@ -1,0 +1,29 @@
+image: gitpod/workspace-dotnet
+
+tasks:
+    - name: Frontend
+      init: |
+          cd Web
+          npm ci --legacy-peer-deps
+          npm run build:dev
+          gp sync-done frontend
+      command: |
+          npm run watch
+
+    - name: Backend
+      init: |
+          dotnet tool restore
+          dotnet paket restore
+          cd Web
+          dotnet build
+          gp sync-await frontend
+      command: |
+          gp url 5000
+          sleep 60
+          dotnet watch run
+      openMode: split-right
+
+ports:
+    - port: 5000
+      onOpen: open-browser
+      visibility: public
