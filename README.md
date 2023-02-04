@@ -13,8 +13,7 @@ After cloning the project:
 1. Restore packages
 
 ```bash
-dotnet tool restore
-dotnet paket restore
+dotnet restore
 cd Web && npm ci
 ```
 

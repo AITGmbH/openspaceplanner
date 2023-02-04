@@ -1,0 +1,42 @@
+<form #form="ngForm">
+  <div class="field session">
+    <label class="label">Session</label>
+  </div>
+
+  <div class="columns">
+    <div class="field is-grouped column is-narrow">
+      <div class="control">
+        <button id="createSession" class="button is-link" (click)="createSession()">Create Session</button>
+      </div>
+    </div>
+
+    <div class="field is-grouped column" style="height: 100%">
+      <div class="control margin-top-auto">or...</div>
+
+      <div class="field has-addons">
+        <div class="control">
+          <input class="input" type="text" name="sessionId" [(ngModel)]="model.sessionId" #sessionId="ngModel" placeholder="Session ID"
+            required (keydown.enter)="enter()" />
+        </div>
+        <div class="control">
+          <button class="button is-info" [disabled]="!sessionId.valid" (click)="joinSession()">
+            Join Session
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="field session">
+  <label class="label">Last 10 sessions</label>
+  <app-busy-spinner [isBusy]="isLoadingSessions"></app-busy-spinner>
+  <ul>
+    <li *ngFor="let session of lastSessions$ | async"><a href="session/{{session.id}}">{{ session.name }}</a></li>
+  </ul>
+</div>
+
+
+<a class="calendar-button" href="/api/sessions/calendar">
+  <span class="fa fa-calendar fa-2x"></span>
+</a>

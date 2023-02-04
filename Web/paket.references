@@ -1,5 +1,0 @@
-Microsoft.Extensions.Http
-Newtonsoft.Json
-
-group Web
-	Microsoft.ApplicationInsights.AspNetCore
