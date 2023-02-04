@@ -2,16 +2,16 @@
   [isShown]="isShown">
   <div class="tabs" *ngIf="item.id != null">
     <ul>
-      <li [class.is-active]="selectedTab == 'session'" (click)="selectTab('session')">
+      <li [class.is-active]="selectedTab === 'session'" (click)="selectTab('session')">
         <a>Session</a>
       </li>
-      <li [class.is-active]="selectedTab == 'imports'" (click)="selectTab('imports')">
+      <li [class.is-active]="selectedTab === 'imports'" (click)="selectTab('imports')">
         <a>Imports</a>
       </li>
     </ul>
   </div>
 
-  <div *ngIf="selectedTab == 'session'">
+  <div *ngIf="selectedTab === 'session'">
     <div class="field">
       <label class="label">Name</label>
       <div class="control">
@@ -59,7 +59,7 @@
     </div>
   </div>
 
-  <div *ngIf="selectedTab == 'imports'">
+  <div *ngIf="selectedTab === 'imports'">
     <div class="field">
       <label class="label">Session</label>
       <div class="control">

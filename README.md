@@ -13,8 +13,8 @@ After cloning the project:
 1. Restore packages
 
 ```bash
-dotnet restore
-cd Web && npm ci
+cd src/WebApi && dotnet restore
+cd src/Website && npm ci --legacy-peer-deps
 ```
 
 1. Optional: Add Azure Storage Credentials (_otherwise the data will be saved in a local file_)  
@@ -24,13 +24,10 @@ cd Web && npm ci
 
 ### Debugging
 
-1. Run `cd Web && npm run watch` to build and run the frontend
-1. Run `cd Web && dotnet watch run` to build and run the backend (wait until the frontend is running)
-1. Open the website at http://localhost:5000/
-
-## Publishing
-
-Run `npm run dist` to publish the project. This will produce the Angular production aot build and the ASP.NET Core release build which can then be published to a webserver. The files are located in the _bin\Release\netcoreapp3.1\publish_ folder.
+1. Run `cd src/Website && npm run watch` to build and run the frontend
+1. Run `cd src/WebApi && dotnet watch run` to build and run the backend (wait until the frontend is running)
+1. Open the website at http://localhost:4200/
+1. Open the API at http://localhost:8080/swagger/
 
 ## Gitpod
 

@@ -29,7 +29,7 @@ export class SessionTopicBoxComponent implements OnInit {
   @Input()
   public enableDrag = true;
 
-  @Output("edit")
+  @Output()
   public edit = new EventEmitter<Event>();
 
   public errors: string[];
