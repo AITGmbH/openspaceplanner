@@ -20,7 +20,7 @@ public class SessionRoomsController : Controller
     }
 
     [HttpDelete("{roomId}")]
-    public async Task Delete(int sessionId, string roomId)
+    public async Task DeleteRoomAsync(int sessionId, string roomId)
     {
         await _sessionRepository.Update(sessionId, (session) =>
         {
@@ -32,18 +32,15 @@ public class SessionRoomsController : Controller
     }
 
     [HttpPost]
-    public async Task<Room> Post(int sessionId, [FromBody] Room room)
+    public async Task<Room> AddRoomAsync(int sessionId, [FromBody] Room room)
     {
         await _sessionRepository.Update(sessionId, (session) =>
         {
-            if (string.IsNullOrWhiteSpace(room.Name))
+            room = room with
             {
-                room = room with
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = string.IsNullOrWhiteSpace(room.Name) ? "Room " + (session.Rooms.Count + 1) : room.Name,
-                };
-            }
+                Id = Guid.NewGuid().ToString(),
+                Name = string.IsNullOrWhiteSpace(room.Name) ? "Room " + (session.Rooms.Count + 1) : room.Name,
+            };
 
             session.Rooms.Add(room);
         });
@@ -54,7 +51,7 @@ public class SessionRoomsController : Controller
     }
 
     [HttpPut("{roomId}")]
-    public async Task<Room> Put(int sessionId, string roomId, [FromBody] Room room)
+    public async Task<Room> UpdateRoomAsync(int sessionId, string roomId, [FromBody] Room room)
     {
         await _sessionRepository.Update(sessionId, (session) =>
         {

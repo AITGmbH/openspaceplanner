@@ -1,0 +1,17 @@
+export * from './config.service';
+import { ConfigService } from './config.service';
+export * from './sessionRooms.service';
+import { SessionRoomsService } from './sessionRooms.service';
+export * from './sessionSlots.service';
+import { SessionSlotsService } from './sessionSlots.service';
+export * from './sessionTopics.service';
+import { SessionTopicsService } from './sessionTopics.service';
+export * from './sessionTopicsAttendance.service';
+import { SessionTopicsAttendanceService } from './sessionTopicsAttendance.service';
+export * from './sessionTopicsFeedback.service';
+import { SessionTopicsFeedbackService } from './sessionTopicsFeedback.service';
+export * from './sessionTopicsRating.service';
+import { SessionTopicsRatingService } from './sessionTopicsRating.service';
+export * from './sessions.service';
+import { SessionsService } from './sessions.service';
+export const APIS = [ConfigService, SessionRoomsService, SessionSlotsService, SessionTopicsService, SessionTopicsAttendanceService, SessionTopicsFeedbackService, SessionTopicsRatingService, SessionsService];

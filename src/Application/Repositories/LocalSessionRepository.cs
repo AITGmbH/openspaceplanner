@@ -9,11 +9,8 @@ public class LocalSessionRepository : SessionRepositoryBase
 
     public LocalSessionRepository()
     {
-        if (Sessions == null)
-        {
-            var database = File.Exists(DatabaseFileName) ? File.ReadAllText(DatabaseFileName) : "[]";
-            Sessions = new List<Session>(JsonConvert.DeserializeObject<Session[]>(database));
-        }
+        var database = File.Exists(DatabaseFileName) ? File.ReadAllText(DatabaseFileName) : "[]";
+        Sessions = new List<Session>(JsonConvert.DeserializeObject<Session[]>(database));
     }
 
     protected override void Save() => File.WriteAllText(DatabaseFileName, JsonConvert.SerializeObject(Sessions.ToArray()));

@@ -22,7 +22,7 @@ public class SessionsController : Controller
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> DeleteSessionAsync(int id)
     {
         var success = await _sessionRepository.Delete(id);
         if (!success)
@@ -35,16 +35,16 @@ public class SessionsController : Controller
     }
 
     [HttpGet]
-    public Task<IEnumerable<Session>> Get() => _sessionRepository.Get();
+    public Task<IEnumerable<Session>> GetSessionsAsync() => _sessionRepository.Get();
 
     [HttpGet("{id}")]
-    public Task<Session> Get(int id) => _sessionRepository.Get(id);
+    public Task<Session> GetSessionByIdAsync(int id) => _sessionRepository.Get(id);
 
     [HttpGet("last")]
-    public async Task<IEnumerable<Session>> GetLast() => (await _sessionRepository.Get()).OrderByDescending(s => s.Id).Take(10);
+    public async Task<IEnumerable<Session>> GetLastSessionsAsync() => (await _sessionRepository.Get()).OrderByDescending(s => s.Id).Take(10);
 
     [HttpGet("{id}/calendar")]
-    public async Task<IActionResult> GetSessionCalendar(int id)
+    public async Task<IActionResult> GetSessionCalendarAsync(int id)
     {
         var calendar = await _calendarService.GetSessionsAsync(id);
 
@@ -53,7 +53,7 @@ public class SessionsController : Controller
     }
 
     [HttpGet("calendar")]
-    public async Task<IActionResult> GetSessionsCalendar()
+    public async Task<IActionResult> GetSessionsCalendarAsync()
     {
         var calendar = await _calendarService.GetSessionsAsync();
 
@@ -61,11 +61,11 @@ public class SessionsController : Controller
         return Content(calendar, "text/calendar");
     }
 
-    [HttpPost("")]
-    public Task<Session> Post() => _sessionRepository.Create();
+    [HttpPost]
+    public Task<Session> AddSessionAsync() => _sessionRepository.Create();
 
     [HttpPut("{id}")]
-    public async Task<Session> Put(int id, [FromBody] Session session)
+    public async Task<Session> UpdateSessionAsync(int id, [FromBody] Session session)
     {
         await _sessionRepository.Update(session);
         await _sessionsHub.Clients.Group(id.ToString()).UpdateSession(session);
@@ -74,7 +74,7 @@ public class SessionsController : Controller
     }
 
     [HttpDelete("{id}/attendances")]
-    public Task ResetAttendances(int id)
+    public Task ResetSessionAttendancesAsync(int id)
         => _sessionRepository.Update(id, session =>
         {
             foreach (var topic in session.Topics)
@@ -85,7 +85,7 @@ public class SessionsController : Controller
         });
 
     [HttpDelete("{id}/ratings")]
-    public Task ResetRatings(int id)
+    public Task ResetSessionRatingsAsync(int id)
         => _sessionRepository.Update(id, session =>
         {
             foreach (var topic in session.Topics)

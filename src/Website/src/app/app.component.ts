@@ -1,37 +1,46 @@
 import { HttpClient } from "@angular/common/http";
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
-import { AppInsightsService } from "@markpieszak/ng-application-insights";
-import { environment } from '../environments/environment';
-import { Config } from "./models/config";
+import { AngularPlugin } from '@microsoft/applicationinsights-angularplugin-js';
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+import { take, tap } from 'rxjs';
 import { SessionService } from "./session/session.service";
+import { Config, ConfigService } from './shared/services/api';
 
 @Component({
-    selector: "app-root",
-    templateUrl: "./app.component.html",
-    styleUrls: ["app.component.css"],
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["app.component.css"],
 })
 export class AppComponent {
-    constructor(
-        http: HttpClient,
-        appInsightsService: AppInsightsService,
-        sessionService: SessionService,
-        router: Router
-    ) {
-        http.get(`${environment.apiUrl}/api/config`)
-            .toPromise()
-            .then((data) => {
-                const config = data as Config;
+  constructor(
+    http: HttpClient,
+    sessionService: SessionService,
+    configService: ConfigService,
+    router: Router
+  ) {
+    configService.getConfig()
+      .pipe(take(1), tap((config: Config) => {
+        if (config.instrumentationKey == null) {
+          return;
+        }
 
-                appInsightsService.config = {
-                    instrumentationKey: config.instrumentationKey,
-                };
-
-                appInsightsService.init();
-            });
-
-        sessionService.sessionDeleted.subscribe(_ => {
-            router.navigate(["/"]);
+        const angularPlugin = new AngularPlugin();
+        const appInsights = new ApplicationInsights({
+          config: {
+            instrumentationKey: config.instrumentationKey,
+            extensions: [angularPlugin],
+            extensionConfig: {
+              [angularPlugin.identifier]: { router }
+            }
+          }
         });
-    }
+
+        appInsights.loadAppInsights();
+      }));
+
+    sessionService.sessionDeleted.subscribe(_ => {
+      router.navigate(["/"]);
+    });
+  }
 }

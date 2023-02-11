@@ -1,5 +1,4 @@
-<app-modal-dialog title="Session" (save)="save()" (close)="onClose()" (delete)="delete()" [showDeleteButton]="'true'"
-  [isShown]="isShown">
+<app-modal-dialog title="Session" (save)="save()" (close)="onClose()" (delete)="delete()" [showDeleteButton]="true" [isShown]="isShown">
   <div class="tabs" *ngIf="item.id != null">
     <ul>
       <li [class.is-active]="selectedTab === 'session'" (click)="selectTab('session')">
@@ -21,33 +20,25 @@
 
     <div class="field">
       <div class="control">
-        <label class="checkbox">
-          <input type="checkbox" [(ngModel)]="item.freeForAll"> Free for all (unlimited attendance and votes)
-        </label>
+        <label class="checkbox"> <input type="checkbox" [(ngModel)]="item.freeForAll" /> Free for all (unlimited attendance and votes) </label>
       </div>
     </div>
 
     <div class="field">
       <div class="control">
-        <label class="checkbox">
-          <input type="checkbox" [(ngModel)]="item.votingEnabled"> Enable voting
-        </label>
+        <label class="checkbox"> <input type="checkbox" [(ngModel)]="item.votingEnabled" /> Enable voting </label>
       </div>
     </div>
 
     <div class="field">
       <div class="control">
-        <label class="checkbox">
-          <input type="checkbox" [(ngModel)]="item.attendanceEnabled"> Enable attendance
-        </label>
+        <label class="checkbox"> <input type="checkbox" [(ngModel)]="item.attendanceEnabled" /> Enable attendance </label>
       </div>
     </div>
 
     <div class="field">
       <div class="control">
-        <label class="checkbox">
-          <input type="checkbox" [(ngModel)]="item.teamsAnnouncementsEnabled"> Enable Microsoft Teams announcements
-        </label>
+        <label class="checkbox"> <input type="checkbox" [(ngModel)]="item.teamsAnnouncementsEnabled" /> Enable Microsoft Teams announcements </label>
       </div>
     </div>
 

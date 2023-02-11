@@ -3,19 +3,19 @@ import {
   Output, ViewChild
 } from "@angular/core";
 import { NgSelectComponent } from "@ng-select/ng-select";
-import { Room } from "../models/room";
 import { SessionService } from "../session/session.service";
+import { Room, Topic } from '../shared/services/api';
 
 @Component({
   selector: "app-room-modal",
   templateUrl: "./room-modal.component.html",
 })
 export class RoomModalComponent {
-  private _item: Room;
-  private _capabilities: string[];
+  private _item: Room = {} as Room;
+  private _capabilities: string[] = [];
 
   @ViewChild("capabilitiesElement", { static: true })
-  public capabilitiesElement: NgSelectComponent;
+  public capabilitiesElement!: NgSelectComponent;
 
   @Output()
   public close = new EventEmitter();
@@ -25,7 +25,7 @@ export class RoomModalComponent {
 
   @Input()
   public get item() {
-    return this._item || new Room();
+    return this._item;
   }
 
   public set item(value) {
@@ -44,15 +44,15 @@ export class RoomModalComponent {
 
     try {
       var demands = this.sessionService.currentSession.rooms
-        .map((r) => r.capabilities)
-        .reduce((a, b) => a.concat(b))
+        .map((r: Room) => r.capabilities)
+        .reduce((a: string[], b: string[]) => a.concat(b))
         .concat(
           this.sessionService.currentSession.topics
-            .map((r) => r.demands)
-            .reduce((a, b) => a.concat(b))
+            .map((r: Topic) => r.demands)
+            .reduce((a: string[], b: string[]) => a.concat(b))
         );
 
-      this._capabilities = [...new Set(demands)];
+      this._capabilities = [...new Set(demands)] as string[];
     } catch {
       this._capabilities = [];
     }

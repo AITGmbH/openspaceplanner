@@ -80,7 +80,7 @@ public class CalendarService : ICalendarService
                 continue;
             }
 
-            var slotTimes = Regex.Matches(slot.Time, "(\\d+\\:\\d+)");
+            var slotTimes = Regex.Matches(slot.Time ?? string.Empty, "(\\d+\\:\\d+)");
             if (slotTimes.Count <= 1)
             {
                 continue;

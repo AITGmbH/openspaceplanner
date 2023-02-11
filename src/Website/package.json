@@ -10,8 +10,8 @@
     "watch": "ng build --watch",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e",
-    "publish": "ng build --configuration production && dotnet publish --configuration Release"
+    "generate-openapi": "openapi-generator-cli generate -g typescript-angular -i http://localhost:8080/swagger/v1/swagger.json -o src/app/shared/services/api --additional-properties ngVersion=14.0.0,supportsES6=true",
+    "openapi-generator": "openapi-generator-cli"
   },
   "private": true,
   "dependencies": {
@@ -23,7 +23,8 @@
     "@angular/platform-browser": "^14.2.12",
     "@angular/platform-browser-dynamic": "^14.2.12",
     "@angular/router": "^14.2.12",
-    "@markpieszak/ng-application-insights": "^9.0.1",
+    "@microsoft/applicationinsights-angularplugin-js": "^3.0.1",
+    "@microsoft/applicationinsights-web": "^2.8.10",
     "@microsoft/signalr": "^7.0.2",
     "@ng-select/ng-select": "^9.1.0",
     "bulma": "^0.9.4",
@@ -45,6 +46,7 @@
     "@angular/cli": "^14.2.10",
     "@angular/compiler-cli": "^14.2.12",
     "@angular/language-service": "^14.2.12",
+    "@openapitools/openapi-generator-cli": "^2.5.2",
     "@types/jest": "^29.4.0",
     "@types/node": "^18.11.18",
     "@typescript-eslint/eslint-plugin": "^5.50.0",

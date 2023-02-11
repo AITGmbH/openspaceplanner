@@ -1,4 +1,4 @@
-import { Rating } from './rating';
+import { Rating } from '../shared/services/api';
 
 export class RatingStatistic {
   public get min() {

@@ -20,7 +20,7 @@ public class SessionTopicsFeedbackController : Controller
     }
 
     [HttpDelete("{feedbackId}")]
-    public async Task Delete(int sessionId, string topicId, string feedbackId)
+    public async Task DeleteTopicFeedbackAsync(int sessionId, string topicId, string feedbackId)
         => await _sessionRepository.Update(sessionId, (session) =>
         {
             var currentTopic = session.Topics.FirstOrDefault(t => t.Id == topicId) ?? throw new EntityNotFoundException("Topic not found");
@@ -32,8 +32,10 @@ public class SessionTopicsFeedbackController : Controller
         });
 
     [HttpPost]
-    public async Task<Feedback> Post(int sessionId, string topicId, [FromBody] Feedback feedback)
+    public async Task<Feedback> AddTopicFeedbackAsync(int sessionId, string topicId, [FromBody] Feedback feedback)
     {
+        feedback = feedback with { Id = Guid.NewGuid().ToString() };
+
         await _sessionRepository.Update(sessionId, (session) =>
         {
             var currentTopic = session.Topics.FirstOrDefault(t => t.Id == topicId) ?? throw new EntityNotFoundException("Topic not found");

@@ -3,8 +3,8 @@ import {
   Output, ViewChild
 } from "@angular/core";
 import { NgSelectComponent } from "@ng-select/ng-select";
-import { Topic } from "../models/topic";
 import { SessionService } from "../session/session.service";
+import { Room, Topic } from '../shared/services/api';
 
 @Component({
   selector: "app-topic-modal",
@@ -12,8 +12,8 @@ import { SessionService } from "../session/session.service";
   styleUrls: ["topic-modal.component.css"],
 })
 export class TopicModalComponent {
-  private _item: Topic;
-  private _capabilities: string[];
+  private _item: Topic = {} as Topic;
+  private _capabilities: string[] = [];
 
   public selectedTab: string;
   public feedback = "";
@@ -26,7 +26,7 @@ export class TopicModalComponent {
 
   @Input()
   public get item() {
-    return this._item || new Topic();
+    return this._item;
   }
 
   public set item(value) {
@@ -35,7 +35,7 @@ export class TopicModalComponent {
   }
 
   @ViewChild("capabilitiesElement", { static: false })
-  public capabilitiesElement: NgSelectComponent;
+  public capabilitiesElement!: NgSelectComponent;
 
   public get capabilities() {
     if (this.sessionService.currentSession == null) {
@@ -47,16 +47,16 @@ export class TopicModalComponent {
     }
 
     try {
-      this._capabilities = [
-        ...new Set(this.sessionService.currentSession.rooms
-          .map((r) => r.capabilities)
-          .reduce((a, b) => a.concat(b))
-          .concat(
-            this.sessionService.currentSession.topics
-              .map((r) => r.demands)
-              .reduce((a, b) => a.concat(b))
-          )
-        )];
+      const capabilities = this.sessionService.currentSession.rooms
+        .map((r: Room) => r.capabilities)
+        .reduce((a: string[], b: string[]) => a.concat(b))
+        .concat(
+          this.sessionService.currentSession.topics
+            .map((topic: Topic) => topic.demands)
+            .reduce((a: string[], b: string[]) => a.concat(b))
+        );
+
+      this._capabilities = [...new Set(capabilities)] as string[];
     } catch {
       this._capabilities = [];
     }
@@ -97,7 +97,7 @@ export class TopicModalComponent {
     this.item.feedback.splice(0, 0, feedback);
   }
 
-  public async deleteFeedback(id) {
+  public async deleteFeedback(id: string) {
     if (confirm("Do you really want to delete this feedback?")) {
       await this.sessionService.deleteTopicFeedback(this.item.id, id);
 

@@ -26,7 +26,7 @@ public class SessionTopicsController : Controller
     }
 
     [HttpDelete("{topicId}")]
-    public async Task Delete(int sessionId, string topicId)
+    public async Task DeleteTopicAsync(int sessionId, string topicId)
     {
         await _sessionRepository.Update(sessionId, (session) =>
         {
@@ -38,7 +38,7 @@ public class SessionTopicsController : Controller
     }
 
     [HttpPost]
-    public async Task<Topic> Post(int sessionId, [FromBody] Topic topic)
+    public async Task<Topic> AddTopicAsync(int sessionId, [FromBody] Topic topic)
     {
         await _sessionRepository.Update(sessionId, (session) =>
         {
@@ -61,7 +61,7 @@ public class SessionTopicsController : Controller
     }
 
     [HttpPut("{topicId}")]
-    public async Task<Topic> Put(int sessionId, string topicId, [FromBody] Topic topic)
+    public async Task<Topic> UpdateTopicAsync(int sessionId, string topicId, [FromBody] Topic topic)
     {
         if ((string.IsNullOrWhiteSpace(topic.RoomId) && !string.IsNullOrWhiteSpace(topic.SlotId))
             || (!string.IsNullOrWhiteSpace(topic.RoomId) && string.IsNullOrWhiteSpace(topic.SlotId)))

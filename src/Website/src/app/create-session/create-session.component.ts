@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { Observable, take, tap } from "rxjs";
-import { Session } from "../models/session";
 import { SessionService } from "../session/session.service";
+import { Session } from '../shared/services/api';
 
 @Component({
   selector: "app-create-session",
@@ -16,7 +16,7 @@ export class CreateSessionComponent implements OnInit {
     sessionId: ""
   };
 
-  public lastSessions$: Observable<Session[]>;
+  public lastSessions$!: Observable<Session[]>;
 
   constructor(private sessionService: SessionService, private router: Router) { }
 

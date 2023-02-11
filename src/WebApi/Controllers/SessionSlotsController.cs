@@ -20,7 +20,7 @@ public class SessionSlotsController : Controller
     }
 
     [HttpDelete("{slotId}")]
-    public async Task Delete(int sessionId, string slotId)
+    public async Task DeleteSlotAsync(int sessionId, string slotId)
     {
         await _sessionRepository.Update(sessionId, (session) =>
         {
@@ -32,7 +32,7 @@ public class SessionSlotsController : Controller
     }
 
     [HttpPost]
-    public async Task<Slot> Post(int sessionId, [FromBody] Slot slot)
+    public async Task<Slot> AddSlotAsync(int sessionId, [FromBody] Slot slot)
     {
         await _sessionRepository.Update(sessionId, (session) =>
         {
@@ -51,7 +51,7 @@ public class SessionSlotsController : Controller
     }
 
     [HttpPut("{slotId}")]
-    public async Task<Slot> Put(int sessionId, string slotId, [FromBody] Slot slot)
+    public async Task<Slot> UpdateSlotAsync(int sessionId, string slotId, [FromBody] Slot slot)
     {
         await _sessionRepository.Update(sessionId, (session) =>
         {

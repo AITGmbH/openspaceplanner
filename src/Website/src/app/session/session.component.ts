@@ -1,20 +1,20 @@
 import {
-  ChangeDetectorRef,
   Component,
+  ElementRef,
   HostListener,
   OnDestroy,
   OnInit,
   ViewChild
 } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import * as interact from "interactjs";
+import { DropEvent, InteractEvent } from '@interactjs/types';
+import interact from 'interactjs';
 import { Subject, Subscription } from "rxjs";
 import { environment } from '../../environments/environment';
-import { Room } from "../models/room";
-import { Session } from '../models/session';
-import { Slot } from "../models/slot";
-import { Topic } from "../models/topic";
+import { Room, Session, Slot, Topic } from '../shared/services/api';
 import { SessionService } from "./session.service";
+
+type TopicLookup = { [slotId: string]: (Topic | null)[] };
 
 @Component({
   selector: "app-session",
@@ -22,34 +22,32 @@ import { SessionService } from "./session.service";
   styleUrls: ["./session.component.css"]
 })
 export class SessionComponent implements OnInit, OnDestroy {
-  private _topics;
+  private _topics?: TopicLookup | null;
   private _subscriptions = new Subscription();
 
   public isLoading$ = new Subject();
-  public modalShown = {};
-  public modalShown$ = new Subject();
+  public modalShown: { [key: string]: any } = {};
+  public modalShown$ = new Subject<any>();
 
   @ViewChild("floatingActionButton", { static: true })
-  public floatingActionButton;
+  public floatingActionButton!: ElementRef<any>;
 
-  public session: Session;
+  public session!: Session;
 
   public get unassignedTopics(): Topic[] {
     return (
       this.session.topics
         .filter((t) => t.roomId == null || t.slotId == null)
-        .sort((a, b) => b.owner?.localeCompare(a.owner) || b.name?.localeCompare(a.name))
+        .sort((a, b) => b.owner?.localeCompare(a.owner ?? "") || b.name?.localeCompare(a.name))
     ).reverse();
   }
 
   public get slots(): Slot[] {
-    return this.session.slots
-      .sort((a, b) => a.time?.localeCompare(b.time));
+    return this.sessionService.getSortedSlots(this.session.slots);
   }
 
   public get rooms(): Room[] {
-    return this.session.rooms
-      .sort((a, b) => a.seats > b.seats ? -1 : 1);
+    return this.sessionService.getSortedRooms(this.session.rooms);
   }
 
   public get calendarLink() {
@@ -59,21 +57,22 @@ export class SessionComponent implements OnInit, OnDestroy {
   constructor(
     private sessionService: SessionService,
     private router: Router,
-    private route: ActivatedRoute,
-    private changeDetectorRef: ChangeDetectorRef
+    private route: ActivatedRoute
   ) {
     this._subscriptions.add(
       this.sessionService.sessionChanged.subscribe(() => {
-        this._topics = null;
+        this.refreshTopics();
+
         this.session = this.sessionService.currentSession;
       })
     );
   }
 
   public async ngOnInit() {
-    const id = +this.route.snapshot.paramMap.get("id");
+    const id = this.route.snapshot.paramMap.get("id");
     if (id == null) {
       this.router.navigate(["/"]);
+      return;
     }
 
     const isMobile = navigator.userAgent.toLowerCase().match(/mobile/i);
@@ -81,38 +80,38 @@ export class SessionComponent implements OnInit, OnDestroy {
       this.router.navigate(["/session", id, "overview"]);
     }
 
-    await this.sessionService.get(id);
+    await this.sessionService.get(+id);
 
     this.session = this.sessionService.currentSession;
 
     this.isLoading$.next(false);
 
-    const interactHandler = <any>interact;
-
-    interactHandler(".draggable").draggable({
-      autoScroll: true,
+    interact(".draggable").draggable({
+      autoScroll: {
+        container: window,
+        speed: 1000,
+        interval: 5
+      },
       inertia: true,
-      onstart: (event) => this.onTopicMoveStart(event),
-      onmove: (event) => this.onTopicMove(event),
-      onend: (event) => this.onTopicMoveEnd(event),
+      onstart: (event: InteractEvent<'drag', 'start'>) => this.onTopicMoveStart(event),
+      onmove: (event: InteractEvent<'drag', 'move'>) => this.onTopicMove(event),
+      onend: (event: InteractEvent<'drag', 'end'>) => this.onTopicMoveEnd(event),
     });
 
-    interactHandler(".dropable").dropzone({
+    interact(".dropable").dropzone({
       accept: ".draggable",
-      overlap: 0.5,
-      ondrop: (event) => this.onTopicDrop(event),
-      ondragenter: (event) => this.onDragEnter(event),
-      ondragleave: (event) => this.onDragLeave(event),
+      overlap: 0.4,
+      ondrop: (event: DropEvent) => this.onTopicDrop(event),
+      ondragenter: (event: DropEvent) => this.onDragEnter(event),
+      ondragleave: (event: DropEvent) => this.onDragLeave(event),
     });
   }
 
   public ngOnDestroy() {
     this._subscriptions.unsubscribe();
 
-    const interactHandler = <any>interact;
-
-    interactHandler(".draggable").unset();
-    interactHandler(".dropable").unset();
+    interact(".draggable").unset();
+    interact(".dropable").unset();
   }
 
   public navigateToOverview() {
@@ -123,7 +122,7 @@ export class SessionComponent implements OnInit, OnDestroy {
     ]);
   }
 
-  public showModal($event, name: string, parameter) {
+  public showModal($event: any, name: string, parameter: any) {
     $event.stopPropagation();
 
     this.modalShown[name] = parameter;
@@ -133,8 +132,7 @@ export class SessionComponent implements OnInit, OnDestroy {
   public hideModal(name: string) {
     this.modalShown[name] = false;
 
-    this._topics = null;
-    this.changeDetectorRef.detectChanges();
+    this.refreshTopics();
   }
 
   public getOpenModal() {
@@ -176,16 +174,14 @@ export class SessionComponent implements OnInit, OnDestroy {
     }
   }
 
-  private hasModalParent(element: Element) {
+  private hasModalParent(element: Element): boolean {
     if (element.classList.contains("modal")) {
       return true;
     }
 
-    // ignore the ng-select dropdown panel which is appended to the body
-    if (
-      element.classList.contains("ng-dropdown-panel") ||
-      element.classList.contains("ng-value")
-    ) {
+    const isDropdownPanel = element.classList.contains("ng-dropdown-panel") || element.classList.contains("ng-value");
+    if (isDropdownPanel) {
+      // ignore the ng-select dropdown panel which is appended to the body
       return true;
     }
 
@@ -196,18 +192,66 @@ export class SessionComponent implements OnInit, OnDestroy {
     return this.hasModalParent(element.parentElement);
   }
 
-  private onTopicMoveStart(event) {
+  private onTopicMoveStart(event: InteractEvent<'drag', 'start'>) {
+    const topic = this.getTopicByElement(event.target);
+    if (topic == null) {
+      return;
+    }
+
     event.target.style.width = "150px";
     event.target.style.height = "80px";
 
-    event.target.parentElement.style.zIndex = 9999;
-    event.target.parentElement.style.position = "absolute";
-    event.target.parentElement.style.width = "100%";
-    event.target.parentElement.style.height = "100%";
-    event.target.parentElement.style.top = event.pageY - 80 + "px";
-    event.target.parentElement.style.left = event.pageX - 150 + "px";
+    if (event.target.parentElement != null) {
+      event.target.parentElement.style.zIndex = "9999";
+      event.target.parentElement.style.position = "absolute";
+      event.target.parentElement.style.width = "100%";
+      event.target.parentElement.style.height = "100%";
+      event.target.parentElement.style.top = event.pageY - 80 + "px";
+      event.target.parentElement.style.left = event.pageX - 150 + "px";
+    }
 
-    const topic = this.getTopicByElement(event.target);
+    this.markSuitableTopicSpaces(topic);
+
+    this.pauseEvent(event);
+  }
+
+  private onTopicMove(event: InteractEvent<'drag', 'move'>) {
+    const target = event.target,
+      x = (parseFloat(target.getAttribute("data-x") ?? "0")) + event.dx,
+      y = (parseFloat(target.getAttribute("data-y") ?? "0")) + event.dy;
+
+    target.style.transform = "translate(" + x + "px, " + y + "px)";
+
+    target.setAttribute("data-x", x.toString());
+    target.setAttribute("data-y", y.toString());
+
+    this.pauseEvent(event);
+  }
+
+  private async onTopicMoveEnd(event: InteractEvent<'drag', 'end'>) {
+    const isNotDropable = event.relatedTarget == null || !event.relatedTarget.classList.contains("dropable");
+    if (isNotDropable) {
+      event.target.classList.remove("drop-target");
+      event.target.dataset.x = event.target.dataset.y = event.target.style.transform = "";
+
+      event.target.setAttribute("style", "");
+
+      if (event.target.parentElement != null) {
+        event.target.parentElement.setAttribute("style", "");
+      }
+
+      this.refreshTopics();
+    }
+
+    document
+      .querySelectorAll(".topic-space")
+      .forEach((t) => t.classList.remove("suitable-topic-space", "dropable"));
+  }
+
+  private markSuitableTopicSpaces(topic: Topic) {
+    const slotsOfTopicsWithSameOwner =
+      this.sessionService.currentSession.topics.filter((t: Topic) => topic.owner != null && t.id !== topic.id && t.owner === topic.owner)
+        .reduce((a: Slot[], topic: Topic) => [...a, ...this.sessionService.getSlotsOfTopic(this.slots, topic)], []);
 
     const topicSpaces = document.querySelectorAll(".topic-space");
     for (let i = 0; i < topicSpaces.length; i++) {
@@ -220,157 +264,207 @@ export class SessionComponent implements OnInit, OnDestroy {
         (s) => s.id == topicSpace.dataset.slotId
       );
 
+      if (room == null || slot == null) {
+        continue;
+      }
+
       let suitableSpace = true;
-      suitableSpace = suitableSpace && topicSpace.children.length == 0;
-      suitableSpace =
-        suitableSpace && room.seats >= topic.attendees.length;
-      suitableSpace =
-        suitableSpace &&
-        this.session.topics.filter((t) => t.slotId == slot.id).every(
-          (t) =>
-            t.id == topic.id ||
-            t.owner == null ||
-            t.owner != topic.owner
-        );
-      suitableSpace =
-        suitableSpace &&
-        topic.demands.every(
-          (d) => room.capabilities.findIndex((c) => c == d) >= 0
-        );
+      let dropable = true;
+
+      // has space (not blocked by another topic)
+      const topicsInRoom = [...this.getTopicsInRoom(room.id)];
+      const slotIndex = this.slots.indexOf(slot);
+
+      for (let index = slotIndex; index <= slotIndex + topic.slots - 1 && index < this.slots.length; index++) {
+        const nextSlot = this.slots[index];
+        const topicInRoom = topicsInRoom[index];
+        if (topicInRoom != null && topicInRoom.id !== topic.id) {
+          suitableSpace = false;
+        }
+
+        const hasTopicsWithSameOwnerInSlot = slotsOfTopicsWithSameOwner.findIndex((s: Slot) => s.id === nextSlot.id) >= 0;
+        if (hasTopicsWithSameOwnerInSlot) {
+          suitableSpace = false;
+        }
+      }
+
+      const roomMatchesSeats = room.seats != null && room.seats >= topic.attendees.length;
+      if (!roomMatchesSeats) {
+        suitableSpace = false;
+      }
+
+      // room has all capabilities of the topic's demands
+      const roomMatchesDemands = topic.demands.every((d: string) => room.capabilities.findIndex((c) => c == d) >= 0);
+      if (!roomMatchesDemands) {
+        suitableSpace = false;
+      }
+
+      // has enough slots afterwards
+      const hasEnoughSlotsAfterwards = this.slots.length - slotIndex >= topic.slots;
+      if (!hasEnoughSlotsAfterwards) {
+        dropable = false;
+        suitableSpace = false;
+      }
+
+      // is the slot planable
+      if (!slot.isPlanable) {
+        dropable = suitableSpace = false;
+      }
 
       if (room.id == topic.roomId && slot.id == topic.slotId) {
         // dropping the topic on the same space as it is now is suitable
-        suitableSpace = true;
+        dropable = true;
       }
 
       if (suitableSpace) {
         topicSpace.classList.add("suitable-topic-space");
       }
+
+      if (dropable) {
+        topicSpace.classList.add("dropable");
+      }
     }
-
-    this.pauseEvent(event);
   }
 
-  private async onTopicMoveEnd(event) {
-    if (
-      event.relatedTarget == null ||
-      !event.relatedTarget.classList.contains("dropable")
-    ) {
-      await this.updateTarget(
-        document.querySelector(".topics-unassigned"),
-        event.target
-      );
+  private *getTopicsInRoom(roomId: string) {
+    const topics = this.session.topics
+      .filter(topic => topic.roomId === roomId);
 
-      this._topics = null;
-      this.changeDetectorRef.detectChanges();
-    }
+    let previousTopic: Topic | null = null;
+    let previousTopicSpan = 0;
 
-    document
-      .querySelectorAll(".topic-space")
-      .forEach((t) => t.classList.remove("suitable-topic-space"));
-  }
-
-  private onTopicMove(event) {
-    const target = event.target,
-      x = (parseFloat(target.getAttribute("data-x")) || 0) + event.dx,
-      y = (parseFloat(target.getAttribute("data-y")) || 0) + event.dy;
-
-    target.style.webkitTransform = target.style.transform =
-      "translate(" + x + "px, " + y + "px)";
-
-    target.setAttribute("data-x", x);
-    target.setAttribute("data-y", y);
-
-    this.pauseEvent(event);
-  }
-
-  private async onTopicDrop(event) {
-    const isSwappingTopics =
-      event.target.children.length > 0 &&
-      event.target.children[0] !== event.relatedTarget.parentElement &&
-      !event.target.classList.contains("topics-unassigned");
-
-    if (isSwappingTopics) {
-      const currentTopicElement = event.target.children[0].children[0];
-      const relatedTargetParent =
-        event.relatedTarget.parentElement.parentElement;
-
-      if (currentTopicElement === event.relatedTarget) {
-        this.resetTarget(event.relatedTarget);
-        return;
+    for (const slot of this.slots) {
+      if (previousTopicSpan > 0) {
+        // if a previous topic spans multiple slots into this, we just return the previous topic
+        yield previousTopic;
+        previousTopicSpan--;
+        continue;
       }
 
-      relatedTargetParent.append(currentTopicElement);
-      await this.updateTopicByElement(
-        relatedTargetParent,
-        currentTopicElement
-      );
-      currentTopicElement.remove();
+      const topic = topics.find(topic => topic.slotId === slot.id);
+      yield topic;
+
+      if (topic != null && topic.slots > 1) {
+        // if the topic spans multiple slots, we just return it in the next slots too
+        previousTopicSpan = topic.slots - 1;
+        previousTopic = topic;
+      }
+    }
+  }
+
+  private async onTopicDrop(event: DropEvent) {
+    const sourceTopicElement = event.relatedTarget as HTMLElement;
+    const sourceContainerElement = (sourceTopicElement.closest('.topic-space') ?? sourceTopicElement.closest('.topics-unassigned')) as HTMLElement;
+
+    if (sourceContainerElement == null) {
+      return;
     }
 
-    await this.updateTarget(event.target, event.relatedTarget);
-    event.target.classList.remove("drop-target");
+    const targetContainerElement = event.target as HTMLElement;
+    const targetTopicElement = targetContainerElement.querySelector('.topic') as HTMLElement;
 
-    this._topics = null;
-    this.changeDetectorRef.detectChanges();
+    targetContainerElement.classList.remove("drop-target");
+
+    const isUnassigningTopic = targetContainerElement.classList.contains("topics-unassigned");
+
+    const sourceTopic = this.getTopicByElement(sourceTopicElement);
+    if (sourceTopic == null) {
+      return;
+    }
+
+    const sourceCell = {
+      roomId: this.getElementRoomId(sourceContainerElement, sourceTopicElement),
+      slotId: this.getElementSlotId(sourceContainerElement, sourceTopicElement)
+    };
+
+    const targetCell = {
+      roomId: this.getElementRoomId(targetContainerElement, targetTopicElement),
+      slotId: this.getElementSlotId(targetContainerElement, targetTopicElement)
+    };
+
+    const targetTopic = this.getTopicByElement(targetTopicElement);
+
+    const isSwappingTopics = targetTopic != null
+      && sourceTopic != targetTopic
+      && !isUnassigningTopic;
+
+    if (isSwappingTopics) {
+      sourceContainerElement.append(targetTopicElement);
+      await this.updateTopic(targetTopic, sourceCell.roomId, sourceCell.slotId);
+    }
+
+    await this.updateTopic(sourceTopic, targetCell.roomId, targetCell.slotId);
+
+    this.refreshTopics();
   }
 
-  private onDragEnter(event) {
-    event.target.classList.add("drop-target");
-  }
-
-  private onDragLeave(event) {
-    event.target.classList.remove("drop-target");
-  }
-
-  private async updateTarget(container, target) {
-    container.appendChild(target);
-    await this.updateTopicByElement(container, target);
-    target.remove();
-
-    this.resetTarget(target);
-  }
-
-  private resetTarget(target) {
-    target.style.webkitTransform = target.style.transform = "";
-
-    target.setAttribute("data-x", 0);
-    target.setAttribute("data-y", 0);
-  }
-
-  private async updateTopicByElement(container, element: Element) {
-    const topic = this.getTopicByElement(element);
-    topic.roomId = this.getElementRoom(container, element);
-    topic.slotId = this.getElementSlot(element);
-
+  private async updateTopic(topic: Topic, roomId: string | null, slotId: string | null) {
+    topic.roomId = roomId;
+    topic.slotId = slotId;
     await this.sessionService.updateTopic(topic);
   }
 
-  private getTopicByElement(element: Element): Topic {
-    const id = element.getAttribute("id");
-    return this.session.topics.find(topic => topic.id === id);
+  private onDragEnter(event: DropEvent) {
+    event.target.classList.add("drop-target");
   }
 
-  private getElementSlot(element: Element) {
+  private onDragLeave(event: DropEvent) {
+    event.target.classList.remove("drop-target");
+  }
+
+  private getTopicByElement(element: Element | null) {
+    if (element == null) {
+      return null;
+    }
+
+    const id = element.getAttribute("id");
+    const topic = this.session.topics.find(topic => topic.id === id);
+    return topic == null ? null : Object.assign({}, topic);
+  }
+
+  private getElementSlotId(container: HTMLElement, element: HTMLElement): string | null {
     try {
-      const parent = element.parentElement.parentElement;
+      if (container != null && container.dataset.slotId != null) {
+        return container.dataset.slotId;
+      }
+
+      if (element.parentElement == null) {
+        return null;
+      }
+
+      const parent = element.parentElement?.parentElement;
+      if (parent == null) {
+        return null;
+      }
+
       return parent.getAttribute("id");
     } catch {
       return null;
     }
   }
 
-  private getElementRoom(container: HTMLElement, element: Element) {
+  private getElementRoomId(container: HTMLElement, element: HTMLElement): string | null {
     try {
       if (container != null && container.dataset.roomId != null) {
         return container.dataset.roomId;
       }
 
+      if (element.parentElement == null) {
+        return null;
+      }
+
       const parent = element.parentElement.parentElement;
-      const index = (parent.children as unknown as any[]).indexOf(element.parentElement);
-      return document
-        .querySelector(".session-table thead tr")
-        .children[index].getAttribute("id");
+      if (parent == null) {
+        return null;
+      }
+
+      const index = (parent.children as unknown as HTMLElement[]).indexOf(element.parentElement);
+      var headerRow = document.querySelector(".session-table thead tr");
+      if (headerRow == null) {
+        return null;
+      }
+
+      return headerRow.children[index].getAttribute("id");
     } catch {
       return null;
     }
@@ -380,15 +474,15 @@ export class SessionComponent implements OnInit, OnDestroy {
     return this.session.topics.filter(topic => topic.slotId === slotId && topic.roomId === roomId);
   }
 
-  public get topics() {
+  public get topics(): TopicLookup {
     if (this._topics != null) {
       return this._topics;
     }
 
-    const topics = {};
+    const topics: TopicLookup = {};
 
     for (const slot of this.slots) {
-      topics[slot.id] = this.rooms.map((room) => {
+      const slotTopics = this.rooms.map((room) => {
         let topic = this.session.topics.find(
           (t) => t.slotId === slot.id && t.roomId === room.id
         );
@@ -398,7 +492,7 @@ export class SessionComponent implements OnInit, OnDestroy {
             slotId: slot.id,
             roomId: room.id,
             slots: 1,
-          } as any;
+          } as Topic;
         }
 
         if (this.previousTopicOverlaps(slot.id, room.id)) {
@@ -407,6 +501,8 @@ export class SessionComponent implements OnInit, OnDestroy {
 
         return topic;
       });
+
+      topics[slot.id] = slotTopics;
     }
 
     this._topics = topics;
@@ -432,17 +528,27 @@ export class SessionComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  public toggleFloatingActionButton($event) {
-    $event.stopPropagation();
-    this.floatingActionButton.nativeElement.expanded =
-      !this.floatingActionButton.nativeElement.expanded;
+  public toggleFloatingActionButton(event: Event) {
+    event.stopPropagation();
+
+    this.floatingActionButton.nativeElement.expanded = !this.floatingActionButton.nativeElement.expanded;
   }
 
-  private pauseEvent(e) {
-    if (e.stopPropagation) e.stopPropagation();
-    if (e.preventDefault) e.preventDefault();
-    e.cancelBubble = true;
-    e.returnValue = false;
+  private pauseEvent(event: InteractEvent<'drag', 'start'>) {
+    if (event.stopPropagation) {
+      event.stopPropagation();
+    }
+
+    if (event.preventDefault) {
+      event.preventDefault();
+    }
+
+    event.stopImmediatePropagation();
+
     return false;
+  }
+
+  private refreshTopics() {
+    this._topics = null;
   }
 }

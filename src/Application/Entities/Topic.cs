@@ -1,10 +1,10 @@
 namespace OpenSpace.Application.Entities;
 
 public record Topic(
-    string? Id,
+    string Id,
     string Name,
-    string Description,
-    string Owner,
+    string? Description,
+    string? Owner,
     string? RoomId,
     string? SlotId,
     ICollection<Attendance> Attendees,

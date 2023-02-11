@@ -14,7 +14,7 @@ After cloning the project:
 
 ```bash
 cd src/WebApi && dotnet restore
-cd src/Website && npm ci --legacy-peer-deps
+cd src/Website && npm ci
 ```
 
 1. Optional: Add Azure Storage Credentials (_otherwise the data will be saved in a local file_)  
@@ -24,10 +24,18 @@ cd src/Website && npm ci --legacy-peer-deps
 
 ### Debugging
 
-1. Run `cd src/Website && npm run watch` to build and run the frontend
-1. Run `cd src/WebApi && dotnet watch run` to build and run the backend (wait until the frontend is running)
-1. Open the website at http://localhost:4200/
-1. Open the API at http://localhost:8080/swagger/
+1. Run `cd src/Website && npm run start` to build and run the frontend
+1. Run `cd src/WebApi && dotnet watch run` to build and run the backend
+1. Open the website at <http://localhost:4200/>
+1. Open the API at <http://localhost:8080/swagger/>
+
+### Creating API in frontend
+
+The backend is exposing the API and models through OpenAPI. The frontend can automatically generate Angular services and TypeScript classes for those:
+
+```bash
+cd src/Website && npm run generate-openapi
+```
 
 ## Gitpod
 

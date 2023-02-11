@@ -1,13 +1,13 @@
-import { getRandomId } from '../shared/common';
+import { Attendance } from '../shared/services/api';
 
 export class SessionOptions {
-    public topicsAttending: { [id: number]: boolean };
-    public topicsRating: { [id: number]: ({ id: string, value: number}); };
-    public topicsFavorite: { [id: number]: boolean };
+  public topicsAttending: { [id: string]: Attendance };
+  public topicsRating: { [id: string]: ({ id: string, value: number }); };
+  public topicsFavorite: { [id: string]: boolean };
 
-    constructor() {
-        this.topicsAttending = {};
-        this.topicsRating = {};
-        this.topicsFavorite = {};
-    }
+  constructor() {
+    this.topicsAttending = {};
+    this.topicsRating = {};
+    this.topicsFavorite = {};
+  }
 }

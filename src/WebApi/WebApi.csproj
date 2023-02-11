@@ -14,10 +14,10 @@
     <PackageReference Include="Serilog.Enrichers.CorrelationId" />
     <PackageReference Include="Serilog.Sinks.ApplicationInsights" />
     <PackageReference Include="Serilog.Settings.Configuration" />
-    
+
     <PackageReference Include="Hellang.Middleware.ProblemDetails" />
-    
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>

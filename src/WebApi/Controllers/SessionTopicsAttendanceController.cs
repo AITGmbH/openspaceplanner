@@ -20,7 +20,7 @@ public class SessionTopicsAttendanceController : Controller
     }
 
     [HttpDelete("{attendanceId}")]
-    public async Task Delete(int sessionId, string topicId, string attendanceId)
+    public async Task DeleteTopicAttendanceAsync(int sessionId, string topicId, string attendanceId)
         => await _sessionRepository.Update(sessionId, (session) =>
         {
             var currentTopic = session.Topics.FirstOrDefault(t => t.Id == topicId) ?? throw new EntityNotFoundException("Topic not found");
@@ -39,7 +39,7 @@ public class SessionTopicsAttendanceController : Controller
         });
 
     [HttpPost]
-    public async Task<Attendance[]> Post(int sessionId, string topicId, [FromBody] Attendance[] attendances)
+    public async Task<Attendance[]> AddTopicAttendanceAsync(int sessionId, string topicId, [FromBody] Attendance[] attendances)
     {
         await _sessionRepository.Update(sessionId, (session) =>
         {
@@ -65,7 +65,7 @@ public class SessionTopicsAttendanceController : Controller
     }
 
     [HttpPut("{attendanceId}")]
-    public async Task<Attendance> Put(int sessionId, string topicId, string attendanceId, [FromBody] Attendance attendance)
+    public async Task<Attendance> UpdateTopicAttendanceAsync(int sessionId, string topicId, string attendanceId, [FromBody] Attendance attendance)
     {
         await _sessionRepository.Update(sessionId, (session) =>
         {

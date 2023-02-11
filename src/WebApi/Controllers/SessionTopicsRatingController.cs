@@ -20,7 +20,7 @@ public class SessionTopicsRatingController : Controller
     }
 
     [HttpDelete("{ratingId}")]
-    public async Task Delete(int sessionId, string topicId, string ratingId)
+    public async Task DeleteTopicRatingAsync(int sessionId, string topicId, string ratingId)
         => await _sessionRepository.Update(sessionId, (session) =>
         {
             var currentTopic = session.Topics.FirstOrDefault(t => t.Id == topicId) ?? throw new EntityNotFoundException("Topic not found");
@@ -31,8 +31,10 @@ public class SessionTopicsRatingController : Controller
         });
 
     [HttpPost]
-    public async Task<Rating> Post(int sessionId, string topicId, [FromBody] Rating rating)
+    public async Task<Rating> AddTopicRatingAsync(int sessionId, string topicId, [FromBody] Rating rating)
     {
+        rating = rating with { Id = Guid.NewGuid().ToString() };
+
         await _sessionRepository.Update(sessionId, (session) =>
         {
             var currentTopic = session.Topics.FirstOrDefault(t => t.Id == topicId) ?? throw new EntityNotFoundException("Topic not found");
@@ -45,7 +47,7 @@ public class SessionTopicsRatingController : Controller
     }
 
     [HttpPut("{ratingId}")]
-    public async Task<Rating> Put(int sessionId, string topicId, string ratingId, [FromBody] Rating rating)
+    public async Task<Rating> UpdateTopicRatingAsync(int sessionId, string topicId, string ratingId, [FromBody] Rating rating)
     {
         await _sessionRepository.Update(sessionId, (session) =>
         {

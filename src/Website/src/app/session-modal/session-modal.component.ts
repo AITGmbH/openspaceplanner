@@ -5,24 +5,22 @@ import { Router } from "@angular/router";
 import { NgSelectComponent } from "@ng-select/ng-select";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
-import { Session } from "../models/session";
 import { SessionService } from "../session/session.service";
+import { Session, Topic } from '../shared/services/api';
 
 @Component({
   selector: "app-session-modal",
   templateUrl: "./session-modal.component.html",
 })
 export class SessionModalComponent implements OnInit {
-  private _item: Session;
+  private _item: Session = {} as Session;
 
-  public selectedSession: Session;
-
+  public selectedSession: Session = {} as Session;
   public selectedTab: string = "session";
-
-  public sessions$: Observable<Session[]>;
+  public sessions$!: Observable<Session[]>;
 
   @ViewChild("sessionsElement")
-  public sessionsElement: NgSelectComponent;
+  public sessionsElement!: NgSelectComponent;
 
   @Output()
   public close = new EventEmitter();
@@ -32,7 +30,7 @@ export class SessionModalComponent implements OnInit {
 
   @Input()
   public get item() {
-    return this._item || new Session();
+    return this._item;
   }
 
   public set item(value) {
@@ -117,7 +115,7 @@ export class SessionModalComponent implements OnInit {
     if (confirm("Do you really want to delete all rooms?")) {
       this.sessionService.currentSession.rooms = [];
 
-      this.sessionService.currentSession.topics = this.sessionService.currentSession.topics.map(topic => ({
+      this.sessionService.currentSession.topics = this.sessionService.currentSession.topics.map((topic: Topic) => ({
         ...topic,
         slotId: null,
         roomId: null
@@ -131,7 +129,7 @@ export class SessionModalComponent implements OnInit {
     if (confirm("Do you really want to delete all slots?")) {
       this.sessionService.currentSession.slots = [];
 
-      this.sessionService.currentSession.topics = this.sessionService.currentSession.topics.map(topic => ({
+      this.sessionService.currentSession.topics = this.sessionService.currentSession.topics.map((topic: Topic) => ({
         ...topic,
         slotId: null,
         roomId: null
@@ -155,8 +153,6 @@ export class SessionModalComponent implements OnInit {
 
   public async delete() {
     await this.sessionService.delete(this.item.id);
-    this.sessionService.currentSession = null;
-
     this.router.navigate(["/"]);
   }
 }

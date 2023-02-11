@@ -6,5 +6,6 @@
                 "singleQuote": true
             }
         }
-    ]
+    ],
+    "printWidth": 240
 }
