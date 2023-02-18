@@ -20,11 +20,8 @@ public class SessionRepository : SessionRepositoryBase
         var blobClient = storageAccount.CreateCloudBlobClient();
         _container = blobClient.GetContainerReference(configuration.ContainerName);
 
-        if (Sessions == null)
-        {
-            var blockBlob = _container.GetBlockBlobReference("sessions");
-            LoadSessions(blockBlob.DownloadTextAsync().Result);
-        }
+        var blockBlob = _container.GetBlockBlobReference("sessions");
+        LoadSessions(blockBlob.DownloadTextAsync().Result);
     }
 
     protected override void Save()
