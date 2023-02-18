@@ -2,6 +2,7 @@
   <div class="topic-indicators">
     <span class="fa fa-comments" *ngIf="hasComments"></span>
     <a (click)="favorite()"><i class="fa fa-heart" *ngIf="isFavorite"></i></a>
+    <span class="topic-slots" *ngIf="topic.slots > 1">{{ topic.slots }}</span>
   </div>
 
   <div class="content topic-content" #content>
@@ -17,11 +18,9 @@
       <div class="topic-owner">
         <small>{{ topic.owner }}</small>
       </div>
-
-      <div class="topic-slots" *ngIf="topic.slots > 1">{{ topic.slots }}</div>
     </div>
 
-    <p class="topic-description" [hidden]="!description.dataset.expanded" #description>
+    <p class="topic-description" [hidden]="!description.dataset.expanded || description.dataset.expanded == 'false'" #description>
       <i *ngIf="!topic.description">no description</i>
       {{ topic.description }}
     </p>
@@ -102,6 +101,10 @@
       <div class="topic-additional-information" *ngIf="slot != null">
         <span class="fa fa-clock-o"></span>
         <span>{{ slot.name }} {{ slot.time != null ? "(" + slot.time + ")" : "" }}</span>
+
+        <div style="display: block" *ngIf="slotEnd != null">
+          <span style="margin-left: 0.8rem">{{ slotEnd.name }} {{ slotEnd.time != null ? "(" + slotEnd.time + ")" : "" }}</span>
+        </div>
       </div>
 
       <div class="topic-additional-information" *ngIf="room != null">
@@ -113,10 +116,10 @@
 
   <div class="topic-buttons">
     <p class="topic-description-expander">
-      <a (click)="expandDescription(content, description)" *ngIf="!description.dataset.expanded">
+      <a (click)="expandDescription(content, description)" *ngIf="!description.dataset.expanded || description.dataset.expanded == 'false'">
         <i class="fa fa-expand"></i>
       </a>
-      <a (click)="collapseDescription(content, description)" *ngIf="description.dataset.expanded">
+      <a (click)="collapseDescription(content, description)" *ngIf="description.dataset.expanded == 'true'">
         <i class="fa fa-compress"></i>
       </a>
     </p>

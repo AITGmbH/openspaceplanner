@@ -2,7 +2,6 @@ using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
 using Newtonsoft.Json;
 using OpenSpace.Application.Configurations;
-using OpenSpace.Application.Entities;
 
 namespace OpenSpace.Application.Repositories;
 
@@ -24,7 +23,7 @@ public class SessionRepository : SessionRepositoryBase
         if (Sessions == null)
         {
             var blockBlob = _container.GetBlockBlobReference("sessions");
-            Sessions = new List<Session>(JsonConvert.DeserializeObject<Session[]>(blockBlob.DownloadTextAsync().Result));
+            LoadSessions(blockBlob.DownloadTextAsync().Result);
         }
     }
 

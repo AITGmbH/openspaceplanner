@@ -92,6 +92,20 @@ export class SessionTopicBoxComponent implements OnInit {
     return this.session.slots.find((slot: Slot) => slot.id === this.topic.slotId);
   }
 
+  public get slotEnd() {
+    if (this.session == null) {
+      return null;
+    }
+
+    if (this.topic.slots <= 1) {
+      return null;
+    }
+
+    const slots = this.sessionService.getSortedSlots(this.session.slots);
+    const slotIndex = slots.findIndex((slot: Slot) => slot.id === this.topic.slotId);
+    return slots[slotIndex + this.topic.slots - 1];
+  }
+
   public get room() {
     if (this.session == null) {
       return null;
@@ -119,8 +133,7 @@ export class SessionTopicBoxComponent implements OnInit {
   }
 
   public favorite() {
-    this.sessionService.sessionOptions.topicsFavorite[this.topic.id] =
-      !this.isFavorite;
+    this.sessionService.sessionOptions.topicsFavorite[this.topic.id] = !this.isFavorite;
     this.sessionService.saveSessionOptions();
   }
 

@@ -10,7 +10,7 @@ import { Attendance, Feedback, Rating, Room, Session, Slot, Topic } from '../sha
 @Injectable()
 export class SessionService {
   private _hubConnection?: HubConnection;
-  private _sessionOptions: SessionOptions = new SessionOptions();
+  private _sessionOptions: SessionOptions | null = null;
 
   public sessionDeleted = new Subject();
   public sessionChanged = new Subject();

@@ -40,6 +40,7 @@ public class SessionRoomsController : Controller
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = string.IsNullOrWhiteSpace(room.Name) ? "Room " + (session.Rooms.Count + 1) : room.Name,
+                Seats = room.Seats ?? 0,
             };
 
             session.Rooms.Add(room);

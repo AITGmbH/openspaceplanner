@@ -9,7 +9,6 @@
 .topic-indicators {
   position: relative;
   top: -20px;
-  right: -15px;
   float: right;
 }
 
@@ -34,8 +33,6 @@
 
 .topic-slots {
   position: absolute;
-  right: -1rem;
-  top: -1rem;
   background-color: #485fc7;
   color: white;
   font-size: 0.7rem;

@@ -14,7 +14,7 @@ export class SessionOverviewComponent implements OnInit {
   constructor(private sessionService: SessionService, private router: Router, private route: ActivatedRoute) { }
 
   public get slots(): Slot[] {
-    if (this.sessionService.currentSession == null) {
+    if (this.sessionService.currentSession?.slots == null) {
       return [];
     }
 
