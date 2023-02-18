@@ -1,0 +1,19 @@
+<div class="modal" [class.is-active]="isShown" (keyup)="keyup($event)" tabindex="0">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title">{{ title }}</p>
+      <button class="delete" aria-label="close" (click)="closeInternal()"></button>
+    </header>
+
+    <section class="modal-card-body">
+      <ng-content></ng-content>
+    </section>
+
+    <footer class="modal-card-foot buttons is-right">
+      <button id="save" class="button is-success" (click)="saveInternal()">Save changes</button>
+      <button id="delete" *ngIf="showDeleteButton" class="button is-danger" (click)="deleteInternal()">Delete</button>
+      <button id="close" class="button" (click)="closeInternal()">Cancel</button>
+    </footer>
+  </div>
+</div>

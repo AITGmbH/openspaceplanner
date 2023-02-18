@@ -1,0 +1,67 @@
+<app-modal-dialog title="Session" (save)="save()" (close)="onClose()" (delete)="delete()" [showDeleteButton]="true" [isShown]="isShown">
+  <div class="tabs" *ngIf="item.id != null">
+    <ul>
+      <li [class.is-active]="selectedTab === 'session'" (click)="selectTab('session')">
+        <a>Session</a>
+      </li>
+      <li [class.is-active]="selectedTab === 'imports'" (click)="selectTab('imports')">
+        <a>Imports</a>
+      </li>
+    </ul>
+  </div>
+
+  <div *ngIf="selectedTab === 'session'">
+    <div class="field">
+      <label class="label">Name</label>
+      <div class="control">
+        <input class="input" type="text" placeholder="Name" id="name" [(ngModel)]="item.name" />
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="control">
+        <label class="checkbox"> <input type="checkbox" [(ngModel)]="item.freeForAll" /> Free for all (unlimited attendance and votes) </label>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="control">
+        <label class="checkbox"> <input type="checkbox" [(ngModel)]="item.votingEnabled" /> Enable voting </label>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="control">
+        <label class="checkbox"> <input type="checkbox" [(ngModel)]="item.attendanceEnabled" /> Enable attendance </label>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="control">
+        <label class="checkbox"> <input type="checkbox" [(ngModel)]="item.teamsAnnouncementsEnabled" /> Enable Microsoft Teams announcements </label>
+      </div>
+    </div>
+
+    <div class="modal-buttons">
+      <button class="button is-danger" (click)="deleteRooms()">Delete rooms</button>
+      <button class="button is-danger" (click)="deleteSlots()">Delete slots</button>
+      <button class="button is-danger" (click)="resetRatings()">Reset ratings</button>
+      <button class="button is-danger" (click)="resetAttendance()">Reset attendance</button>
+    </div>
+  </div>
+
+  <div *ngIf="selectedTab === 'imports'">
+    <div class="field">
+      <label class="label">Session</label>
+      <div class="control">
+        <ng-select [items]="sessions$ | async" [(ngModel)]="selectedSession" bindLabel="name" appendTo="body" #sessionsElement></ng-select>
+      </div>
+    </div>
+
+    <div class="modal-buttons">
+      <button class="button is-danger" (click)="importAll()" [disabled]="selectedSession == null">Import all</button>
+      <button class="button is-danger" (click)="importRooms()" [disabled]="selectedSession == null">Import rooms</button>
+      <button class="button is-danger" (click)="importSlots()" [disabled]="selectedSession == null">Import slots</button>
+    </div>
+  </div>
+</app-modal-dialog>

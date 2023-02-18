@@ -3,22 +3,22 @@ image: gitpod/workspace-dotnet
 tasks:
     - name: Frontend
       init: |
-          cd Web
+          cd src/Website
           npm ci --legacy-peer-deps
           npm run build:dev
           gp sync-done frontend
       command: |
+          gp url 5000
           npm run watch
 
     - name: Backend
       init: |
-          dotnet tool restore
-          dotnet paket restore
-          cd Web
+          dotnet restore
+          cd src/WebApi
           dotnet build
           gp sync-await frontend
       command: |
-          gp url 5000
+          gp url 6000
           sleep 60
           dotnet watch run
       openMode: split-right

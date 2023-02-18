@@ -1,0 +1,11 @@
+{
+    "overrides": [
+        {
+            "files": "eng/**/*.yml",
+            "options": {
+                "singleQuote": true
+            }
+        }
+    ],
+    "printWidth": 240
+}

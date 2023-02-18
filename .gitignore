@@ -292,3 +292,6 @@ dist
 wwwroot
 
 .angular
+
+junit.xml
+coverage/

@@ -1,0 +1,96 @@
+.table-cell:first-child {
+  width: 180px;
+}
+
+.table-row {
+  width: 100%;
+}
+
+tbody .table-row {
+  height: 150px;
+}
+
+.session-table {
+  margin-top: 20px;
+  table-layout: fixed;
+}
+
+.session-table td,
+.session-table th {
+  border-width: 0 1px 1px 0;
+}
+
+.topics-unassigned {
+  height: 150px;
+}
+
+.is-floating-action {
+  border-radius: 50%;
+  width: 52px;
+  height: 52px;
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5), 3px 3px 3px rgba(0, 0, 0, 0.25);
+}
+
+.is-floating-button-submenu {
+  position: fixed;
+  bottom: 70px;
+  right: 15px;
+  color: #000;
+}
+
+.is-floating-button {
+  border-radius: 50%;
+  width: 52px;
+  height: 52px;
+  box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.5), 3px 3px 3px rgba(0, 0, 0, 0.25);
+  margin-bottom: 20px;
+}
+
+.is-floating-action,
+.is-floating-button-submenu>.fa {
+  font-size: 16px;
+}
+
+.is-floating-button-submenu li {
+  background-color: #209cee;
+  border-radius: 50%;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 20px;
+  color: #fff;
+  text-align: center;
+}
+
+.is-floating-button-submenu li .fa {
+  position: relative;
+  text-align: center;
+  width: 100%;
+}
+
+.is-floating-button-submenu li div {
+  position: relative;
+  left: -330px;
+  color: #000;
+  text-align: right;
+  width: 300px;
+  top: -110%;
+}
+
+h1 .edit-button {
+  margin-left: 10px;
+}
+
+.title {
+  float: left;
+}
+
+.calendar-button {
+  float: right;
+}
+
+.slot-not-planable {
+  background-color: #ffe6ce;
+}

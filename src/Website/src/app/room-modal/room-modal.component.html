@@ -1,0 +1,20 @@
+<app-modal-dialog title="Room" (save)="save()" (close)="onClose()" (delete)="delete()" [showDeleteButton]="item.id != null" [isShown]="isShown">
+  <div class="field">
+    <label class="label">Name</label>
+    <div class="control">
+      <input class="input" type="text" placeholder="Name" id="name" [(ngModel)]="item.name" />
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Seats</label>
+    <div class="control">
+      <input class="input" type="number" min="1" placeholder="Seats" id="seats" [(ngModel)]="item.seats" />
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Capabilities</label>
+    <div class="control">
+      <ng-select [items]="capabilities" [(ngModel)]="item.capabilities" [addTag]="true" [hideSelected]="true" [multiple]="true" appendTo="body" #capabilitiesElement> </ng-select>
+    </div>
+  </div>
+</app-modal-dialog>

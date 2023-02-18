@@ -1,0 +1,45 @@
+stages:
+  - stage: Build
+    jobs:
+      - job: Build
+        steps:
+          - task: UseDotNet@2
+            displayName: Download dotnet sdk
+            inputs:
+              packageType: sdk
+              useGlobalJson: true
+
+          - script: npm ci
+            displayName: Restore frontend packages
+            workingDirectory: src/Website
+
+          - task: DotNetCoreCLI@2
+            displayName: Restore backend packages
+            inputs:
+              command: restore
+              projects: src/OpenSpace.sln
+
+          - task: DotNetCoreCLI@2
+            displayName: Build backend
+            inputs:
+              command: build
+              arguments: -c Release --no-restore
+              projects: src/OpenSpace.sln
+
+          - task: DotNetCoreCLI@2
+            displayName: Publish solution
+            inputs:
+              command: publish
+              modifyOutputPath: false
+              zipAfterPublish: false
+              publishWebProjects: false
+              arguments: --configuration Release --output $(Build.ArtifactStagingDirectory) --no-build
+              workingDirectory: src/WebApi
+
+          - script: npm run build -- --output-path $(Build.ArtifactStagingDirectory)/wwwroot
+            displayName: Build frontend
+            workingDirectory: src/Website
+
+          - publish: $(Build.ArtifactStagingDirectory)
+            displayName: Publish pipeline artifact
+            artifact: WebApp

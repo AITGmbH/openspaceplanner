@@ -1,0 +1,24 @@
+<app-modal-dialog title="Slot" (save)="save()" (close)="onClose()" (delete)="delete()" [showDeleteButton]="item.id != null"
+  [isShown]="isShown">
+  <div class="field">
+    <label class="label">Name</label>
+    <div class="control">
+      <input class="input" type="text" placeholder="Slot name" id="slotName" [(ngModel)]="item.name" />
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Time</label>
+    <div class="control">
+      <input class="input" type="text" placeholder="Time" id="time" [(ngModel)]="item.time" />
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Can topics be planned in this slot?</label>
+    <label class="checkbox">
+      <input type="checkbox" id="isPlanable" [(ngModel)]="item.isPlanable">
+      Planable
+    </label>
+  </div>
+</app-modal-dialog>

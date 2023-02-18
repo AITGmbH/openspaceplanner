@@ -1,0 +1,9 @@
+<h2>{{ session.name }}</h2>
+
+<div class="session-overview">
+  <div class="slot" *ngFor="let slot of slots">
+    <h3 class="slot-title">{{ slot.name }} {{ slot.time != null ? "(" + slot.time + ")" : "" }}</h3>
+
+    <app-session-topic-box *ngFor="let topic of getTopics(slot.id)" [enableDrag]="false" [showAdditionalInformation]="true" [topic]="topic"> </app-session-topic-box>
+  </div>
+</div>

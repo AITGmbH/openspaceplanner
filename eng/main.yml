@@ -1,0 +1,70 @@
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  azureSubscription: 'Azure - MS Azure Sponsorship'
+  resourceGroup: 'Web.WestEurope'
+  appName: 'aitopenspace'
+
+stages:
+  - template: build.yml
+
+  - stage: Staging
+    dependsOn: Build
+    condition: and(succeeded(), or(eq(variables['build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'Manual')))
+    jobs:
+      - deployment: Staging
+        displayName: Deploy Web App
+        environment: 'openspaceplanner-staging'
+        variables:
+          artifactName: $(Pipeline.Workspace)/WebApp
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: WebApp
+
+                - task: ArchiveFiles@2
+                  displayName: Archive web app
+                  inputs:
+                    rootFolderOrFile: $(artifactName)
+                    includeRootFolder: false
+                    archiveType: zip
+                    archiveFile: $(artifactName).zip
+                    replaceExistingArchive: true
+
+                - task: AzureWebApp@1
+                  displayName: 'Azure Web App Deploy: aitopenspace'
+                  inputs:
+                    azureSubscription: $(azureSubscription)
+                    appType: webApp
+                    appName: aitopenspace
+                    deployToSlotOrASE: true
+                    resourceGroupName: $(resourceGroup)
+                    slotName: Staging
+                    package: $(artifactName).zip
+                    deploymentMethod: zipDeploy
+
+  - stage: Production
+    dependsOn: Staging
+    condition: and(succeeded(), or(eq(variables['build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'Manual')))
+    jobs:
+      - deployment: Production
+        displayName: Deploy Web App
+        environment: 'openspaceplanner-production'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: none
+                - task: AzureAppServiceManage@0
+                  displayName: 'Swap Slots: aitopenspace'
+                  inputs:
+                    azureSubscription: $(azureSubscription)
+                    WebAppName: $(appName)
+                    ResourceGroupName: $(resourceGroup)
+                    SourceSlot: Staging

@@ -1,0 +1,200 @@
+.topic {
+  font-size: 0.9rem;
+  width: 330px;
+  max-width: 330px;
+  float: left;
+  margin: 5px;
+}
+
+.topic-indicators {
+  position: relative;
+  top: -20px;
+  float: right;
+}
+
+.topic-content {
+  position: relative;
+}
+
+.topic-header {
+  height: 85px;
+}
+
+.topic-title {
+  overflow: hidden;
+  max-height: 48px;
+}
+
+.topic-owner {
+  overflow: hidden;
+  height: 24px;
+  margin-bottom: 10px;
+}
+
+.topic-slots {
+  position: absolute;
+  background-color: #485fc7;
+  color: white;
+  font-size: 0.7rem;
+  padding-top: 0.125rem;
+  border-radius: 50%;
+  width: 1.25rem;
+  height: 1.25rem;
+  text-align: center;
+}
+
+.content:not(:last-child) {
+  margin-bottom: 0 !important;
+}
+
+.topic-description {
+  height: 100%;
+  margin-bottom: 20px;
+}
+
+.topic-description-expander {
+  position: absolute;
+  right: 0;
+}
+
+.topic-edit-button {
+  position: absolute;
+  right: 23px;
+}
+
+.topic-additional-informations {
+  position: relative;
+  top: 10px;
+  width: 85%;
+}
+
+.topic-additional-information {
+  float: left;
+  width: 50%;
+  padding-bottom: 5px;
+}
+
+.topic-additional-information div {
+  display: inline;
+}
+
+.topic-additional-information>span~div {
+  margin-left: 5px;
+}
+
+.topic-additional-information>span~span {
+  margin-left: 5px;
+}
+
+.topic-buttons {
+  clear: both;
+  position: relative;
+  bottom: 15px;
+}
+
+.topic-footer {
+  width: 100%;
+}
+
+.topic-attendees span,
+a {
+  margin: 0 5px;
+}
+
+.topic-attendees-value {
+  margin-right: 5px;
+}
+
+.topic-attendees-value-box {
+  width: 20px;
+}
+
+.topic-ratings-value~i {
+  color: #ffd700;
+}
+
+.topic-content small {
+  top: 2px;
+  position: relative;
+}
+
+.topic-ratings-stars {
+  position: relative;
+  left: -20px;
+  width: calc(100% + 41px);
+  top: 20px;
+  border-top: 1px solid rgba(10, 10, 10, 0.1);
+  clear: both;
+}
+
+.topic-ratings-stars>input {
+  display: none;
+}
+
+.topic-ratings-stars>label:before {
+  margin: 5px;
+  font-size: 1.25em;
+  font-family: FontAwesome;
+  display: inline-block;
+  content: "\f005";
+}
+
+.topic-ratings-stars>label {
+  width: 25%;
+  text-align: center;
+  float: right;
+  font-size: 14pt;
+  border-right: 1px solid rgba(10, 10, 10, 0.1);
+  color: #ddd;
+}
+
+.topic-ratings-stars>input:checked~label,
+.topic-ratings-stars:not(:checked)>label:hover,
+.topic-ratings-stars:not(:checked)>label:hover~label {
+  color: #ffd700;
+}
+
+.topic-ratings-stars>input:checked+label:hover,
+.topic-ratings-stars>input:checked~label:hover,
+.topic-ratings-stars>label:hover~input:checked~label,
+.topic-ratings-stars>input:checked~label:hover~label {
+  color: #ffed85;
+}
+
+.room-seats-conflict {
+  background-color: orange;
+}
+
+.same-owner-slot-conflict {
+  background-color: rgb(255, 94, 94);
+}
+
+@media screen and (min-width: 1024px) {
+  .topic {
+    width: 100%;
+    max-width: 450px;
+    overflow: hidden;
+  }
+}
+
+.topic-rating-tooltip {
+  text-align: left;
+  width: 100px;
+}
+
+.topic-error {
+  color: orange;
+  margin-right: 5px;
+}
+
+.topic-indicators span+span {
+  margin-left: 5px;
+}
+
+.topic-indicators .fa-heart {
+  color: red;
+}
+
+.topic-ratings-value {
+  margin-left: 5px;
+}
