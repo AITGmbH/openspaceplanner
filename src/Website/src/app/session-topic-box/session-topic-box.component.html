@@ -124,8 +124,8 @@
       </a>
     </p>
 
-    <p class="topic-edit-button" *ngIf="!showAdditionalInformation">
-      <a (click)="edit.emit({ event: $event, topic })">
+    <p class="topic-edit-button">
+      <a (click)="edit.emit({ event: $event, topic })" *ngIf="!showAdditionalInformation">
         <i class="fa fa-edit edit-button"></i>
       </a>
 
