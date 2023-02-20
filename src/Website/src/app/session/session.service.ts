@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
-import { firstValueFrom, Observable, Subject } from "rxjs";
+import { lastValueFrom, Observable, Subject } from "rxjs";
 import { environment } from '../../environments/environment';
 import { SessionOptions } from "../models/sessionOptions";
 import { getRandomId } from "../shared/common";
@@ -73,12 +73,11 @@ export class SessionService {
       ? this.http.put<Session>(`${environment.apiUrl}/api/sessions/${session.id}`, session)
       : this.http.post<Session>(`${environment.apiUrl}/api/sessions`, session);
 
-    await firstValueFrom(request);
-    return session;
+    return await lastValueFrom(request);
   }
 
   public async delete(id: number): Promise<void> {
-    await firstValueFrom(this.http.delete<void>(`${environment.apiUrl}/api/sessions/${id}`));
+    await lastValueFrom(this.http.delete<void>(`${environment.apiUrl}/api/sessions/${id}`));
   }
 
   public getLastSessions(): Observable<Session[]> {
@@ -90,7 +89,7 @@ export class SessionService {
   }
 
   public async get(sessionId: number): Promise<Session> {
-    const obj = await firstValueFrom(this.http.get(`${environment.apiUrl}/api/sessions/${sessionId}`));
+    const obj = await lastValueFrom(this.http.get(`${environment.apiUrl}/api/sessions/${sessionId}`));
 
     this.currentSession = obj as Session;
 
@@ -106,7 +105,7 @@ export class SessionService {
       ? this.http.put(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/topics/${topic.id}`, topic)
       : this.http.post(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/topics/`, topic);
 
-    const obj = await firstValueFrom(request);
+    const obj = await lastValueFrom(request);
     return this.updateInternal(this.currentSession.topics, obj as Topic);
   }
 
@@ -115,7 +114,7 @@ export class SessionService {
       ? this.http.put(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/slots/${slot.id}`, slot)
       : this.http.post(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/slots/`, slot);
 
-    const obj = await firstValueFrom(request);
+    const obj = await lastValueFrom(request);
     return this.updateInternal(this.currentSession.slots, obj as Slot);
   }
 
@@ -124,7 +123,7 @@ export class SessionService {
       ? this.http.put(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/rooms/${room.id}`, room)
       : this.http.post(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/rooms/`, room);
 
-    const obj = await firstValueFrom(request)
+    const obj = await lastValueFrom(request)
     return this.updateInternal(this.currentSession.rooms, obj as Room);
   }
 
@@ -140,7 +139,7 @@ export class SessionService {
       ? this.http.put(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/topics/${topicId}/attendances/${attendance.id}`, attendance)
       : this.http.post(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/topics/${topicId}/attendances/`, [attendance]);
 
-    await firstValueFrom(request);
+    await lastValueFrom(request);
     return this.updateInternal(this.getTopic(topicId)?.attendees ?? [], attendance);
   }
 
@@ -155,7 +154,7 @@ export class SessionService {
     }
 
     const request = this.http.post(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/topics/${topicId}/attendances/`, attendances);
-    await firstValueFrom(request);
+    await lastValueFrom(request);
 
     const topic = this.getTopic(topicId);
     if (topic != null) {
@@ -177,7 +176,7 @@ export class SessionService {
       ? this.http.put(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/topics/${topicId}/ratings/${rating.id}`, rating)
       : this.http.post(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/topics/${topicId}/ratings/`, rating);
 
-    await firstValueFrom(request);
+    await lastValueFrom(request);
 
     return this.updateInternal(this.getTopic(topicId)?.ratings ?? [], rating);
   }
@@ -188,22 +187,22 @@ export class SessionService {
 
     const request = this.http.post(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/topics/${topicId}/feedback/`, feedback);
 
-    await firstValueFrom(request);
+    await lastValueFrom(request);
     return this.updateInternal(this.getTopic(topicId)?.feedback ?? [], feedback);
   }
 
   public async deleteTopic(id: string): Promise<void> {
-    await firstValueFrom(this.http.delete(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/topics/${id}`))
+    await lastValueFrom(this.http.delete(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/topics/${id}`))
     return this.deleteInternal(this.currentSession.topics, id);
   }
 
   public async deleteSlot(id: string): Promise<void> {
-    await firstValueFrom(this.http.delete(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/slots/${id}`));
+    await lastValueFrom(this.http.delete(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/slots/${id}`));
     return this.deleteInternal(this.currentSession.slots, id);
   }
 
   public async deleteRoom(id: string): Promise<void> {
-    await firstValueFrom(this.http.delete(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/rooms/${id}`));
+    await lastValueFrom(this.http.delete(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/rooms/${id}`));
     return this.deleteInternal(this.currentSession.rooms, id);
   }
 
@@ -224,21 +223,21 @@ export class SessionService {
 
     delete this.sessionOptions.topicsRating[topicId];
 
-    await firstValueFrom(this.http.delete(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/topics/${topicId}/attendances/${attendanceId}`));
+    await lastValueFrom(this.http.delete(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/topics/${topicId}/attendances/${attendanceId}`));
     return this.deleteInternal(this.getTopic(topicId)?.attendees ?? [], attendanceId);
   }
 
   public async deleteTopicFeedback(topicId: string, feedbackId: string): Promise<void> {
-    await firstValueFrom(this.http.delete(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/topics/${topicId}/feedback/${feedbackId}`));
+    await lastValueFrom(this.http.delete(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/topics/${topicId}/feedback/${feedbackId}`));
     return this.deleteInternal(this.getTopic(topicId)?.feedback ?? [], feedbackId);
   }
 
   public async resetRatings() {
-    await firstValueFrom(this.http.delete(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/ratings`));
+    await lastValueFrom(this.http.delete(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/ratings`));
   }
 
   public async resetAttendance() {
-    await firstValueFrom(this.http.delete(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/attendances`));
+    await lastValueFrom(this.http.delete(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/attendances`));
   }
 
   public async deleteTopicRating(topicId: string): Promise<void> {
@@ -258,7 +257,7 @@ export class SessionService {
 
     delete this.sessionOptions.topicsRating[topicId];
 
-    await firstValueFrom(this.http.delete(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/topics/${topicId}/ratings/${ratingId}`));
+    await lastValueFrom(this.http.delete(`${environment.apiUrl}/api/sessions/${this.currentSession.id}/topics/${topicId}/ratings/${ratingId}`));
     return this.deleteInternal(this.getTopic(topicId)?.ratings ?? [], ratingId);
   }
 
