@@ -256,14 +256,16 @@ export class SessionComponent implements OnInit, OnDestroy {
       for (let index = slotIndex; index <= slotIndex + topic.slots - 1 && index < this.slots.length; index++) {
         const nextSlot = this.slots[index];
         const topicInRoom = topicsInRoom[index];
-        if (topicInRoom != null && topicInRoom.id !== topic.id) {
+        //'!==' --- changed to --> '!=' after the &&
+        if (topicInRoom != null && topicInRoom.id != topic.id) {
           suitableSpace = false;
         }
 
-        const hasTopicsWithSameOwnerInSlot = slotsOfTopicsWithSameOwner.findIndex((s: Slot) => s.id === nextSlot.id) >= 0;
+        //Is this code doing anything? Seems kinda superfluous
+        /*const hasTopicsWithSameOwnerInSlot = slotsOfTopicsWithSameOwner.findIndex((s: Slot) => s.id === nextSlot.id) >= 0;
         if (hasTopicsWithSameOwnerInSlot) {
           suitableSpace = false;
-        }
+        }*/
       }
 
       const roomMatchesSeats = room.seats != null && room.seats >= topic.attendees.length;
@@ -361,10 +363,37 @@ export class SessionComponent implements OnInit, OnDestroy {
 
     const targetTopic = this.getTopicByElement(targetTopicElement);
 
+    const sourceSlot = this.slots.find((s) => s.id == sourceCell.slotId);
+    const targetSlot = this.slots.find((s) => s.id == targetCell.slotId)
+
+    if (targetSlot != null && sourceSlot != null && targetTopic != null) {
+      const sourceSlotIndex = this.slots.indexOf(sourceSlot);
+      const targetSlotIndex = this.slots.indexOf(targetSlot);
+
+
+      //Topics in the same room have to be proved this proves nothing you cool man xd
+      const targetCellHasEnoughSlots = this.slots.length - targetSlotIndex >= sourceTopic.slots;
+      if (!targetCellHasEnoughSlots) {
+        //Write Error Message to inform or do it better dude
+        await this.updateTopic(sourceTopic, sourceCell.roomId, sourceCell.slotId);
+        return;
+      }
+
+      //Not a pretty fix, but it did fix the Bug 2. (*)
+      const targetTopicHasEnoughSlots = this.slots.length - sourceSlotIndex >= targetTopic.slots;
+      if (!targetTopicHasEnoughSlots) {
+        //Write Error Message to inform
+        await this.updateTopic(sourceTopic, sourceCell.roomId, sourceCell.slotId);
+        return;
+      }
+
+    }
+    
+
     const isSwappingTopics = targetTopic != null && sourceTopic != targetTopic && !isUnassigningTopic;
 
     if (isSwappingTopics) {
-      sourceContainerElement.append(targetTopicElement);
+      //Deleting this line fixed Bug 3. -> sourceContainerElement.append(targetTopicElement);
       await this.updateTopic(targetTopic, sourceCell.roomId, sourceCell.slotId);
     }
 

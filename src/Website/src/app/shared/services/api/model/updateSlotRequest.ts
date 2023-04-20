@@ -15,6 +15,6 @@ export interface UpdateSlotRequest {
     id: string;
     name: string;
     time?: string | null;
-    isPlanable: boolean;
+    isPlanable?: boolean | null;
 }
 

@@ -15,6 +15,6 @@ export interface Slot {
     id: string;
     name: string;
     time?: string | null;
-    isPlanable: boolean;
+    isPlanable?: boolean | null;
 }
 
