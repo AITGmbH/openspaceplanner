@@ -28,6 +28,11 @@
 .topic-owner {
   overflow: hidden;
   height: 24px;
+  margin-bottom: 0px;
+}
+
+.topic-difficulty {
+  text-align: right;
   margin-bottom: 10px;
 }
 

@@ -18,6 +18,10 @@
       <div class="topic-owner">
         <small>{{ topic.owner }}</small>
       </div>
+      <div class="topic-difficulty">
+        <small>{{ topic.difficulty }}</small>
+        <!--TODO: ICON for difficulty-->
+      </div>
     </div>
 
     <p class="topic-description" [hidden]="!description.dataset.expanded || description.dataset.expanded == 'false'" #description>
