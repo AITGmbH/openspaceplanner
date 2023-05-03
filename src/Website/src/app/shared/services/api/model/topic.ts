@@ -21,6 +21,7 @@ export interface Topic {
     owner?: string | null;
     roomId?: string | null;
     slotId?: string | null;
+    difficulty?: string | null;
     attendees: Array<Attendance>;
     demands: Array<string>;
     feedback: Array<Feedback>;

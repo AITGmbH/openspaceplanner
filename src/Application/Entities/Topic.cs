@@ -7,6 +7,7 @@ public record Topic(
     string? Owner,
     string? RoomId,
     string? SlotId,
+    string? Difficulty,
     ICollection<Attendance> Attendees,
     ICollection<string> Demands,
     ICollection<Feedback> Feedback,

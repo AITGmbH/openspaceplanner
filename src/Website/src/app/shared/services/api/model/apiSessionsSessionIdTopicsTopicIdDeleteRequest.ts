@@ -21,6 +21,7 @@ export interface ApiSessionsSessionIdTopicsTopicIdDeleteRequest {
     owner?: string;
     roomId?: string | null;
     slotId?: string | null;
+    difficulty?: string;
     attendees?: Array<Attendance>;
     demands?: Array<string>;
     feedback?: Array<Feedback>;

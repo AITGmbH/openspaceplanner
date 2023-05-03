@@ -41,6 +41,12 @@
         <ng-select [items]="capabilities" [(ngModel)]="item.demands" [addTag]="true" [hideSelected]="true" [multiple]="true" appendTo="body" #capabilitiesElement></ng-select>
       </div>
     </div>
+    <div class="field">
+      <label class="label">Difficulty</label>
+      <div class="control">
+        <input class="input" type="text" placeholder="Difficulty" id="difficulty" [(ngModel)]="item.difficulty"/>
+      </div>
+    </div>
   </div>
 
   <div *ngIf="selectedTab === 'feedback' && item.id != null">
