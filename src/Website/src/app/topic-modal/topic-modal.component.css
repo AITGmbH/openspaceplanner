@@ -19,3 +19,9 @@
   top: 3px;
   right: 8px;
 }
+
+.diff-radio {
+  display: inline-block;
+  position: relative;
+  width: 20%;
+}

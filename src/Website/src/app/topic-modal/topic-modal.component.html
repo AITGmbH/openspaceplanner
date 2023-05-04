@@ -44,7 +44,18 @@
     <div class="field">
       <label class="label">Difficulty</label>
       <div class="control">
-        <input class="input" type="text" placeholder="Difficulty" id="difficulty" [(ngModel)]="item.difficulty"/>
+        <label class="diff-radio">
+          <input type="radio" name="difficulty" value="" [(ngModel)]="item.difficulty" /> Undefined
+        </label>
+        <label class="diff-radio">
+          <input type="radio" name="difficulty" value="Difficulty: Easy" [(ngModel)]="item.difficulty" /> Easy
+        </label>
+        <label class="diff-radio">
+          <input type="radio" name="difficulty" value="Difficulty: Medium" [(ngModel)]="item.difficulty" /> Medium
+        </label>
+        <label class="diff-radio">
+          <input type="radio" name="difficulty" value="Difficulty: Hard" [(ngModel)]="item.difficulty" /> Hard
+        </label>
       </div>
     </div>
   </div>

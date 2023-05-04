@@ -18,10 +18,13 @@
       <div class="topic-owner">
         <small>{{ topic.owner }}</small>
       </div>
-      <div class="topic-difficulty">
-        <small>{{ topic.difficulty }}</small>
-        <!--TODO: ICON for difficulty-->
-      </div>
+        <div class="topic-difficulty">
+          <small [ngStyle]="{
+            'color': topic.difficulty === 'Difficulty: Hard' ? 'red' : topic.difficulty === 'Difficulty: Medium' ? 'orange' : 'green'}">
+            {{ topic.difficulty }}
+          </small>
+          <!-- Icon for difficulty? -->
+        </div>
     </div>
 
     <p class="topic-description" [hidden]="!description.dataset.expanded || description.dataset.expanded == 'false'" #description>
