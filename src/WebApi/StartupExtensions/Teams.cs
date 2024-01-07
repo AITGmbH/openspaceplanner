@@ -11,7 +11,7 @@ public static class Teams
         services.AddSingleton<ITeamsService>(provider =>
             new TeamsService(
                 provider.GetRequiredService<IHttpClientFactory>(),
-                configuration["TeamsWebhookUrl"],
+                configuration["TeamsWebhookUrl"] ?? throw new InvalidOperationException("Could not find teams web hook url"),
                 sessionUrlFormat,
                 provider.GetRequiredService<ILogger<TeamsService>>()));
     }
