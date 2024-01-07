@@ -19,6 +19,14 @@ stages:
             displayName: Restore frontend packages
             workingDirectory: src/Website
 
+          - script: npm run lint
+            displayName: Linting frontend
+            workingDirectory: src/Website
+
+          - script: npm run build -- --output-path ../WebApi/wwwroot
+            displayName: Build frontend
+            workingDirectory: src/Website
+
           - task: DotNetCoreCLI@2
             displayName: Restore backend packages
             inputs:
@@ -41,19 +49,6 @@ stages:
               publishWebProjects: false
               arguments: --configuration Release --output $(Build.ArtifactStagingDirectory) --no-build
               workingDirectory: src/WebApi
-
-          - script: npm run lint
-            displayName: Linting frontend
-            workingDirectory: src/Website
-
-          - script: npm run build -- --output-path $(Build.ArtifactStagingDirectory)/wwwroot
-            displayName: Build frontend
-            workingDirectory: src/Website
-
-          - script: |
-              ls -la $(Build.ArtifactStagingDirectory)
-              ls -la $(Build.ArtifactStagingDirectory)/wwwroot
-              ls -la src/Website
 
           - publish: $(Build.ArtifactStagingDirectory)
             displayName: Publish pipeline artifact
