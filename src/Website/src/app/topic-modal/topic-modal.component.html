@@ -12,7 +12,7 @@
     </div>
   }
 
-  @if (selectedTab === "topic") {
+  @if (selectedTab === 'topic') {
     <div>
       <div class="field">
         <label class="label">Name</label>
@@ -45,10 +45,10 @@
         </div>
       </div>
     </div>
-  } @else if (selectedTab === "feedback" && item.id != null) {
+  } @else if (selectedTab === 'feedback' && item.id != null) {
     <div>
       <div class="feedback">
-        @if (item?.feedback?.length == 0) {
+        @if (item.feedback.length == 0) {
           <span>
             <i>No feedback available. Be the first to give feedback to the speaker!</i>
           </span>
