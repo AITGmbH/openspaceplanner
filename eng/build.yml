@@ -36,6 +36,10 @@ stages:
               arguments: --configuration Release --output $(Build.ArtifactStagingDirectory) --no-build
               workingDirectory: src/WebApi
 
+          - script: npm run lint
+            displayName: Linting frontend
+            workingDirectory: src/Website
+
           - script: npm run build -- --output-path $(Build.ArtifactStagingDirectory)/wwwroot
             displayName: Build frontend
             workingDirectory: src/Website
