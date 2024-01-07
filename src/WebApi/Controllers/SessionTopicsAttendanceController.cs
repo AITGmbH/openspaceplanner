@@ -19,6 +19,32 @@ public class SessionTopicsAttendanceController : Controller
         _sessionsHub = sessionsHub;
     }
 
+    [HttpPost]
+    public async Task<Attendance[]> AddTopicAttendanceAsync(int sessionId, string topicId, [FromBody] Attendance[] attendances)
+    {
+        await _sessionRepository.Update(sessionId, (session) =>
+        {
+            var currentTopic = session.Topics.FirstOrDefault(t => t.Id == topicId) ?? throw new EntityNotFoundException("Topic not found");
+
+            if (attendances.Length > 1 && session.FreeForAll)
+            {
+                currentTopic = currentTopic with { Attendees = new List<Attendance>(attendances) };
+            }
+            else
+            {
+                var attendance = attendances[0];
+                if (attendance != null)
+                {
+                    currentTopic.Attendees.Add(attendance);
+                }
+            }
+
+            _sessionsHub.Clients.Group(sessionId.ToString()).UpdateTopic(currentTopic);
+        });
+
+        return attendances;
+    }
+
     [HttpDelete("{attendanceId}")]
     public async Task DeleteTopicAttendanceAsync(int sessionId, string topicId, string attendanceId)
         => await _sessionRepository.Update(sessionId, (session) =>
@@ -37,32 +63,6 @@ public class SessionTopicsAttendanceController : Controller
 
             _sessionsHub.Clients.Group(sessionId.ToString()).UpdateTopic(currentTopic);
         });
-
-    [HttpPost]
-    public async Task<Attendance[]> AddTopicAttendanceAsync(int sessionId, string topicId, [FromBody] Attendance[] attendances)
-    {
-        await _sessionRepository.Update(sessionId, (session) =>
-        {
-            var currentTopic = session.Topics.FirstOrDefault(t => t.Id == topicId) ?? throw new EntityNotFoundException("Topic not found");
-
-            if (attendances.Length > 1 && session.FreeForAll)
-            {
-                currentTopic = currentTopic with { Attendees = new List<Attendance>(attendances) };
-            }
-            else
-            {
-                var attendance = attendances.First();
-                if (attendance != null)
-                {
-                    currentTopic.Attendees.Add(attendance);
-                }
-            }
-
-            _sessionsHub.Clients.Group(sessionId.ToString()).UpdateTopic(currentTopic);
-        });
-
-        return attendances;
-    }
 
     [HttpPut("{attendanceId}")]
     public async Task<Attendance> UpdateTopicAttendanceAsync(int sessionId, string topicId, string attendanceId, [FromBody] Attendance attendance)

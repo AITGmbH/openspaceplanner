@@ -11,9 +11,9 @@ public static class DataAccess
         {
             services.AddSingleton(
                 new BlobStorageConfiguration(
-                    configuration["TableStorageAccount"],
-                    configuration["TableStorageKey"],
-                    configuration["TableStorageContainer"]));
+                    configuration["TableStorageAccount"] ?? throw new InvalidOperationException("Could not find table storage account name"),
+                    configuration["TableStorageKey"] ?? throw new InvalidOperationException("Could not find table storage key"),
+                    configuration["TableStorageContainer"] ?? throw new InvalidOperationException("Could not find table storage container name")));
 
             services.AddSingleton<ISessionRepository, SessionRepository>();
         }

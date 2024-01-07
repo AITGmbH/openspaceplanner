@@ -1,90 +1,101 @@
-<div class="container is-loading" *ngIf="isLoading$ | async">Loading</div>
-<h2 class="subtitle" *ngIf="session == null && !(isLoading$ | async)">Session not found.</h2>
+@if (isLoading() === true) {
+  <div class="container is-loading">Loading</div>
+} @else if (session === null) {
+  <h2 class="subtitle">Session not found.</h2>
+} @else {
+  <div class="container">
+    <h1 class="title" (dblclick)="showModal($event, 'session', session)" appEditButton>
+      {{ session.name }}
+      <a (click)="showModal($event, 'session', session)">
+        <span class="fa fa-edit edit-button"></span>
+      </a>
+    </h1>
 
-<div class="container" *ngIf="session != null && !(isLoading$ | async)">
-  <h1 class="title" (dblclick)="showModal($event, 'session', session)" appEditButton>
-    {{ session.name }}
-    <a (click)="showModal($event, 'session', session)">
-      <span class="fa fa-edit edit-button"></span>
+    <a class="calendar-button" href="{{ calendarLink }}">
+      <span class="fa fa-calendar fa-2x"></span>
     </a>
-  </h1>
 
-  <a class="calendar-button" href="{{ calendarLink }}">
-    <span class="fa fa-calendar fa-2x"></span>
-  </a>
+    <table class="table session-table is-striped is-fullwidth is-hoverable">
+      <thead>
+        <tr class="table-row">
+          <td class="table-cell"></td>
 
-  <table class="table session-table is-striped is-fullwidth is-hoverable">
-    <thead>
-      <tr class="table-row">
-        <td class="table-cell"></td>
-
-        <td *ngFor="let room of rooms" class="table-cell" id="{{ room.id }}" (dblclick)="showModal($event, 'room', room)" appEditButton>
-          <span>{{ room.name }}</span>
-          <a (click)="showModal($event, 'room', room)">
-            <span class="fa fa-edit pull-right edit-button"></span>
-          </a>
-          <br />
-          ({{ room.seats }} seats)
-        </td>
-      </tr>
-    </thead>
-
-    <tbody>
-      <tr class="table-row" *ngFor="let slot of slots" id="{{ slot.id }}">
-        <td class="table-cell" (dblclick)="showModal($event, 'slot', slot)" appEditButton>
-          <span>{{ slot.name }}</span>
-          <a (click)="showModal($event, 'slot', slot)">
-            <span class="fa fa-edit pull-right edit-button"></span>
-          </a>
-          <br />
-          {{ slot.time }}
-        </td>
-
-        <ng-container *ngFor="let topic of topics[slot.id]">
-          <td *ngIf="topic != null" class="table-cell topic-space" [class.slot-not-planable]="!slot.isPlanable" [attr.rowspan]="topic.slots" [attr.data-slot-id]="topic.slotId" [attr.data-room-id]="topic.roomId">
-            <app-session-topic-box *ngIf="topic.id != null" [topic]="topic" (edit)="showModal($event.event, 'topic', $event.topic)" (dblclick)="showModal($event, 'topic', topic)"> </app-session-topic-box>
+          <td *ngFor="let room of rooms" class="table-cell" id="{{ room.id }}" (dblclick)="showModal($event, 'room', room)" appEditButton>
+            <span>{{ room.name }}</span>
+            <a (click)="showModal($event, 'room', room)">
+              <span class="fa fa-edit pull-right edit-button"></span>
+            </a>
+            <br />
+            ({{ room.seats }} seats)
           </td>
-        </ng-container>
-      </tr>
-    </tbody>
-  </table>
+        </tr>
+      </thead>
 
-  <div class="topics-unassigned dropable">
-    <app-session-topic-box *ngFor="let topic of unassignedTopics" [topic]="topic" (dblclick)="showModal($event, 'topic', topic)" (edit)="showModal($event.event, 'topic', $event.topic)"></app-session-topic-box>
+      <tbody>
+        <tr class="table-row" *ngFor="let slot of slots" id="{{ slot.id }}">
+          <td class="table-cell" (dblclick)="showModal($event, 'slot', slot)" appEditButton>
+            <span>{{ slot.name }}</span>
+            <a (click)="showModal($event, 'slot', slot)">
+              <span class="fa fa-edit pull-right edit-button"></span>
+            </a>
+            <br />
+            {{ slot.time }}
+          </td>
+
+          <ng-container *ngFor="let topic of topics[slot.id]">
+            @if (topic != null) {
+              <td class="table-cell topic-space" [class.slot-not-planable]="!slot.isPlanable" [attr.rowspan]="topic.slots" [attr.data-slot-id]="topic.slotId" [attr.data-room-id]="topic.roomId">
+                @if (topic.id != null) {
+                  <app-session-topic-box [topic]="topic" (edit)="showModal($event.event, 'topic', $event.topic)" (dblclick)="showModal($event, 'topic', topic)"> </app-session-topic-box>
+                }
+              </td>
+            }
+          </ng-container>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="topics-unassigned dropable">
+      <app-session-topic-box *ngFor="let topic of unassignedTopics" [topic]="topic" (dblclick)="showModal($event, 'topic', topic)" (edit)="showModal($event.event, 'topic', $event.topic)"></app-session-topic-box>
+    </div>
   </div>
-</div>
 
-<button (click)="toggleFloatingActionButton($event)" class="button is-info is-floating-action" #floatingActionButton>
-  <span class="fa fa-plus"></span>
-</button>
+  <button (click)="toggleFloatingActionButton($event)" class="button is-info is-floating-action" #floatingActionButton>
+    <span class="fa fa-plus"></span>
+  </button>
 
-<ul *ngIf="floatingActionButton.dataset.expanded == 'true'" class="is-floating-button-submenu">
-  <li>
-    <button (click)="showModal($event, 'topic', {})" class="button is-info is-floating-button">
-      <span class="fa fa-calendar"></span>
-    </button>
-    <div>Add Topic</div>
-  </li>
-  <li>
-    <button (click)="showModal($event, 'room', {})" class="button is-info is-floating-button">
-      <span class="fa fa-home"></span>
-    </button>
-    <div>Add Room</div>
-  </li>
-  <li>
-    <button (click)="showModal($event, 'slot', {})" class="button is-info is-floating-button">
-      <span class="fa fa-clock-o"></span>
-    </button>
-    <div>Add Slot</div>
-  </li>
-</ul>
+  @if (floatingActionButton.dataset["expanded"] === "true") {
+    <ul class="is-floating-button-submenu">
+      <li>
+        <button (click)="showModal($event, 'topic', {})" class="button is-info is-floating-button">
+          <span class="fa fa-calendar"></span>
+        </button>
+        <div>Add Topic</div>
+      </li>
+      <li>
+        <button (click)="showModal($event, 'room', {})" class="button is-info is-floating-button">
+          <span class="fa fa-home"></span>
+        </button>
+        <div>Add Room</div>
+      </li>
+      <li>
+        <button (click)="showModal($event, 'slot', {})" class="button is-info is-floating-button">
+          <span class="fa fa-clock-o"></span>
+        </button>
+        <div>Add Slot</div>
+      </li>
+    </ul>
+  }
 
-<ng-container *ngIf="modalShown$ | async as modalShown">
-  <app-topic-modal [isShown]="modalShown['topic']" (close)="hideModal('topic')" [item]="modalShown['topic']"></app-topic-modal>
+  @if (currentModal(); as modal) {
+    <ng-container>
+      <app-topic-modal [isShown]="modal['topic']" (close)="hideModal('topic')" [item]="modal['topic']"></app-topic-modal>
 
-  <app-room-modal [isShown]="modalShown['room']" (close)="hideModal('room')" [item]="modalShown['room']"></app-room-modal>
+      <app-room-modal [isShown]="modal['room']" (close)="hideModal('room')" [item]="modal['room']"></app-room-modal>
 
-  <app-slot-modal [isShown]="modalShown['slot']" (close)="hideModal('slot')" [item]="modalShown['slot']"></app-slot-modal>
+      <app-slot-modal [isShown]="modal['slot']" (close)="hideModal('slot')" [item]="modal['slot']"></app-slot-modal>
 
-  <app-session-modal [isShown]="modalShown['session']" (close)="hideModal('session')" [item]="modalShown['session']"></app-session-modal>
-</ng-container>
+      <app-session-modal [isShown]="modal['session']" (close)="hideModal('session')" [item]="modal['session']"></app-session-modal>
+    </ng-container>
+  }
+}

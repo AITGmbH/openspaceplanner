@@ -5,7 +5,8 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 
-import { NgSelectModule } from "@ng-select/ng-select";
+import { HubConnectionBuilder } from '@microsoft/signalr';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { CreateSessionComponent } from './create-session/create-session.component';
@@ -35,23 +36,22 @@ import { TopicModalComponent } from './topic-modal/topic-modal.component';
     ModalDialogComponent,
     SessionOverviewComponent,
     EditButtonDirective,
-    BusySpinnerComponent
+    BusySpinnerComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     NgSelectModule,
-    FormsModule, ApiModule.forRoot(
+    FormsModule,
+    ApiModule.forRoot(
       () =>
         new Configuration({
           basePath: environment.apiUrl,
-        })
+        }),
     ),
   ],
-  providers: [
-    SessionService
-  ],
-  bootstrap: [AppComponent]
+  providers: [SessionService, HubConnectionBuilder],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

@@ -1,10 +1,8 @@
-import {
-  Component, ElementRef, EventEmitter, HostListener, Input, Output
-} from "@angular/core";
+import { Component, ElementRef, EventEmitter, HostListener, Input, Output } from '@angular/core';
 
 @Component({
-  selector: "app-modal-dialog",
-  templateUrl: "./modal-dialog.component.html",
+  selector: 'app-modal-dialog',
+  templateUrl: './modal-dialog.component.html',
 })
 export class ModalDialogComponent {
   private _isShown = false;
@@ -23,8 +21,7 @@ export class ModalDialogComponent {
     this._isShown = value;
 
     if (this._isShown) {
-      const firstInput =
-        this._elementRef.nativeElement.querySelector("input");
+      const firstInput = this._elementRef.nativeElement.querySelector('input');
       if (firstInput != null) {
         setTimeout(() => {
           firstInput.focus();
@@ -42,21 +39,21 @@ export class ModalDialogComponent {
   }
 
   @Input()
-  public title: string = "";
+  public title: string = '';
 
   @Input()
   public showDeleteButton = true;
 
-  constructor(private _elementRef: ElementRef) { }
+  constructor(private _elementRef: ElementRef) {}
 
-  @HostListener("document:keyup", ["$event"])
+  @HostListener('document:keyup', ['$event'])
   public keyup(event: KeyboardEvent) {
     if (this.isShown) {
-      if ((event.ctrlKey || event.shiftKey) && event.key === "Enter") {
+      if ((event.ctrlKey || event.shiftKey) && event.key === 'Enter') {
         this.saveInternal();
       }
 
-      if (event.key === "Escape") {
+      if (event.key === 'Escape') {
         this.closeInternal();
       }
     }
@@ -73,7 +70,7 @@ export class ModalDialogComponent {
   }
 
   public deleteInternal() {
-    if (confirm("Do you really want to delete this item?")) {
+    if (confirm('Do you really want to delete this item?')) {
       this.delete.next(null);
       this.closeInternal();
     }

@@ -11,5 +11,5 @@ public class ConfigController : Controller
     public ConfigController(IConfiguration configuration) => _configuration = configuration;
 
     [HttpGet]
-    public Config GetConfigAsync() => new Config(_configuration["ApplicationInsights:InstrumentationKey"]);
+    public Config GetConfigAsync() => new Config(_configuration["ApplicationInsights:InstrumentationKey"] ?? throw new InvalidOperationException("Could not find instrumentation key"));
 }

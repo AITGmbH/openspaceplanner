@@ -1,8 +1,14 @@
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+/* TODO: Fix me */
+/* eslint @typescript-eslint/no-explicit-any: 0 */
+/* eslint max-lines-per-function: 0 */
+/* eslint max-lines: 0 */
+/* eslint complexity: 0 */
+/* eslint max-statements: 0 */
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DropEvent, InteractEvent } from '@interactjs/types';
 import interact from 'interactjs';
-import { Subject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Room, Session, Slot, Topic } from '../shared/services/api';
 import { SessionService } from './session.service';
@@ -18,11 +24,11 @@ export class SessionComponent implements OnInit, OnDestroy {
   private _topics?: TopicLookup | null;
   private _subscriptions = new Subscription();
 
-  public isLoading$ = new Subject();
+  public isLoading = signal(false);
   public modalShown: { [key: string]: any } = {};
-  public modalShown$ = new Subject<any>();
+  public currentModal = signal<{ [key: string]: any } | undefined>(undefined);
 
-  @ViewChild('floatingActionButton', { static: true })
+  @ViewChild('floatingActionButton')
   public floatingActionButton!: ElementRef<any>;
 
   public session!: Session;
@@ -46,13 +52,17 @@ export class SessionComponent implements OnInit, OnDestroy {
     return `${environment.apiUrl}/api/sessions/${this.session.id}/calendar`;
   }
 
-  constructor(private sessionService: SessionService, private router: Router, private route: ActivatedRoute) {
+  constructor(
+    private sessionService: SessionService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {
     this._subscriptions.add(
       this.sessionService.sessionChanged.subscribe(() => {
         this.refreshTopics();
 
         this.session = this.sessionService.currentSession;
-      })
+      }),
     );
   }
 
@@ -68,11 +78,13 @@ export class SessionComponent implements OnInit, OnDestroy {
       this.router.navigate(['/session', id, 'overview']);
     }
 
+    this.isLoading.set(true);
+
     await this.sessionService.get(+id);
 
     this.session = this.sessionService.currentSession;
 
-    this.isLoading$.next(false);
+    this.isLoading.set(false);
 
     interact('.draggable').draggable({
       autoScroll: {
@@ -110,7 +122,7 @@ export class SessionComponent implements OnInit, OnDestroy {
     $event.stopPropagation();
 
     this.modalShown[name] = parameter;
-    this.modalShown$.next(this.modalShown);
+    this.currentModal.set(this.modalShown);
   }
 
   public hideModal(name: string) {
@@ -126,7 +138,7 @@ export class SessionComponent implements OnInit, OnDestroy {
       }
     }
 
-    this.modalShown$.next(this.modalShown);
+    this.currentModal.set(this.modalShown);
 
     return null;
   }
@@ -154,7 +166,7 @@ export class SessionComponent implements OnInit, OnDestroy {
         this.hideModal(openModal);
       }
     } else {
-      this.floatingActionButton.nativeElement.expanded = false;
+      this.floatingActionButton.nativeElement['expanded'] = false;
     }
   }
 
@@ -216,7 +228,7 @@ export class SessionComponent implements OnInit, OnDestroy {
     const isNotDropable = event.relatedTarget == null || !event.relatedTarget.classList.contains('dropable');
     if (isNotDropable) {
       event.target.classList.remove('drop-target');
-      event.target.dataset.x = event.target.dataset.y = event.target.style.transform = '';
+      event.target.dataset['x'] = event.target.dataset['y'] = event.target.style.transform = '';
 
       event.target.setAttribute('style', '');
 
@@ -239,8 +251,8 @@ export class SessionComponent implements OnInit, OnDestroy {
     for (let i = 0; i < topicSpaces.length; i++) {
       const topicSpace = <HTMLElement>topicSpaces[i];
 
-      const room = this.rooms.find((r) => r.id == topicSpace.dataset.roomId);
-      const slot = this.slots.find((s) => s.id == topicSpace.dataset.slotId);
+      const room = this.rooms.find((r) => r.id == topicSpace.dataset['roomId']);
+      const slot = this.slots.find((s) => s.id == topicSpace.dataset['slotId']);
 
       if (room == null || slot == null) {
         continue;
@@ -272,7 +284,7 @@ export class SessionComponent implements OnInit, OnDestroy {
       }
 
       // room has all capabilities of the topic's demands
-      const roomMatchesDemands = topic.demands.every((d: string) => room.capabilities.findIndex((c) => c == d) >= 0);
+      const roomMatchesDemands = topic.demands.every((d: string) => room.capabilities?.findIndex((c) => c == d) >= 0);
       if (!roomMatchesDemands) {
         suitableSpace = false;
       }
@@ -399,8 +411,8 @@ export class SessionComponent implements OnInit, OnDestroy {
 
   private getElementSlotId(container: HTMLElement, element: HTMLElement): string | null {
     try {
-      if (container != null && container.dataset.slotId != null) {
-        return container.dataset.slotId;
+      if (container != null && container.dataset['slotId'] != null) {
+        return container.dataset['slotId'];
       }
 
       if (element.parentElement == null) {
@@ -420,8 +432,8 @@ export class SessionComponent implements OnInit, OnDestroy {
 
   private getElementRoomId(container: HTMLElement, element: HTMLElement): string | null {
     try {
-      if (container != null && container.dataset.roomId != null) {
-        return container.dataset.roomId;
+      if (container != null && container.dataset['roomId'] != null) {
+        return container.dataset['roomId'];
       }
 
       if (element.parentElement == null) {
@@ -434,7 +446,7 @@ export class SessionComponent implements OnInit, OnDestroy {
       }
 
       const index = (parent.children as unknown as HTMLElement[]).indexOf(element.parentElement);
-      var headerRow = document.querySelector('.session-table thead tr');
+      const headerRow = document.querySelector('.session-table thead tr');
       if (headerRow == null) {
         return null;
       }
@@ -491,7 +503,7 @@ export class SessionComponent implements OnInit, OnDestroy {
         return false;
       }
 
-      let topic = this.session.topics.find((t) => t.slotId === slot.id && t.roomId === roomId);
+      const topic = this.session.topics.find((t) => t.slotId === slot.id && t.roomId === roomId);
 
       slotIndex += topic == null ? 1 : topic.slots;
     }
@@ -502,9 +514,9 @@ export class SessionComponent implements OnInit, OnDestroy {
   public toggleFloatingActionButton(event: Event) {
     event.stopPropagation();
 
-    const isCollapsed = !this.floatingActionButton.nativeElement.dataset.expanded || this.floatingActionButton.nativeElement.dataset.expanded === 'false';
+    const isCollapsed = !this.floatingActionButton.nativeElement.dataset['expanded'] || this.floatingActionButton.nativeElement.dataset['expanded'] === 'false';
 
-    this.floatingActionButton.nativeElement.dataset.expanded = isCollapsed ? 'true' : 'false';
+    this.floatingActionButton.nativeElement.dataset['expanded'] = isCollapsed ? 'true' : 'false';
   }
 
   private pauseEvent(event: InteractEvent<'drag', 'start'>) {

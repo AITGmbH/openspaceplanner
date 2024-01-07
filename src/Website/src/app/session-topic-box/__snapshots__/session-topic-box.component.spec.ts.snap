@@ -1,0 +1,114 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`session topic box should set error message when there is one owner with two topics in the same slot (snapshot) 1`] = `
+<div
+  id="root1"
+>
+  <div
+    appeditbutton=""
+    class="topic box draggable"
+    id="1"
+  >
+    <div
+      class="topic-indicators"
+    >
+      
+      
+      
+    </div>
+    <div
+      class="content topic-content"
+    >
+      <div
+        class="topic-header"
+      >
+        <div
+          class="topic-title"
+        >
+          <span>
+            <span
+              aria-expanded="false"
+              class="fa fa-exclamation-triangle topic-error"
+            />
+          </span>
+          <strong>
+            
+          </strong>
+        </div>
+        <div
+          class="topic-owner"
+        >
+          <small>
+            Test
+          </small>
+        </div>
+      </div>
+      <p
+        class="topic-description"
+        hidden=""
+      >
+        <i>
+          no description
+        </i>
+        
+          
+      </p>
+    </div>
+    <div
+      class="topic-additional-informations"
+    >
+      <div>
+        
+        <div
+          class="topic-additional-information"
+        >
+          <div
+            aria-expanded="false"
+          >
+            <span
+              class="fa fa-star"
+            />
+            <span
+              class="topic-ratings-value"
+            >
+              -
+            </span>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+    <div
+      class="topic-buttons"
+    >
+      <p
+        class="topic-description-expander"
+      >
+        <a>
+          <i
+            class="fa fa-expand"
+          />
+        </a>
+        
+        
+      </p>
+      <p
+        class="topic-edit-button"
+      >
+        <a>
+          <i
+            class="fa fa-edit edit-button"
+          />
+        </a>
+        
+        <a>
+          <i
+            class="fa fa-heart edit-button"
+          />
+        </a>
+      </p>
+    </div>
+    
+  </div>
+</div>
+`;

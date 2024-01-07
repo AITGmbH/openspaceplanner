@@ -1,6 +1,6 @@
 {
   "root": true,
-  "ignorePatterns": ["projects/**/*", "src/app/shared/services/api/**/*"],
+  "ignorePatterns": ["projects/**/*", "src/app/shared/services/api/**/*", "src/**/*.spec.ts"],
   "overrides": [
     {
       "files": ["*.ts"],
@@ -8,15 +8,10 @@
         "project": ["tsconfig.json"],
         "createDefaultProgram": true
       },
-      "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/recommended",
-        "plugin:@angular-eslint/recommended",
-        "plugin:prettier/recommended",
-        "plugin:rxjs/recommended"
-      ],
+      "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "plugin:@angular-eslint/recommended", "plugin:prettier/recommended", "plugin:rxjs/recommended"],
       "rules": {
-        "@typescript-eslint/member-ordering": "warn",
+        "@typescript-eslint/member-ordering": ["error", { "default": ["signature", "field", "constructor", "method"] }],
+        "@angular-eslint/no-output-native": "off",
         "@angular-eslint/component-selector": [
           "error",
           {
@@ -89,7 +84,14 @@
     {
       "files": ["*.html"],
       "extends": ["plugin:@angular-eslint/template/recommended"],
-      "rules": {}
+      "rules": {
+        "@angular-eslint/template/eqeqeq": [
+          "error",
+          {
+            "allowNullOrUndefined": true
+          }
+        ]
+      }
     }
   ]
 }

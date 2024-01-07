@@ -288,7 +288,8 @@ __pycache__/
 
 sessions.json
 dist
-wwwroot
+**/wwwroot/*
+!**/wwwroot/.gitkeep
 
 .angular
 

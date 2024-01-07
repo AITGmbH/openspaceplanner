@@ -1,20 +1,17 @@
-import {
-  Component, EventEmitter, Input,
-  Output, ViewChild
-} from "@angular/core";
-import { NgSelectComponent } from "@ng-select/ng-select";
-import { SessionService } from "../session/session.service";
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { NgSelectComponent } from '@ng-select/ng-select';
+import { SessionService } from '../session/session.service';
 import { Room, Topic } from '../shared/services/api';
 
 @Component({
-  selector: "app-room-modal",
-  templateUrl: "./room-modal.component.html",
+  selector: 'app-room-modal',
+  templateUrl: './room-modal.component.html',
 })
 export class RoomModalComponent {
   private _item: Room = {} as Room;
   private _capabilities: string[] = [];
 
-  @ViewChild("capabilitiesElement", { static: true })
+  @ViewChild('capabilitiesElement', { static: true })
   public capabilitiesElement!: NgSelectComponent;
 
   @Output()
@@ -43,14 +40,10 @@ export class RoomModalComponent {
     }
 
     try {
-      var demands = this.sessionService.currentSession.rooms
-        .map((r: Room) => r.capabilities)
+      const demands = this.sessionService.currentSession.rooms
+        .map((r: Room) => r.capabilities ?? [])
         .reduce((a: string[], b: string[]) => a.concat(b))
-        .concat(
-          this.sessionService.currentSession.topics
-            .map((r: Topic) => r.demands)
-            .reduce((a: string[], b: string[]) => a.concat(b))
-        );
+        .concat(this.sessionService.currentSession.topics.map((r: Topic) => r.demands).reduce((a: string[], b: string[]) => a.concat(b)));
 
       this._capabilities = [...new Set(demands)] as string[];
     } catch {
@@ -60,7 +53,7 @@ export class RoomModalComponent {
     return this._capabilities;
   }
 
-  constructor(private sessionService: SessionService) { }
+  constructor(private sessionService: SessionService) {}
 
   public save() {
     this.sessionService.updateRoom(this.item);

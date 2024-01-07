@@ -86,12 +86,12 @@ public class CalendarService : ICalendarService
                 continue;
             }
 
-            if (!TimeSpan.TryParse(slotTimes[0].Groups[0].Value, out var startTime))
+            if (!TimeSpan.TryParse(slotTimes[0].Groups[0].Value, CultureInfo.InvariantCulture, out var startTime))
             {
                 continue;
             }
 
-            if (!TimeSpan.TryParse(slotTimes[1].Groups[0].Value, out var endTime))
+            if (!TimeSpan.TryParse(slotTimes[1].Groups[0].Value, CultureInfo.InvariantCulture, out var endTime))
             {
                 continue;
             }
@@ -106,7 +106,7 @@ public class CalendarService : ICalendarService
 
             sb.AppendLine("SUMMARY:" + topic.Name + string.Empty);
             sb.AppendLine("LOCATION:" + room.Name + string.Empty);
-            sb.AppendLine("DESCRIPTION:" + topic.Description ?? string.Empty + string.Empty);
+            sb.AppendLine("DESCRIPTION:" + topic.Description + string.Empty);
             sb.AppendLine("BEGIN:VALARM");
             sb.AppendLine("TRIGGER:-PT15M");
             sb.AppendLine("ACTION:DISPLAY");

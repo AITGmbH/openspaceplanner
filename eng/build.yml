@@ -4,13 +4,27 @@ stages:
       - job: Build
         steps:
           - task: UseDotNet@2
-            displayName: Download dotnet sdk
+            displayName: Download .NET SDK
             inputs:
               packageType: sdk
               useGlobalJson: true
 
+          - task: NodeTool@0
+            displayName: Download NodeJS SDK
+            inputs:
+              versionSource: 'spec'
+              versionSpec: '20.x'
+
           - script: npm ci
             displayName: Restore frontend packages
+            workingDirectory: src/Website
+
+          - script: npm run lint
+            displayName: Linting frontend
+            workingDirectory: src/Website
+
+          - script: npm run build -- --output-path ../WebApi/wwwroot
+            displayName: Build frontend
             workingDirectory: src/Website
 
           - task: DotNetCoreCLI@2
@@ -35,10 +49,6 @@ stages:
               publishWebProjects: false
               arguments: --configuration Release --output $(Build.ArtifactStagingDirectory) --no-build
               workingDirectory: src/WebApi
-
-          - script: npm run build -- --output-path $(Build.ArtifactStagingDirectory)/wwwroot
-            displayName: Build frontend
-            workingDirectory: src/Website
 
           - publish: $(Build.ArtifactStagingDirectory)
             displayName: Publish pipeline artifact

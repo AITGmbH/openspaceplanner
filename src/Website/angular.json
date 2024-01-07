@@ -17,7 +17,7 @@
       },
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:browser-esbuild",
           "options": {
             "outputPath": "dist",
             "index": "src/index.html",
@@ -35,7 +35,12 @@
             "scripts": [],
             "allowedCommonJsDependencies": [
               "interactjs"
-            ]
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "./node_modules"
+              ]
+            }
           },
           "configurations": {
             "production": {
@@ -44,7 +49,6 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": false,
               "buildOptimizer": true,
               "fileReplacements": [
                 {
@@ -60,7 +64,6 @@
                 "styles": false,
                 "fonts": false
               },
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
@@ -73,23 +76,18 @@
           "options": {},
           "configurations": {
             "production": {
-              "browserTarget": "openspace:build:production"
+              "buildTarget": "openspace:build:production"
             },
             "development": {
-              "browserTarget": "openspace:build:development"
+              "buildTarget": "openspace:build:development"
             }
           },
           "defaultConfiguration": "development"
         },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "openspace:build"
-          }
-        },
         "test": {
           "builder": "@angular-builders/jest:run",
           "options": {
+            "tsConfig": "tsconfig.spec.json",
             "scripts": [
               "node_modules/popper.js/dist/umd/popper.js",
               "node_modules/tippy.js/umd/index.js"
@@ -118,7 +116,6 @@
       }
     }
   },
-  "defaultProject": "openspace",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app"
@@ -128,6 +125,9 @@
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": false,
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }

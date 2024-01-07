@@ -17,7 +17,7 @@ public static class OpenApi
             c.SchemaFilter<RequireNonNullablePropertiesSchemaFilter>();
 
             c.CustomSchemaIds(t => t.IsNested
-                ? t.FullName?.Replace(t.Namespace + ".", string.Empty)?.Replace("+", string.Empty)
+                ? t.FullName?.Replace(t.Namespace + ".", string.Empty).Replace("+", string.Empty)
                 : t.Name);
         });
 

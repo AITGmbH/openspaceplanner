@@ -1,24 +1,30 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { SessionService } from "../session/session.service";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SessionService } from '../session/session.service';
 import { Room, Slot, Topic } from '../shared/services/api';
 
 @Component({
   selector: 'app-session-overview',
   templateUrl: './session-overview.component.html',
-  styleUrls: ['./session-overview.component.css']
+  styleUrls: ['./session-overview.component.css'],
 })
 export class SessionOverviewComponent implements OnInit {
-  public get session() { return this.sessionService.currentSession || { name: '' }; }
+  public get session() {
+    return this.sessionService.currentSession || { name: '' };
+  }
 
-  constructor(private sessionService: SessionService, private router: Router, private route: ActivatedRoute) { }
+  constructor(
+    private sessionService: SessionService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {}
 
   public get slots(): Slot[] {
     if (this.sessionService.currentSession?.slots == null) {
       return [];
     }
 
-    return this.sessionService.currentSession.slots.sort((a: Slot, b: Slot) => a.time?.localeCompare(b.time ?? "") ?? 0);
+    return this.sessionService.currentSession.slots.sort((a: Slot, b: Slot) => a.time?.localeCompare(b.time ?? '') ?? 0);
   }
 
   public getTopics(slotId: string): Topic[] {
@@ -35,8 +41,8 @@ export class SessionOverviewComponent implements OnInit {
       const s1 = this.getRoom(a.roomId)?.seats ?? 0;
       const s2 = this.getRoom(b.roomId)?.seats ?? 0;
 
-      const n1 = this.getSlot(a.slotId)?.name ?? "";
-      const n2 = this.getSlot(b.slotId)?.name ?? "";
+      const n1 = this.getSlot(a.slotId)?.name ?? '';
+      const n2 = this.getSlot(b.slotId)?.name ?? '';
 
       return (s1 > s2 ? -1 : 1) || n1.localeCompare(n2);
     });
