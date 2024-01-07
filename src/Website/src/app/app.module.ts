@@ -5,6 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 
+import { HubConnectionBuilder } from '@microsoft/signalr';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
@@ -50,7 +51,7 @@ import { TopicModalComponent } from './topic-modal/topic-modal.component';
         }),
     ),
   ],
-  providers: [SessionService],
+  providers: [SessionService, HubConnectionBuilder],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

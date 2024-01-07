@@ -76,10 +76,10 @@
           "options": {},
           "configurations": {
             "production": {
-              "browserTarget": "openspace:build:production"
+              "buildTarget": "openspace:build:production"
             },
             "development": {
-              "browserTarget": "openspace:build:development"
+              "buildTarget": "openspace:build:development"
             }
           },
           "defaultConfiguration": "development"

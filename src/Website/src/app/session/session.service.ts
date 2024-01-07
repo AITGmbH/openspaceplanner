@@ -34,7 +34,10 @@ export class SessionService {
     return this._sessionOptions;
   }
 
-  constructor(private http: HttpClient, private hubConnectionBuilder: HubConnectionBuilder) { }
+  constructor(
+    private http: HttpClient,
+    private hubConnectionBuilder: HubConnectionBuilder,
+  ) {}
 
   public getSortedSlots(slots: Slot[]) {
     return slots.sort((a, b) => a.time?.localeCompare(b.time ?? '') || a.name.localeCompare(b.name));

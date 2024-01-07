@@ -4,11 +4,11 @@
 /* eslint max-lines: 0 */
 /* eslint complexity: 0 */
 /* eslint max-statements: 0 */
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DropEvent, InteractEvent } from '@interactjs/types';
 import interact from 'interactjs';
-import { Subject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Room, Session, Slot, Topic } from '../shared/services/api';
 import { SessionService } from './session.service';
@@ -24,11 +24,11 @@ export class SessionComponent implements OnInit, OnDestroy {
   private _topics?: TopicLookup | null;
   private _subscriptions = new Subscription();
 
-  public isLoading$ = new Subject();
+  public isLoading = signal(false);
   public modalShown: { [key: string]: any } = {};
-  public modalShown$ = new Subject<any>();
+  public currentModal = signal<{ [key: string]: any } | undefined>(undefined);
 
-  @ViewChild('floatingActionButton', { static: true })
+  @ViewChild('floatingActionButton')
   public floatingActionButton!: ElementRef<any>;
 
   public session!: Session;
@@ -78,11 +78,13 @@ export class SessionComponent implements OnInit, OnDestroy {
       this.router.navigate(['/session', id, 'overview']);
     }
 
+    this.isLoading.set(true);
+
     await this.sessionService.get(+id);
 
     this.session = this.sessionService.currentSession;
 
-    this.isLoading$.next(false);
+    this.isLoading.set(false);
 
     interact('.draggable').draggable({
       autoScroll: {
@@ -120,7 +122,7 @@ export class SessionComponent implements OnInit, OnDestroy {
     $event.stopPropagation();
 
     this.modalShown[name] = parameter;
-    this.modalShown$.next(this.modalShown);
+    this.currentModal.set(this.modalShown);
   }
 
   public hideModal(name: string) {
@@ -136,7 +138,7 @@ export class SessionComponent implements OnInit, OnDestroy {
       }
     }
 
-    this.modalShown$.next(this.modalShown);
+    this.currentModal.set(this.modalShown);
 
     return null;
   }
@@ -164,7 +166,7 @@ export class SessionComponent implements OnInit, OnDestroy {
         this.hideModal(openModal);
       }
     } else {
-      this.floatingActionButton.nativeElement.expanded = false;
+      this.floatingActionButton.nativeElement['expanded'] = false;
     }
   }
 
@@ -512,9 +514,9 @@ export class SessionComponent implements OnInit, OnDestroy {
   public toggleFloatingActionButton(event: Event) {
     event.stopPropagation();
 
-    const isCollapsed = !this.floatingActionButton.nativeElement.dataset.expanded || this.floatingActionButton.nativeElement.dataset.expanded === 'false';
+    const isCollapsed = !this.floatingActionButton.nativeElement.dataset['expanded'] || this.floatingActionButton.nativeElement.dataset['expanded'] === 'false';
 
-    this.floatingActionButton.nativeElement.dataset.expanded = isCollapsed ? 'true' : 'false';
+    this.floatingActionButton.nativeElement.dataset['expanded'] = isCollapsed ? 'true' : 'false';
   }
 
   private pauseEvent(event: InteractEvent<'drag', 'start'>) {
