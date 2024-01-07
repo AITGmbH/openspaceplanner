@@ -4,10 +4,15 @@ stages:
       - job: Build
         steps:
           - task: UseDotNet@2
-            displayName: Download dotnet sdk
+            displayName: Download .NET SDK
             inputs:
               packageType: sdk
               useGlobalJson: true
+
+          - task: NodeTool@0
+            inputs:
+              versionSource: 'spec'
+              versionSpec: '20.x'
 
           - script: npm ci
             displayName: Restore frontend packages
@@ -43,6 +48,10 @@ stages:
           - script: npm run build -- --output-path $(Build.ArtifactStagingDirectory)/wwwroot
             displayName: Build frontend
             workingDirectory: src/Website
+
+          - script: |
+              ls -la $(Build.ArtifactStagingDirectory)
+              ls -la src/Website
 
           - publish: $(Build.ArtifactStagingDirectory)
             displayName: Publish pipeline artifact
