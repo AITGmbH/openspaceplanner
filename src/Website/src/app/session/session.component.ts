@@ -216,7 +216,7 @@ export class SessionComponent implements OnInit, OnDestroy {
     const isNotDropable = event.relatedTarget == null || !event.relatedTarget.classList.contains('dropable');
     if (isNotDropable) {
       event.target.classList.remove('drop-target');
-      event.target.dataset.x = event.target.dataset.y = event.target.style.transform = '';
+      event.target.dataset['x'] = event.target.dataset['y'] = event.target.style.transform = '';
 
       event.target.setAttribute('style', '');
 
@@ -239,8 +239,8 @@ export class SessionComponent implements OnInit, OnDestroy {
     for (let i = 0; i < topicSpaces.length; i++) {
       const topicSpace = <HTMLElement>topicSpaces[i];
 
-      const room = this.rooms.find((r) => r.id == topicSpace.dataset.roomId);
-      const slot = this.slots.find((s) => s.id == topicSpace.dataset.slotId);
+      const room = this.rooms.find((r) => r.id == topicSpace.dataset['roomId']);
+      const slot = this.slots.find((s) => s.id == topicSpace.dataset['slotId']);
 
       if (room == null || slot == null) {
         continue;
@@ -399,8 +399,8 @@ export class SessionComponent implements OnInit, OnDestroy {
 
   private getElementSlotId(container: HTMLElement, element: HTMLElement): string | null {
     try {
-      if (container != null && container.dataset.slotId != null) {
-        return container.dataset.slotId;
+      if (container != null && container.dataset['slotId'] != null) {
+        return container.dataset['slotId'];
       }
 
       if (element.parentElement == null) {
@@ -420,8 +420,8 @@ export class SessionComponent implements OnInit, OnDestroy {
 
   private getElementRoomId(container: HTMLElement, element: HTMLElement): string | null {
     try {
-      if (container != null && container.dataset.roomId != null) {
-        return container.dataset.roomId;
+      if (container != null && container.dataset['roomId'] != null) {
+        return container.dataset['roomId'];
       }
 
       if (element.parentElement == null) {
@@ -484,7 +484,7 @@ export class SessionComponent implements OnInit, OnDestroy {
 
   private previousTopicOverlaps(slotId: string, roomId: string) {
     const slots = this.slots;
-    for (let slotIndex = 0; slotIndex < slots.length; ) {
+    for (let slotIndex = 0; slotIndex < slots.length;) {
       const slot = slots[slotIndex];
 
       if (slot.id === slotId) {

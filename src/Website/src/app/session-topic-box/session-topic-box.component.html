@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <p class="topic-description" [hidden]="!description.dataset.expanded || description.dataset.expanded == 'false'" #description>
+    <p class="topic-description" [hidden]="!description.dataset['expanded'] || description.dataset['expanded'] == 'false'" #description>
       <i *ngIf="!topic.description">no description</i>
       {{ topic.description }}
     </p>
@@ -116,10 +116,10 @@
 
   <div class="topic-buttons">
     <p class="topic-description-expander">
-      <a (click)="expandDescription(content, description)" *ngIf="!description.dataset.expanded || description.dataset.expanded == 'false'">
+      <a (click)="expandDescription(content, description)" *ngIf="!description.dataset['expanded'] || description.dataset['expanded'] == 'false'">
         <i class="fa fa-expand"></i>
       </a>
-      <a (click)="collapseDescription(content, description)" *ngIf="description.dataset.expanded == 'true'">
+      <a (click)="collapseDescription(content, description)" *ngIf="description.dataset['expanded'] == 'true'">
         <i class="fa fa-compress"></i>
       </a>
     </p>

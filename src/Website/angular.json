@@ -35,7 +35,12 @@
             "scripts": [],
             "allowedCommonJsDependencies": [
               "interactjs"
-            ]
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "./node_modules"
+              ]
+            }
           },
           "configurations": {
             "production": {
@@ -44,7 +49,6 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": false,
               "buildOptimizer": true,
               "fileReplacements": [
                 {
@@ -60,7 +64,6 @@
                 "styles": false,
                 "fonts": false
               },
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
@@ -123,7 +126,6 @@
       }
     }
   },
-  "defaultProject": "openspace",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app"

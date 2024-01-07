@@ -241,13 +241,13 @@ export class SessionTopicBoxComponent implements OnInit {
   }
 
   public expandDescription(content: HTMLElement, description: HTMLElement) {
-    description.dataset.expanded = "true";
-    content.dataset.expanded = "true";
+    description.dataset['expanded'] = "true";
+    content.dataset['expanded'] = "true";
   }
 
   public collapseDescription(content: HTMLElement, description: HTMLElement) {
-    description.dataset.expanded = "false";
-    content.dataset.expanded = "false";
+    description.dataset['expanded'] = "false";
+    content.dataset['expanded'] = "false";
   }
 
   public updateAttendees(attendeesText: string) {

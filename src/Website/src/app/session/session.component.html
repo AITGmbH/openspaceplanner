@@ -58,7 +58,7 @@
   <span class="fa fa-plus"></span>
 </button>
 
-<ul *ngIf="floatingActionButton.dataset.expanded == 'true'" class="is-floating-button-submenu">
+<ul *ngIf="floatingActionButton.dataset['expanded'] == 'true'" class="is-floating-button-submenu">
   <li>
     <button (click)="showModal($event, 'topic', {})" class="button is-info is-floating-button">
       <span class="fa fa-calendar"></span>

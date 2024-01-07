@@ -1,33 +1,33 @@
-@import "~@ng-select/ng-select/themes/default.theme.css";
-@import "~tippy.js/dist/tippy.css";
+@import "@ng-select/ng-select/themes/default.theme.css";
+@import "tippy.js/dist/tippy.css";
 
 @media screen and (min-width: 1408px) {
-    .app-body .container {
-        max-width: 100% !important;
-        width: 100% !important;
-    }
+  .app-body .container {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
 }
 
 .app-body {
-    padding: 1rem;
+  padding: 1rem;
 }
 
 .margin-top-auto {
-    margin-top: auto;
+  margin-top: auto;
 }
 
 .edit-button {
-    opacity: 0;
+  opacity: 0;
 }
 
-.modal-buttons > button ~ button {
-    margin-left: 10px;
+.modal-buttons>button~button {
+  margin-left: 10px;
 }
 
 .suitable-topic-space {
-    background-color: #eaffea;
+  background-color: #eaffea;
 }
 
 .drop-target {
-    background-color: lightyellow;
+  background-color: lightyellow;
 }
