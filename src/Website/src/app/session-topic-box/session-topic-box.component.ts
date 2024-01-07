@@ -175,7 +175,7 @@ export class SessionTopicBoxComponent implements OnInit {
       return false;
     }
 
-    const hasError = !this.topic.demands.every((d) => room.capabilities.findIndex((c: string) => c == d) >= 0);
+    const hasError = !this.topic.demands.every((d) => room.capabilities?.findIndex((c: string) => c == d) >= 0);
     if (hasError) {
       this.errors.push('The room does not have the capabilities required by the topic.');
     }

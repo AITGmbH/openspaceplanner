@@ -45,7 +45,7 @@ export class TopicModalComponent {
 
     try {
       const capabilities = this.sessionService.currentSession.rooms
-        .map((r: Room) => r.capabilities)
+        .map((r: Room) => r.capabilities ?? [])
         .reduce((a: string[], b: string[]) => a.concat(b))
         .concat(this.sessionService.currentSession.topics.map((topic: Topic) => topic.demands).reduce((a: string[], b: string[]) => a.concat(b)));
 

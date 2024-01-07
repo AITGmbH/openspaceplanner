@@ -284,7 +284,7 @@ export class SessionComponent implements OnInit, OnDestroy {
       }
 
       // room has all capabilities of the topic's demands
-      const roomMatchesDemands = topic.demands.every((d: string) => room.capabilities.findIndex((c) => c == d) >= 0);
+      const roomMatchesDemands = topic.demands.every((d: string) => room.capabilities?.findIndex((c) => c == d) >= 0);
       if (!roomMatchesDemands) {
         suitableSpace = false;
       }
