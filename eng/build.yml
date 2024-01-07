@@ -10,6 +10,7 @@ stages:
               useGlobalJson: true
 
           - task: NodeTool@0
+            displayName: Download NodeJS SDK
             inputs:
               versionSource: 'spec'
               versionSpec: '20.x'
@@ -51,6 +52,7 @@ stages:
 
           - script: |
               ls -la $(Build.ArtifactStagingDirectory)
+              ls -la $(Build.ArtifactStagingDirectory)/wwwroot
               ls -la src/Website
 
           - publish: $(Build.ArtifactStagingDirectory)
