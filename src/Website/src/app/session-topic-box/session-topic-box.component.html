@@ -115,11 +115,11 @@
         @if (slot != null) {
           <div class="topic-additional-information">
             <span class="fa fa-clock-o"></span>
-            <span>{{ slot.name }} {{ slot.time != null ? "(" + slot.time + ")" : "" }}</span>
+            <span>{{ slot.name }} {{ slot.time != null ? '(' + slot.time + ')' : '' }}</span>
 
             @if (slotEnd != null) {
               <div style="display: block">
-                <span style="margin-left: 0.8rem">{{ slotEnd.name }} {{ slotEnd.time != null ? "(" + slotEnd.time + ")" : "" }}</span>
+                <span style="margin-left: 0.8rem">{{ slotEnd.name }} {{ slotEnd.time != null ? '(' + slotEnd.time + ')' : '' }}</span>
               </div>
             }
           </div>
@@ -137,7 +137,7 @@
 
   <div class="topic-buttons">
     <p class="topic-description-expander">
-      @if (!description.dataset["expanded"] || description.dataset["expanded"] === "false") {
+      @if (!description.dataset['expanded'] || description.dataset['expanded'] === 'false') {
         <a (click)="expandDescription(content, description)">
           <i class="fa fa-expand"></i>
         </a>
@@ -163,16 +163,16 @@
 
   @if (session.votingEnabled) {
     <div class="topic-ratings-stars">
-      <input type="radio" id="star4-{{ topic.id }}" name="rating-{{ topic.id }}" value="4" (click)="ratingChange(4)" [checked]="getRating() == 4" />
+      <input type="radio" id="star4-{{ topic.id }}" name="rating-{{ topic.id }}" value="4" (click)="ratingChange(4)" [checked]="getRating() === 4" />
       <label for="star4-{{ topic.id }}"></label>
 
-      <input type="radio" id="star3-{{ topic.id }}" name="rating-{{ topic.id }}" value="3" (click)="ratingChange(3)" [checked]="getRating() == 3" />
+      <input type="radio" id="star3-{{ topic.id }}" name="rating-{{ topic.id }}" value="3" (click)="ratingChange(3)" [checked]="getRating() === 3" />
       <label for="star3-{{ topic.id }}"></label>
 
-      <input type="radio" id="star2-{{ topic.id }}" name="rating-{{ topic.id }}" value="2" (click)="ratingChange(2)" [checked]="getRating() == 2" />
+      <input type="radio" id="star2-{{ topic.id }}" name="rating-{{ topic.id }}" value="2" (click)="ratingChange(2)" [checked]="getRating() === 2" />
       <label for="star2-{{ topic.id }}"></label>
 
-      <input type="radio" id="star1-{{ topic.id }}" name="rating-{{ topic.id }}" value="1" (click)="ratingChange(1)" [checked]="getRating() == 1" />
+      <input type="radio" id="star1-{{ topic.id }}" name="rating-{{ topic.id }}" value="1" (click)="ratingChange(1)" [checked]="getRating() === 1" />
       <label for="star1-{{ topic.id }}"></label>
     </div>
   }
