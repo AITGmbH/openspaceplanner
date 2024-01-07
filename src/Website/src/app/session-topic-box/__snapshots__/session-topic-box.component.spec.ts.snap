@@ -13,9 +13,7 @@ exports[`session topic box should set error message when there is one owner with
       class="topic-indicators"
     >
       
-      <a>
-        
-      </a>
+      
       
     </div>
     <div
