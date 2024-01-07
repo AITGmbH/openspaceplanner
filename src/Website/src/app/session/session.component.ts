@@ -1,3 +1,9 @@
+/* TODO: Fix me */
+/* eslint @typescript-eslint/no-explicit-any: 0 */
+/* eslint max-lines-per-function: 0 */
+/* eslint max-lines: 0 */
+/* eslint complexity: 0 */
+/* eslint max-statements: 0 */
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DropEvent, InteractEvent } from '@interactjs/types';
@@ -46,13 +52,17 @@ export class SessionComponent implements OnInit, OnDestroy {
     return `${environment.apiUrl}/api/sessions/${this.session.id}/calendar`;
   }
 
-  constructor(private sessionService: SessionService, private router: Router, private route: ActivatedRoute) {
+  constructor(
+    private sessionService: SessionService,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {
     this._subscriptions.add(
       this.sessionService.sessionChanged.subscribe(() => {
         this.refreshTopics();
 
         this.session = this.sessionService.currentSession;
-      })
+      }),
     );
   }
 
@@ -434,7 +444,7 @@ export class SessionComponent implements OnInit, OnDestroy {
       }
 
       const index = (parent.children as unknown as HTMLElement[]).indexOf(element.parentElement);
-      var headerRow = document.querySelector('.session-table thead tr');
+      const headerRow = document.querySelector('.session-table thead tr');
       if (headerRow == null) {
         return null;
       }
@@ -484,14 +494,14 @@ export class SessionComponent implements OnInit, OnDestroy {
 
   private previousTopicOverlaps(slotId: string, roomId: string) {
     const slots = this.slots;
-    for (let slotIndex = 0; slotIndex < slots.length;) {
+    for (let slotIndex = 0; slotIndex < slots.length; ) {
       const slot = slots[slotIndex];
 
       if (slot.id === slotId) {
         return false;
       }
 
-      let topic = this.session.topics.find((t) => t.slotId === slot.id && t.roomId === roomId);
+      const topic = this.session.topics.find((t) => t.slotId === slot.id && t.roomId === roomId);
 
       slotIndex += topic == null ? 1 : topic.slots;
     }

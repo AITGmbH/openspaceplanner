@@ -1,7 +1,7 @@
 <div class="container is-loading" *ngIf="isLoading$ | async">Loading</div>
-<h2 class="subtitle" *ngIf="session == null && !(isLoading$ | async)">Session not found.</h2>
+<h2 class="subtitle" *ngIf="session == null && (isLoading$ | async) === false">Session not found.</h2>
 
-<div class="container" *ngIf="session != null && !(isLoading$ | async)">
+<div class="container" *ngIf="session != null && (isLoading$ | async) === false">
   <h1 class="title" (dblclick)="showModal($event, 'session', session)" appEditButton>
     {{ session.name }}
     <a (click)="showModal($event, 'session', session)">
@@ -58,7 +58,7 @@
   <span class="fa fa-plus"></span>
 </button>
 
-<ul *ngIf="floatingActionButton.dataset['expanded'] == 'true'" class="is-floating-button-submenu">
+<ul *ngIf="floatingActionButton.dataset['expanded'] === 'true'" class="is-floating-button-submenu">
   <li>
     <button (click)="showModal($event, 'topic', {})" class="button is-info is-floating-button">
       <span class="fa fa-calendar"></span>

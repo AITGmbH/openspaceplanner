@@ -1,21 +1,13 @@
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewChild
-} from "@angular/core";
-import tippy from "tippy.js";
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import tippy from 'tippy.js';
 import { RatingStatistic } from '../models/ratingStatistic';
-import { SessionService } from "../session/session.service";
+import { SessionService } from '../session/session.service';
 import { Room, Slot, Topic } from '../shared/services/api';
 
 @Component({
-  selector: "app-session-topic-box",
-  templateUrl: "./session-topic-box.component.html",
-  styleUrls: ["session-topic-box.component.css"],
+  selector: 'app-session-topic-box',
+  templateUrl: './session-topic-box.component.html',
+  styleUrls: ['session-topic-box.component.css'],
 })
 export class SessionTopicBoxComponent implements OnInit {
   public showAttendeesInput: boolean = false;
@@ -30,30 +22,26 @@ export class SessionTopicBoxComponent implements OnInit {
   public enableDrag = true;
 
   @Output()
-  public edit = new EventEmitter<{ event: Event, topic: Topic }>();
+  public edit = new EventEmitter<{ event: Event; topic: Topic }>();
 
   public errors: string[] = [];
 
-  @ViewChild("ratingTooltip", { static: true }) ratingTooltip!: ElementRef;
+  @ViewChild('ratingTooltip', { static: true }) ratingTooltip!: ElementRef;
 
-  @ViewChild("ratingElement", { static: true }) ratingElement!: ElementRef;
+  @ViewChild('ratingElement', { static: true }) ratingElement!: ElementRef;
 
-  @ViewChild("errorTooltip", { static: true }) errorTooltip!: ElementRef;
+  @ViewChild('errorTooltip', { static: true }) errorTooltip!: ElementRef;
 
-  @ViewChild("errorElement", { static: true }) errorElement!: ElementRef;
+  @ViewChild('errorElement', { static: true }) errorElement!: ElementRef;
 
-  @ViewChild("topicAttendees", { static: false }) topicAttendees!: ElementRef;
+  @ViewChild('topicAttendees', { static: false }) topicAttendees!: ElementRef;
 
   public get isFavorite() {
     return this.sessionService.sessionOptions?.topicsFavorite[this.topic.id] || false;
   }
 
   public get hasComments() {
-    return (
-      this.topic != null &&
-      this.topic.feedback != null &&
-      this.topic.feedback.length > 0
-    );
+    return this.topic != null && this.topic.feedback != null && this.topic.feedback.length > 0;
   }
 
   public get rating() {
@@ -66,22 +54,18 @@ export class SessionTopicBoxComponent implements OnInit {
 
   public get errorText() {
     if (this.errors == null || this.errors.length === 0) {
-      return "";
+      return '';
     }
 
-    return this.errors.join(" ");
+    return this.errors.join(' ');
   }
 
   public get hasError() {
     this.errors = [];
 
-    const hasErrors = [
-      this.hasSameOwnerSlotConflict(),
-      this.hasRoomSeatsConflict(),
-      this.hasRoomCapabilitiesConflict(),
-    ];
+    const hasErrors = [this.hasSameOwnerSlotConflict(), this.hasRoomSeatsConflict(), this.hasRoomCapabilitiesConflict()];
 
-    return hasErrors.some(hasError => hasError);
+    return hasErrors.some((hasError) => hasError);
   }
 
   public get slot() {
@@ -114,21 +98,21 @@ export class SessionTopicBoxComponent implements OnInit {
     return this.session.rooms.find((room: Room) => room.id === this.topic.roomId);
   }
 
-  constructor(private sessionService: SessionService) { }
+  constructor(private sessionService: SessionService) {}
 
   public ngOnInit() {
     tippy(this.ratingElement.nativeElement, {
       content: this.ratingTooltip.nativeElement,
       interactive: true,
       allowHTML: true,
-      appendTo: () => document.body
+      appendTo: () => document.body,
     });
 
     tippy(this.errorElement.nativeElement, {
       content: this.errorTooltip.nativeElement,
       interactive: true,
       allowHTML: true,
-      appendTo: () => document.body
+      appendTo: () => document.body,
     });
   }
 
@@ -138,11 +122,7 @@ export class SessionTopicBoxComponent implements OnInit {
   }
 
   public hasRoomSeatsConflict() {
-    if (
-      this.topic == null ||
-      this.topic.slotId == null ||
-      this.topic.roomId == null
-    ) {
+    if (this.topic == null || this.topic.slotId == null || this.topic.roomId == null) {
       return false;
     }
 
@@ -154,18 +134,14 @@ export class SessionTopicBoxComponent implements OnInit {
     const seats = room.seats ?? 0;
     const hasError = seats < this.topic.attendees.length;
     if (hasError) {
-      this.errors.push("Too many attendees for the given room size.");
+      this.errors.push('Too many attendees for the given room size.');
     }
 
     return hasError;
   }
 
   public hasSameOwnerSlotConflict() {
-    if (
-      this.topic?.slotId == null ||
-      this.topic.roomId == null ||
-      this.topic.owner == null
-    ) {
+    if (this.topic?.slotId == null || this.topic.roomId == null || this.topic.owner == null) {
       return false;
     }
 
@@ -173,24 +149,20 @@ export class SessionTopicBoxComponent implements OnInit {
 
     const slotsOfCurrentTopic = this.sessionService.getSlotsOfTopic(slots, this.topic);
 
-    const slotsOfTopicsWithSameOwner =
-      this.sessionService.currentSession.topics.filter((topic: Topic) => topic.owner != null && topic.id !== this.topic.id && topic.owner === this.topic.owner)
-        .reduce((a: Slot[], topic: Topic) => [...a, ...this.sessionService.getSlotsOfTopic(slots, topic)], []);
+    const slotsOfTopicsWithSameOwner = this.sessionService.currentSession.topics
+      .filter((topic: Topic) => topic.owner != null && topic.id !== this.topic.id && topic.owner === this.topic.owner)
+      .reduce((a: Slot[], topic: Topic) => [...a, ...this.sessionService.getSlotsOfTopic(slots, topic)], []);
 
-    const hasError = slotsOfCurrentTopic.some(slot => slotsOfTopicsWithSameOwner.includes(slot));
+    const hasError = slotsOfCurrentTopic.some((slot) => slotsOfTopicsWithSameOwner.includes(slot));
     if (hasError) {
-      this.errors.push("Owner with two or more topics in the same slot.");
+      this.errors.push('Owner with two or more topics in the same slot.');
     }
 
     return hasError;
   }
 
   public hasRoomCapabilitiesConflict() {
-    if (
-      this.topic == null ||
-      this.topic.slotId == null ||
-      this.topic.roomId == null
-    ) {
+    if (this.topic == null || this.topic.slotId == null || this.topic.roomId == null) {
       return false;
     }
 
@@ -203,13 +175,9 @@ export class SessionTopicBoxComponent implements OnInit {
       return false;
     }
 
-    const hasError = !this.topic.demands.every(
-      (d) => room.capabilities.findIndex((c: string) => c == d) >= 0
-    );
+    const hasError = !this.topic.demands.every((d) => room.capabilities.findIndex((c: string) => c == d) >= 0);
     if (hasError) {
-      this.errors.push(
-        "The room does not have the capabilities required by the topic."
-      );
+      this.errors.push('The room does not have the capabilities required by the topic.');
     }
 
     return hasError;
@@ -241,13 +209,13 @@ export class SessionTopicBoxComponent implements OnInit {
   }
 
   public expandDescription(content: HTMLElement, description: HTMLElement) {
-    description.dataset['expanded'] = "true";
-    content.dataset['expanded'] = "true";
+    description.dataset['expanded'] = 'true';
+    content.dataset['expanded'] = 'true';
   }
 
   public collapseDescription(content: HTMLElement, description: HTMLElement) {
-    description.dataset['expanded'] = "false";
-    content.dataset['expanded'] = "false";
+    description.dataset['expanded'] = 'false';
+    content.dataset['expanded'] = 'false';
   }
 
   public updateAttendees(attendeesText: string) {

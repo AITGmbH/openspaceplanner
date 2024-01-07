@@ -1,22 +1,19 @@
-import {
-  Component, EventEmitter, Input,
-  Output, ViewChild
-} from "@angular/core";
-import { NgSelectComponent } from "@ng-select/ng-select";
-import { SessionService } from "../session/session.service";
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { NgSelectComponent } from '@ng-select/ng-select';
+import { SessionService } from '../session/session.service';
 import { Room, Topic } from '../shared/services/api';
 
 @Component({
-  selector: "app-topic-modal",
-  templateUrl: "./topic-modal.component.html",
-  styleUrls: ["topic-modal.component.css"],
+  selector: 'app-topic-modal',
+  templateUrl: './topic-modal.component.html',
+  styleUrls: ['topic-modal.component.css'],
 })
 export class TopicModalComponent {
   private _item: Topic = {} as Topic;
   private _capabilities: string[] = [];
 
   public selectedTab: string;
-  public feedback = "";
+  public feedback = '';
 
   @Output()
   public close = new EventEmitter();
@@ -34,7 +31,7 @@ export class TopicModalComponent {
     this._item = value;
   }
 
-  @ViewChild("capabilitiesElement", { static: false })
+  @ViewChild('capabilitiesElement', { static: false })
   public capabilitiesElement!: NgSelectComponent;
 
   public get capabilities() {
@@ -50,11 +47,7 @@ export class TopicModalComponent {
       const capabilities = this.sessionService.currentSession.rooms
         .map((r: Room) => r.capabilities)
         .reduce((a: string[], b: string[]) => a.concat(b))
-        .concat(
-          this.sessionService.currentSession.topics
-            .map((topic: Topic) => topic.demands)
-            .reduce((a: string[], b: string[]) => a.concat(b))
-        );
+        .concat(this.sessionService.currentSession.topics.map((topic: Topic) => topic.demands).reduce((a: string[], b: string[]) => a.concat(b)));
 
       this._capabilities = [...new Set(capabilities)] as string[];
     } catch {
@@ -65,7 +58,7 @@ export class TopicModalComponent {
   }
 
   constructor(private sessionService: SessionService) {
-    this.selectedTab = "topic";
+    this.selectedTab = 'topic';
   }
 
   public async save() {
@@ -86,22 +79,19 @@ export class TopicModalComponent {
   }
 
   public async addFeedback() {
-    if (this.feedback.trim() === "") {
+    if (this.feedback.trim() === '') {
       return;
     }
 
-    const feedback = await this.sessionService.updateTopicFeedback(
-      this.item.id,
-      this.feedback
-    );
+    const feedback = await this.sessionService.updateTopicFeedback(this.item.id, this.feedback);
     this.item.feedback.splice(0, 0, feedback);
   }
 
   public async deleteFeedback(id: string) {
-    if (confirm("Do you really want to delete this feedback?")) {
+    if (confirm('Do you really want to delete this feedback?')) {
       await this.sessionService.deleteTopicFeedback(this.item.id, id);
 
-      const index = this.item.feedback.findIndex(f => f.id === id);
+      const index = this.item.feedback.findIndex((f) => f.id === id);
       if (index >= 0) {
         this.item.feedback.splice(index, 1);
       }

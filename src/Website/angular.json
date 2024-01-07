@@ -84,20 +84,10 @@
           },
           "defaultConfiguration": "development"
         },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "openspace:build"
-          }
-        },
         "test": {
-          "builder": "@angular-devkit/build-angular:jest",
+          "builder": "@angular-builders/jest:run",
           "options": {
             "tsConfig": "tsconfig.spec.json",
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
             "scripts": [
               "node_modules/popper.js/dist/umd/popper.js",
               "node_modules/tippy.js/umd/index.js"
@@ -135,6 +125,9 @@
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": false,
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }

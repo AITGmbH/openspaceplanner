@@ -1,30 +1,25 @@
-import { SessionService } from "./session.service";
-import { HttpClient } from "@angular/common/http";
-import * as typemoq from "typemoq";
-import { of } from "rxjs";
+import { HttpClient } from '@angular/common/http';
+import { anyString, instance, mock, verify, when } from '@johanblumenberg/ts-mockito';
+import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
+import { of } from 'rxjs';
+import { SessionService } from './session.service';
 
-import { HubConnectionBuilder, HubConnection } from "@aspnet/signalr";
+const hubConnectionMock = mock(HubConnection);
+when(hubConnectionMock.start()).thenReturn(Promise.resolve());
 
-const hubConnectionMock = typemoq.Mock.ofType<HubConnection>();
-hubConnectionMock.setup(h => h.start()).returns(() => new Promise());
+const hubConnectionBuilderMock = mock(HubConnectionBuilder);
+when(hubConnectionBuilderMock.withUrl(anyString())).thenReturn(instance(hubConnectionBuilderMock));
+when(hubConnectionBuilderMock.build()).thenReturn(instance(hubConnectionMock));
 
-const hubConnectionBuilderMock = typemoq.Mock.ofType<HubConnectionBuilder>();
-hubConnectionBuilderMock.setup(h => h.withUrl(typemoq.It.isAny())).returns(() => hubConnectionBuilderMock.object);
-hubConnectionBuilderMock.setup(h => h.build()).returns(() => hubConnectionMock.object);
+describe('session service', () => {
+  it('get session should set it as the current session', async () => {
+    const httpClientMock = mock(HttpClient);
+    when(httpClientMock.get(anyString())).thenReturn(of(<Object>{ id: 5 }));
 
-HubConnectionBuilder.prototype = hubConnectionBuilderMock.object;
+    const sessionService = new SessionService(instance(httpClientMock), instance(hubConnectionBuilderMock));
+    const session = await sessionService.get(5);
 
-describe("session service", () => {
-    it("get session should set it as the current session", async () => {
-        const httpClientMock = typemoq.Mock.ofType<HttpClient>();
-        httpClientMock
-            .setup(h => h.get(typemoq.It.is(s => s === "/api/sessions/5")))
-            .returns(s => of(<Object>{ id: 5 }));
-
-        const sessionService = new SessionService(httpClientMock.object);
-        const session = await sessionService.get(5);
-
-        expect(sessionService.currentSession).toBe(session);
-        hubConnectionMock.verify(h => h.start(), typemoq.Times.once());
-    });
+    expect(sessionService.currentSession).toBe(session);
+    verify(hubConnectionMock.start()).once();
+  });
 });

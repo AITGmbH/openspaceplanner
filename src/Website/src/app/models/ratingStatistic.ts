@@ -6,7 +6,7 @@ export class RatingStatistic {
       return '-';
     }
 
-    const min = this.ratings.reduce((a, b) => a <= b.value ? a : b.value, 999);
+    const min = this.ratings.reduce((a, b) => (a <= b.value ? a : b.value), 999);
     return min != null ? min : '-';
   }
 
@@ -23,11 +23,11 @@ export class RatingStatistic {
       return '-';
     }
 
-    let array = this.ratings.map(r => r.value);
+    let array = this.ratings.map((r) => r.value);
     array = array.sort();
 
     if (array.length % 2 === 0) {
-      return (array[array.length / 2] + array[(array.length / 2) - 1]) / 2;
+      return (array[array.length / 2] + array[array.length / 2 - 1]) / 2;
     } else {
       return array[(array.length - 1) / 2];
     }
@@ -38,7 +38,7 @@ export class RatingStatistic {
       return '-';
     }
 
-    const max = this.ratings.reduce((a, b) => a >= b.value ? a : b.value, 1);
+    const max = this.ratings.reduce((a, b) => (a >= b.value ? a : b.value), 1);
     return max != null ? max : '-';
   }
 
@@ -46,5 +46,5 @@ export class RatingStatistic {
     return this.ratings.length;
   }
 
-  constructor(public ratings: Rating[] = []) { }
+  constructor(public ratings: Rating[] = []) {}
 }
