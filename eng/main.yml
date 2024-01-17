@@ -14,7 +14,7 @@ stages:
 
   - stage: Staging
     dependsOn: Build
-    condition: and(succeeded(), or(eq(variables['build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'Manual')))
+    condition: and(succeeded(), or(eq(variables['build.sourceBranch'], 'refs/heads/main'), eq(variables['Build.Reason'], 'Manual')))
     jobs:
       - deployment: Staging
         displayName: Deploy Web App
@@ -51,7 +51,7 @@ stages:
 
   - stage: Production
     dependsOn: Staging
-    condition: and(succeeded(), or(eq(variables['build.sourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'Manual')))
+    condition: and(succeeded(), or(eq(variables['build.sourceBranch'], 'refs/heads/main'), eq(variables['Build.Reason'], 'Manual')))
     jobs:
       - deployment: Production
         displayName: Deploy Web App
