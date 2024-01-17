@@ -16,7 +16,7 @@
     </a>
 
     @if (currentTab === 'board') {
-      @if (canVote()) {
+      @if (canVote() || votingIsOver()) {
         <div class="session-tab">
           <a (click)="switchTab('voting')"> <fa-icon [icon]="['fas', 'table']"></fa-icon> Go to topic voting </a>
         </div>
@@ -100,12 +100,16 @@
         <a (click)="switchTab('board')"> <fa-icon [icon]="['fas', 'chalkboard']" size="lg"></fa-icon> Go to board </a>
       </div>
 
-      <div><fa-icon [icon]="['fas', 'check-to-slot']"></fa-icon> You used {{ votesUsed }} out of {{ session.votingOptions.maxNumberOfVotes }} votes. You can vote {{ session.votingOptions.maxVotesPerTopic }} times on the same topic.</div>
-      @if (session.votingOptions.blindVotingEnabled) {
-        <div><fa-icon [icon]="['fas', 'ghost']"></fa-icon> Blind voting is enabled. You can only see your votes. There are already {{ votesUsedTotal }} votes in total.</div>
-      }
-      @if (session.votingOptions.votingEndDateTimeUtc != null) {
-        <div><fa-icon [icon]="['fas', 'clock']"></fa-icon> The voting will end at {{ session.votingOptions.votingEndDateTimeUtc | date: 'dd.MM.yyyy HH:mm' }}.</div>
+      @if (votingIsOver()) {
+        <div><fa-icon [icon]="['fas', 'check-to-slot']"></fa-icon> The voting has ended. You can now see the results.</div>
+      } @else {
+        <div><fa-icon [icon]="['fas', 'check-to-slot']"></fa-icon> You used {{ votesUsed }} out of {{ session.votingOptions.maxNumberOfVotes }} votes. You can vote {{ session.votingOptions.maxVotesPerTopic }} times on the same topic.</div>
+        @if (session.votingOptions.blindVotingEnabled) {
+          <div><fa-icon [icon]="['fas', 'ghost']"></fa-icon> Blind voting is enabled. You can only see your votes. There are already {{ votesUsedTotal }} votes in total.</div>
+        }
+        @if (session.votingOptions.votingEndDateTimeUtc != null) {
+          <div><fa-icon [icon]="['fas', 'clock']"></fa-icon> The voting will end at {{ session.votingOptions.votingEndDateTimeUtc | date: 'dd.MM.yyyy HH:mm' }}.</div>
+        }
       }
 
       @if (session.topics.length === 0) {
@@ -114,7 +118,9 @@
         <table class="table is-striped is-fullwidth is-hoverable">
           <thead>
             <tr>
-              <th style="width: 5%"></th>
+              @if (canVote()) {
+                <th style="width: 5%"></th>
+              }
               <th style="width: 3%"></th>
               <th style="width: 90%">Name</th>
               <th style="width: 2%">Votes</th>
@@ -122,10 +128,12 @@
           </thead>
           <tbody>
             <tr *ngFor="let topic of topicsVoting">
-              <td>
-                <a (click)="addTopicVote(topic.id)" [style.visibility]="canAddVote(topic.id) ? 'visible' : 'hidden'"><fa-icon [icon]="['fas', 'plus']"></fa-icon></a>
-                <a (click)="deleteTopicVote(topic.id)" [style.visibility]="canDeleteVote(topic.id) ? 'visible' : 'hidden'" class="pl-2"><fa-icon [icon]="['fas', 'minus']"></fa-icon></a>
-              </td>
+              @if (canVote()) {
+                <td>
+                  <a (click)="addTopicVote(topic.id)" [style.visibility]="canAddVote(topic.id) ? 'visible' : 'hidden'"><fa-icon [icon]="['fas', 'plus']"></fa-icon></a>
+                  <a (click)="deleteTopicVote(topic.id)" [style.visibility]="canDeleteVote(topic.id) ? 'visible' : 'hidden'" class="pl-2"><fa-icon [icon]="['fas', 'minus']"></fa-icon></a>
+                </td>
+              }
               <td class="text-right">{{ getTopicPosition(topic.id) }}</td>
               <td>{{ topic.name }}</td>
               <td class="text-right">{{ getTopicVotes(topic.id) }}</td>

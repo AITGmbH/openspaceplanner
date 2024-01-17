@@ -189,15 +189,18 @@ export class SessionService {
 
   public async updateTopicRating(topicId: string, value: number): Promise<Rating> {
     const topicRating = this.sessionOptions.topicsRating[topicId];
-    const id = topicRating != null && !this.currentSession.freeForAll ? topicRating.id : getRandomId();
-    const rating = <Rating>{ id, value };
 
-    this.sessionOptions.topicsRating[topicId] = { id, value: value };
-    this.saveSessionOptions();
+    const request =
+      topicRating != null && !this.currentSession.freeForAll
+        ? this.sessionTopicsRatingService.updateTopicRating(this.currentSession.id, topicId, topicRating.id, { id: topicRating.id, value })
+        : this.sessionTopicsRatingService.createTopicRating(this.currentSession.id, topicId, { value });
 
-    const request = rating.id != null ? this.sessionTopicsRatingService.updateTopicRating(this.currentSession.id, topicId, rating.id, rating) : this.sessionTopicsRatingService.createTopicRating(this.currentSession.id, topicId, rating);
+    const rating = await lastValueFrom(request);
 
-    await lastValueFrom(request);
+    if (!this.currentSession.freeForAll) {
+      this.sessionOptions.topicsRating[topicId] = rating;
+      this.saveSessionOptions();
+    }
 
     return this.updateInternal(this.getTopic(topicId)?.ratings ?? [], rating);
   }
@@ -217,12 +220,9 @@ export class SessionService {
   }
 
   public async updateTopicFeedback(topicId: string, value: string): Promise<Feedback> {
-    const id = getRandomId();
-    const feedback = <Feedback>{ id, value };
+    const request = this.sessionTopicsFeedbackService.createTopicFeedback(this.currentSession.id, topicId, { value });
 
-    const request = this.sessionTopicsFeedbackService.createTopicFeedback(this.currentSession.id, topicId, feedback);
-
-    await lastValueFrom(request);
+    const feedback = await lastValueFrom(request);
     return this.updateInternal(this.getTopic(topicId)?.feedback ?? [], feedback);
   }
 

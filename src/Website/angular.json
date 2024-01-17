@@ -26,7 +26,6 @@
             "polyfills": "src/polyfills.ts",
             "assets": ["src/assets"],
             "styles": ["src/styles.css", "node_modules/bulma/css/bulma.css"],
-            "scripts": ["node_modules/@fortawesome/fontawesome-svg-core/index.js", "node_modules/@fortawesome/free-solid-svg-icons/index.js"],
             "allowedCommonJsDependencies": ["interactjs"],
             "stylePreprocessorOptions": {
               "includePaths": ["./node_modules"]

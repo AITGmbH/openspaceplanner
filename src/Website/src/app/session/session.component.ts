@@ -195,6 +195,17 @@ export class SessionComponent implements OnInit, OnDestroy {
     return votingEnabled && votingNotStartedYet;
   }
 
+  public votingIsOver() {
+    if (this.session == null) {
+      return false;
+    }
+
+    const votingEnabled = this.session.votingOptions.votingEnabled;
+    const votingEnded = this.session.votingOptions.votingEndDateTimeUtc != null && new Date(this.session.votingOptions.votingEndDateTimeUtc) < new Date();
+
+    return votingEnabled && votingEnded;
+  }
+
   public canAddVote(topicId: string) {
     if (this.session == null) {
       return false;
@@ -228,7 +239,8 @@ export class SessionComponent implements OnInit, OnDestroy {
       return 0;
     }
 
-    const votesUsedOnTopic = this.session.votingOptions.blindVotingEnabled ? this.sessionService.sessionOptions.topicsVote[topicId]?.length ?? 0 : this.session.topics.find((t) => t.id === topicId)?.votes?.length ?? 0;
+    const votesUsedOnTopic =
+      this.session.votingOptions.blindVotingEnabled && !this.votingIsOver() ? this.sessionService.sessionOptions.topicsVote[topicId]?.length ?? 0 : this.session.topics.find((t) => t.id === topicId)?.votes?.length ?? 0;
     return votesUsedOnTopic;
   }
 
