@@ -23,6 +23,7 @@ type SessionTab = 'board' | 'voting';
 })
 export class SessionComponent implements OnInit, OnDestroy {
   private _topics?: TopicLookup | null;
+  private _topicsVoting?: Topic[] | null;
   private _subscriptions = new Subscription();
 
   public isLoading = signal(false);
@@ -40,7 +41,12 @@ export class SessionComponent implements OnInit, OnDestroy {
       return [];
     }
 
-    return this.session.topics.sort((a, b) => (this.getTopicVotes(b.id) > this.getTopicVotes(a.id) ? 1 : -1));
+    if (this._topicsVoting != null) {
+      return this._topicsVoting;
+    }
+
+    this._topicsVoting = this.session.topics.sort((a, b) => (this.getTopicVotes(b.id) > this.getTopicVotes(a.id) ? 1 : -1));
+    return this._topicsVoting;
   }
 
   public get votesUsed(): number {
@@ -102,6 +108,7 @@ export class SessionComponent implements OnInit, OnDestroy {
     this._subscriptions.add(
       this.sessionService.sessionChanged.subscribe(() => {
         this.refreshTopics();
+        this.refreshVotings();
 
         this.session = this.sessionService.currentSession;
       }),
@@ -704,5 +711,9 @@ export class SessionComponent implements OnInit, OnDestroy {
 
   private refreshTopics() {
     this._topics = null;
+  }
+
+  private refreshVotings() {
+    this._topicsVoting = null;
   }
 }
