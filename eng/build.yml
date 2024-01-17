@@ -60,7 +60,7 @@ stages:
               modifyOutputPath: false
               zipAfterPublish: false
               publishWebProjects: false
-              arguments: --configuration Release --output $(Build.ArtifactStagingDirectory) --no-build
+              arguments: --configuration Release --output $(Build.ArtifactStagingDirectory) --no-restore
               workingDirectory: src/WebApi
 
           - publish: $(Build.ArtifactStagingDirectory)
