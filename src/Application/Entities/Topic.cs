@@ -20,4 +20,4 @@ public record Topic(
     public ICollection<Feedback> Feedback { get; init; } = Feedback ?? new List<Feedback>();
 
     public ICollection<Rating> Ratings { get; init; } = Ratings ?? new List<Rating>();
-};
+}
