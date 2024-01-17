@@ -1,29 +1,28 @@
 image: gitpod/workspace-dotnet
 
 tasks:
-    - name: Frontend
-      init: |
-          cd src/Website
-          npm ci --legacy-peer-deps
-          npm run build:dev
-          gp sync-done frontend
-      command: |
-          gp url 5000
-          npm run watch
+  - name: Frontend
+    init: |
+      cd src/Website
+      npm ci
+    command: |
+      gp url 4200
+      npm run start
 
-    - name: Backend
-      init: |
-          dotnet restore
-          cd src/WebApi
-          dotnet build
-          gp sync-await frontend
-      command: |
-          gp url 6000
-          sleep 60
-          dotnet watch run
-      openMode: split-right
+  - name: Backend
+    init: |
+      curl https://download.visualstudio.microsoft.com/download/pr/01292c7c-a1ec-4957-90fc-3f6a2a1e5edc/025e84c4d9bd4aeb003d4f07b42e9159/dotnet-sdk-6.0.418-linux-x64.tar.gz --output sdk.tar.gz
+      tar --skip-old-files -zxf sdk.tar.gz -C /home/gitpod/dotnet
+      dotnet tool restore
+      cd src/WebApi
+    command: |
+      gp url 8080
+      dotnet watch run
+    openMode: split-right
 
 ports:
-    - port: 5000
-      onOpen: open-browser
-      visibility: public
+  - port: 4200
+    onOpen: open-browser
+    visibility: public
+  - port: 8080
+    visibility: public

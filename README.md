@@ -10,7 +10,12 @@ This tool allows you to plan, for example, fully packed conference days, which c
 
 After cloning the project:
 
-1. Restore packages
+1. Install the [.NET 6 and 8 SDKs](https://dotnet.microsoft.com/en-us/download/dotnet)  
+The .NET 6 SDK is required for the .NET tools.
+
+2. Install the [NodeJS 20 SDK](https://nodejs.org/en/download)
+
+3. Restore tools and packages
 
 ```bash
 dotnet tool restore
@@ -18,7 +23,7 @@ cd src/WebApi && dotnet restore
 cd src/Website && npm ci
 ```
 
-1. Optional: Add Azure Storage Credentials (_otherwise the data will be saved in a local file_)  
+4. Optional: Add Azure Storage Credentials (_otherwise the data will be saved in a local file_)  
     `dotnet user-secrets set TableStorageAccount <account>`  
     `dotnet user-secrets set TableStorageKey <key>`  
     `dotnet user-secrets set TableStorageContainer <container>` (_optional, otherwise the container will be named database_)
