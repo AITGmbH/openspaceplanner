@@ -11,6 +11,7 @@ public record Topic(
     ICollection<string>? Demands = null,
     ICollection<Feedback>? Feedback = null,
     ICollection<Rating>? Ratings = null,
+    ICollection<string>? Votes = null,
     int Slots = 1)
 {
     public ICollection<Attendance> Attendees { get; init; } = Attendees ?? new List<Attendance>();
@@ -20,4 +21,6 @@ public record Topic(
     public ICollection<Feedback> Feedback { get; init; } = Feedback ?? new List<Feedback>();
 
     public ICollection<Rating> Ratings { get; init; } = Ratings ?? new List<Rating>();
+
+    public ICollection<string> Votes { get; init; } = Votes ?? new List<string>();
 }

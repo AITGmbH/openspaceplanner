@@ -16,6 +16,7 @@ import {
   SessionTopicsFeedbackService,
   SessionTopicsRatingService,
   SessionTopicsService,
+  SessionTopicsVotesService,
   SessionsService,
   Slot,
   Topic,
@@ -38,6 +39,9 @@ export class SessionService {
     try {
       this._sessionOptions = JSON.parse(localStorage.getItem(`sessions${this.currentSession.id}`) ?? '') || new SessionOptions();
       this._sessionOptions = Object.assign(new SessionOptions(), this._sessionOptions);
+
+      this.syncSessionOptions();
+
       this.saveSessionOptions();
     } catch {
       this._sessionOptions = new SessionOptions();
@@ -55,6 +59,7 @@ export class SessionService {
     private readonly sessionTopicsAttendanceService: SessionTopicsAttendanceService,
     private readonly sessionTopicsRatingService: SessionTopicsRatingService,
     private readonly sessionTopicsFeedbackService: SessionTopicsFeedbackService,
+    private readonly sessionTopicsVotesService: SessionTopicsVotesService,
     private readonly hubConnectionBuilder: HubConnectionBuilder,
   ) {}
 
@@ -184,26 +189,40 @@ export class SessionService {
 
   public async updateTopicRating(topicId: string, value: number): Promise<Rating> {
     const topicRating = this.sessionOptions.topicsRating[topicId];
-    const id = topicRating != null && !this.currentSession.freeForAll ? topicRating.id : getRandomId();
-    const rating = <Rating>{ id, value };
 
-    this.sessionOptions.topicsRating[topicId] = { id, value: value };
-    this.saveSessionOptions();
+    const request =
+      topicRating != null && !this.currentSession.freeForAll
+        ? this.sessionTopicsRatingService.updateTopicRating(this.currentSession.id, topicId, topicRating.id, { id: topicRating.id, value })
+        : this.sessionTopicsRatingService.createTopicRating(this.currentSession.id, topicId, { value });
 
-    const request = rating.id != null ? this.sessionTopicsRatingService.updateTopicRating(this.currentSession.id, topicId, rating.id, rating) : this.sessionTopicsRatingService.createTopicRating(this.currentSession.id, topicId, rating);
+    const rating = await lastValueFrom(request);
 
-    await lastValueFrom(request);
+    if (!this.currentSession.freeForAll) {
+      this.sessionOptions.topicsRating[topicId] = rating;
+      this.saveSessionOptions();
+    }
 
     return this.updateInternal(this.getTopic(topicId)?.ratings ?? [], rating);
   }
 
-  public async updateTopicFeedback(topicId: string, value: string): Promise<Feedback> {
-    const id = getRandomId();
-    const feedback = <Feedback>{ id, value };
-
-    const request = this.sessionTopicsFeedbackService.createTopicFeedback(this.currentSession.id, topicId, feedback);
-
+  public async updateTopicVote(topicId: string) {
+    const voteId = getRandomId();
+    const request = this.sessionTopicsVotesService.createTopicVote(this.currentSession.id, topicId, voteId);
     await lastValueFrom(request);
+
+    if (this.sessionOptions.topicsVote[topicId] == null) {
+      this.sessionOptions.topicsVote[topicId] = [];
+    }
+    this.sessionOptions.topicsVote[topicId].push(voteId);
+    this.saveSessionOptions();
+
+    this.sessionHasChanged();
+  }
+
+  public async updateTopicFeedback(topicId: string, value: string): Promise<Feedback> {
+    const request = this.sessionTopicsFeedbackService.createTopicFeedback(this.currentSession.id, topicId, { value });
+
+    const feedback = await lastValueFrom(request);
     return this.updateInternal(this.getTopic(topicId)?.feedback ?? [], feedback);
   }
 
@@ -243,6 +262,20 @@ export class SessionService {
     return this.deleteInternal(this.getTopic(topicId)?.attendees ?? [], attendanceId);
   }
 
+  public async deleteTopicVote(topicId: string) {
+    if (this.sessionOptions.topicsVote[topicId] == null) {
+      return;
+    }
+
+    const voteId = this.sessionOptions.topicsVote[topicId][0];
+    await lastValueFrom(this.sessionTopicsVotesService.deleteTopicVote(this.currentSession.id, topicId, voteId));
+
+    this.sessionOptions.topicsVote[topicId] = this.sessionOptions.topicsVote[topicId].filter((v) => v !== voteId) ?? [];
+    this.saveSessionOptions();
+
+    this.sessionHasChanged();
+  }
+
   public async deleteTopicFeedback(topicId: string, feedbackId: string): Promise<void> {
     await lastValueFrom(this.sessionTopicsFeedbackService.deleteTopicFeedback(this.currentSession.id, topicId, feedbackId));
     return this.deleteInternal(this.getTopic(topicId)?.feedback ?? [], feedbackId);
@@ -254,6 +287,10 @@ export class SessionService {
 
   public async resetAttendance() {
     await lastValueFrom(this.sessionsService.deleteSessionAttendances(this.currentSession.id));
+  }
+
+  public async resetTopicVotes() {
+    await lastValueFrom(this.sessionsService.deleteSessionVotes(this.currentSession.id));
   }
 
   public async deleteTopicRating(topicId: string): Promise<void> {
@@ -315,7 +352,7 @@ export class SessionService {
       arr.push(obj);
     }
 
-    this.sessionChanged.next(this.currentSession);
+    this.sessionHasChanged();
 
     return obj;
   }
@@ -326,7 +363,7 @@ export class SessionService {
       obj.splice(index, 1);
     }
 
-    this.sessionChanged.next(this.currentSession);
+    this.sessionHasChanged();
   }
 
   private getTopic(topicId: string) {
@@ -348,5 +385,85 @@ export class SessionService {
     this._hubConnection.start().catch(() => {
       console.warn('Error while establishing connection');
     });
+  }
+
+  private sessionHasChanged() {
+    this.syncSessionOptions();
+
+    this.sessionChanged.next(this.currentSession);
+  }
+
+  private syncSessionOptions() {
+    if (this._sessionOptions == null) {
+      return;
+    }
+
+    for (const topic of this.currentSession.topics) {
+      const topicId = topic.id;
+
+      // check if the topic attendance was reset but is still remaining in the browser storage
+      this.syncSessionOptionsTopicAttendance(topicId, topic);
+
+      // check if the topic rating was reset but is still remaining in the browser storage
+      this.syncSessionOptionsTopicRating(topicId, topic);
+
+      // check if the topic vote was reset but is still remaining in the browser storage
+      this.syncSessionOptionsTopicVotes(topicId, topic);
+    }
+
+    this.syncSessionOptionsVotes();
+  }
+
+  private syncSessionOptionsVotes() {
+    if (this._sessionOptions == null) {
+      return;
+    }
+
+    for (const topicId of Object.keys(this._sessionOptions.topicsVote)) {
+      const topicExists = this.currentSession.topics.find((t) => t.id === topicId);
+      if (!topicExists) {
+        // if we voted for a topic that does no longer exist, we reset the votes for the user
+        delete this._sessionOptions.topicsVote[topicId];
+      }
+    }
+  }
+
+  private syncSessionOptionsTopicVotes(topicId: string, topic: Topic) {
+    if (this._sessionOptions == null) {
+      return;
+    }
+
+    const topicVotes = this._sessionOptions.topicsVote[topicId];
+    if (topicVotes != null && topicVotes.length > 0) {
+      this._sessionOptions.topicsVote[topicId] = this._sessionOptions.topicsVote[topicId].filter((voteId) => topic.votes.includes(voteId));
+    }
+  }
+
+  private syncSessionOptionsTopicRating(topicId: string, topic: Topic) {
+    if (this._sessionOptions == null) {
+      return;
+    }
+
+    const topicRating = this._sessionOptions.topicsRating[topicId];
+    if (topicRating != null) {
+      const topicRatingExists = topic.ratings.findIndex((a) => a.id === topicRating.id) >= 0;
+      if (!topicRatingExists) {
+        delete this._sessionOptions.topicsRating[topicId];
+      }
+    }
+  }
+
+  private syncSessionOptionsTopicAttendance(topicId: string, topic: Topic) {
+    if (this._sessionOptions == null) {
+      return;
+    }
+
+    const topicAttendance = this._sessionOptions.topicsAttending[topicId];
+    if (topicAttendance != null) {
+      const topicAttendanceExists = topic.attendees.findIndex((a) => a.id === topicAttendance.id) >= 0;
+      if (!topicAttendanceExists) {
+        delete this._sessionOptions.topicsAttending[topicId];
+      }
+    }
   }
 }

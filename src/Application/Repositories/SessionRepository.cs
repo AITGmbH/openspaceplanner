@@ -1,6 +1,6 @@
+using System.Text.Json;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
-using Newtonsoft.Json;
 using OpenSpace.Application.Configurations;
 
 namespace OpenSpace.Application.Repositories;
@@ -8,6 +8,13 @@ namespace OpenSpace.Application.Repositories;
 public class SessionRepository : SessionRepositoryBase
 {
     private readonly CloudBlobContainer _container;
+    private readonly JsonSerializerOptions _serializerOptions = new()
+    {
+        AllowTrailingCommas = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
+        PropertyNameCaseInsensitive = true,
+    };
 
     public SessionRepository(BlobStorageConfiguration configuration)
     {
@@ -27,6 +34,6 @@ public class SessionRepository : SessionRepositoryBase
     protected override void Save()
     {
         var blockBlob = _container.GetBlockBlobReference("sessions");
-        blockBlob.UploadTextAsync(JsonConvert.SerializeObject(Sessions.ToArray()));
+        blockBlob.UploadTextAsync(JsonSerializer.Serialize(Sessions.ToArray(), _serializerOptions));
     }
 }

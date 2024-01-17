@@ -26,5 +26,6 @@ export interface Topic {
     demands: Array<string>;
     feedback: Array<Feedback>;
     ratings: Array<Rating>;
+    votes: Array<string>;
 }
 

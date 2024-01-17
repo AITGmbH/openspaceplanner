@@ -7,11 +7,14 @@ public record Session(
     ICollection<Room>? Rooms,
     ICollection<Slot>? Slots,
     ICollection<Topic>? Topics,
-    bool VotingEnabled = false,
+    VotingOptions? VotingOptions,
+    bool RatingEnabled = false,
     bool FreeForAll = false,
     bool AttendanceEnabled = true,
     bool TeamsAnnouncementsEnabled = false)
 {
+    public VotingOptions VotingOptions { get; init; } = VotingOptions ?? new VotingOptions();
+
     public string CreatedAt { get; init; } = CreatedAt ?? DateTimeOffset.UtcNow.ToString();
 
     public ICollection<Room> Rooms { get; init; } = Rooms ?? new List<Room>();

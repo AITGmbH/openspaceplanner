@@ -11,16 +11,18 @@
  */
 import { Slot } from './slot';
 import { Topic } from './topic';
+import { VotingOptions } from './votingOptions';
 import { Room } from './room';
 
 
 export interface Session { 
     id: number;
     name: string;
-    votingEnabled: boolean;
+    ratingEnabled: boolean;
     freeForAll: boolean;
     attendanceEnabled: boolean;
     teamsAnnouncementsEnabled: boolean;
+    votingOptions: VotingOptions;
     createdAt: string;
     rooms: Array<Room>;
     slots: Array<Slot>;

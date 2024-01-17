@@ -31,3 +31,15 @@
 .drop-target {
   background-color: lightyellow;
 }
+
+.clear-both {
+  clear: both;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+.pull-right {
+  float: right !important;
+}

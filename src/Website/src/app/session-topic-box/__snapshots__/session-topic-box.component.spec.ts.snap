@@ -25,11 +25,28 @@ exports[`session topic box should set error message when there is one owner with
         <div
           class="topic-title"
         >
-          <span>
-            <span
-              aria-expanded="false"
-              class="fa fa-exclamation-triangle topic-error"
-            />
+          <span
+            aria-expanded="false"
+          >
+            <fa-icon
+              class="ng-fa-icon topic-error"
+            >
+              <svg
+                aria-hidden="true"
+                class="svg-inline--fa fa-dummy"
+                data-icon="dummy"
+                data-prefix="fad"
+                focusable="false"
+                role="img"
+                viewBox="0 0 512 512"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M50 50 H462 V462 H50 Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </fa-icon>
           </span>
           <strong>
             
@@ -65,9 +82,25 @@ exports[`session topic box should set error message when there is one owner with
           <div
             aria-expanded="false"
           >
-            <span
-              class="fa fa-star"
-            />
+            <fa-icon
+              class="ng-fa-icon"
+            >
+              <svg
+                aria-hidden="true"
+                class="svg-inline--fa fa-dummy"
+                data-icon="dummy"
+                data-prefix="fad"
+                focusable="false"
+                role="img"
+                viewBox="0 0 512 512"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M50 50 H462 V462 H50 Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </fa-icon>
             <span
               class="topic-ratings-value"
             >
@@ -86,15 +119,49 @@ exports[`session topic box should set error message when there is one owner with
         class="topic-edit-button"
       >
         <a>
-          <i
-            class="fa fa-edit edit-button"
-          />
+          <fa-icon
+            class="ng-fa-icon edit-button"
+          >
+            <svg
+              aria-hidden="true"
+              class="svg-inline--fa fa-dummy"
+              data-icon="dummy"
+              data-prefix="fad"
+              focusable="false"
+              role="img"
+              viewBox="0 0 512 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M50 50 H462 V462 H50 Z"
+                fill="currentColor"
+              />
+            </svg>
+          </fa-icon>
         </a>
         
         <a>
-          <i
-            class="fa fa-heart edit-button"
-          />
+          <fa-icon
+            class="ng-fa-icon edit-button"
+          >
+            <svg
+              aria-hidden="true"
+              class="svg-inline--fa fa-dummy"
+              data-icon="dummy"
+              data-prefix="fad"
+              focusable="false"
+              role="img"
+              viewBox="0 0 512 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M50 50 H462 V462 H50 Z"
+                fill="currentColor"
+              />
+            </svg>
+          </fa-icon>
+          
+          
         </a>
       </p>
     </div>

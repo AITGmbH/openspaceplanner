@@ -9,6 +9,7 @@ import { Session, Topic } from '../shared/services/api';
 @Component({
   selector: 'app-session-modal',
   templateUrl: './session-modal.component.html',
+  styleUrl: 'session-modal.component.scss',
 })
 export class SessionModalComponent implements OnInit {
   private _item: Session = {} as Session;
@@ -128,6 +129,12 @@ export class SessionModalComponent implements OnInit {
   public resetAttendance() {
     if (confirm('Do you really want to reset the attendance?')) {
       this.sessionService.resetAttendance();
+    }
+  }
+
+  public resetTopicVotes() {
+    if (confirm('Do you really want to reset the topic votes?')) {
+      this.sessionService.resetTopicVotes();
     }
   }
 

@@ -14,6 +14,7 @@ import { Room, Session, Slot, Topic } from '../shared/services/api';
 import { SessionService } from './session.service';
 
 type TopicLookup = { [slotId: string]: (Topic | null)[] };
+type SessionTab = 'board' | 'voting';
 
 @Component({
   selector: 'app-session',
@@ -31,24 +32,65 @@ export class SessionComponent implements OnInit, OnDestroy {
   @ViewChild('floatingActionButton')
   public floatingActionButton!: ElementRef<any>;
 
-  public session!: Session;
+  public session?: Session;
+  public currentTab: SessionTab = 'board';
+
+  public get topicsVoting() {
+    if (this.session == null) {
+      return [];
+    }
+
+    return this.session.topics.sort((a, b) => (this.getTopicVotes(b.id) > this.getTopicVotes(a.id) ? 1 : -1));
+  }
+
+  public get votesUsed(): number {
+    return Object.values(this.sessionService.sessionOptions.topicsVote).reduce((accumulator, topicVotes) => accumulator + topicVotes.length, 0);
+  }
+
+  public get votesUsedTotal(): number {
+    if (this.session == null) {
+      return 0;
+    }
+
+    return this.session.topics.reduce((accumulator, topic) => accumulator + topic.votes.length, 0);
+  }
 
   public get unassignedTopics(): Topic[] {
-    return this.session.topics
-      .filter((t) => t.roomId == null || t.slotId == null)
-      .sort((a, b) => b.owner?.localeCompare(a.owner ?? '') || b.name?.localeCompare(a.name))
-      .reverse();
+    if (this.session == null) {
+      return [];
+    }
+
+    const sortedUnassignedTopics = this.session.votingOptions.votingEnabled
+      ? (this.topicsVoting.filter((t) => t.roomId == null || t.slotId == null) as Topic[])
+      : this.session.topics
+          .filter((t) => t.roomId == null || t.slotId == null)
+          .sort((a, b) => b.owner?.localeCompare(a.owner ?? '') || b.name?.localeCompare(a.name))
+          .reverse();
+
+    return sortedUnassignedTopics;
   }
 
   public get slots(): Slot[] {
+    if (this.session == null) {
+      return [];
+    }
+
     return this.sessionService.getSortedSlots(this.session.slots);
   }
 
   public get rooms(): Room[] {
+    if (this.session == null) {
+      return [];
+    }
+
     return this.sessionService.getSortedRooms(this.session.rooms);
   }
 
   public get calendarLink() {
+    if (this.session == null) {
+      return '';
+    }
+
     return `${environment.apiUrl}/api/sessions/${this.session.id}/calendar`;
   }
 
@@ -114,8 +156,116 @@ export class SessionComponent implements OnInit, OnDestroy {
     interact('.dropable').unset();
   }
 
+  public switchTab(tab: SessionTab) {
+    this.currentTab = tab;
+  }
+
   public navigateToOverview() {
     this.router.navigate(['session/', this.sessionService.currentSession.id, 'overview']);
+  }
+
+  public addTopicVote(topicId: string) {
+    return this.sessionService.updateTopicVote(topicId);
+  }
+
+  public deleteTopicVote(topicId: string) {
+    return this.sessionService.deleteTopicVote(topicId);
+  }
+
+  public canVote() {
+    if (this.session == null) {
+      return false;
+    }
+
+    const votingEnabled = this.session.votingOptions.votingEnabled;
+    const votingStarted = this.session.votingOptions.votingStartDateTimeUtc == null || new Date(this.session.votingOptions.votingStartDateTimeUtc) <= new Date();
+    const votingNotEnded = this.session.votingOptions.votingEndDateTimeUtc == null || new Date(this.session.votingOptions.votingEndDateTimeUtc) >= new Date();
+
+    return votingEnabled && votingStarted && votingNotEnded;
+  }
+
+  public canVoteInFuture() {
+    if (this.session == null) {
+      return false;
+    }
+
+    const votingEnabled = this.session.votingOptions.votingEnabled;
+    const votingNotStartedYet = this.session.votingOptions.votingStartDateTimeUtc != null && new Date(this.session.votingOptions.votingStartDateTimeUtc) > new Date();
+
+    return votingEnabled && votingNotStartedYet;
+  }
+
+  public votingIsOver() {
+    if (this.session == null) {
+      return false;
+    }
+
+    const votingEnabled = this.session.votingOptions.votingEnabled;
+    const votingEnded = this.session.votingOptions.votingEndDateTimeUtc != null && new Date(this.session.votingOptions.votingEndDateTimeUtc) < new Date();
+
+    return votingEnabled && votingEnded;
+  }
+
+  public canAddVote(topicId: string) {
+    if (this.session == null) {
+      return false;
+    }
+
+    const votesUsed = this.votesUsed;
+    const votesUsedOnTopic = this.sessionService.sessionOptions.topicsVote[topicId]?.length ?? 0;
+
+    const hasRemainingVotes = votesUsed < this.session.votingOptions.maxNumberOfVotes && votesUsedOnTopic < this.session.votingOptions.maxVotesPerTopic;
+
+    return this.canVote() && hasRemainingVotes;
+  }
+
+  public canDeleteVote(topicId: string) {
+    if (this.session == null) {
+      return false;
+    }
+
+    const votesUsedOnTopic = this.sessionService.sessionOptions.topicsVote[topicId]?.length ?? 0;
+
+    const votingEnabled = this.session.votingOptions.votingEnabled;
+    const votingStarted = this.session.votingOptions.votingStartDateTimeUtc == null || new Date(this.session.votingOptions.votingStartDateTimeUtc) <= new Date();
+    const votingNotEnded = this.session.votingOptions.votingEndDateTimeUtc == null || new Date(this.session.votingOptions.votingEndDateTimeUtc) >= new Date();
+    const hasRemainingVotes = votesUsedOnTopic > 0;
+
+    return votingEnabled && votingStarted && votingNotEnded && hasRemainingVotes;
+  }
+
+  public getTopicVotes(topicId: string) {
+    if (this.session == null) {
+      return 0;
+    }
+
+    const votesUsedOnTopic =
+      this.session.votingOptions.blindVotingEnabled && !this.votingIsOver() ? this.sessionService.sessionOptions.topicsVote[topicId]?.length ?? 0 : this.session.topics.find((t) => t.id === topicId)?.votes?.length ?? 0;
+    return votesUsedOnTopic;
+  }
+
+  public getTopicPosition(topicId: string) {
+    const topics = this.topicsVoting;
+    let position = 1;
+
+    for (let topicIndex = 0; topicIndex < topics.length; topicIndex++) {
+      const previousTopic = topicIndex > 0 ? topics[topicIndex - 1] : null;
+      const currentTopic = topics[topicIndex];
+
+      if (previousTopic != null) {
+        const topicCount = this.getTopicVotes(currentTopic.id);
+        const previousTopicCount = this.getTopicVotes(previousTopic.id);
+        if (previousTopicCount !== topicCount) {
+          position++;
+        }
+      }
+
+      if (currentTopic.id === topicId) {
+        return position;
+      }
+    }
+
+    return position;
   }
 
   public showModal($event: any, name: string, parameter: any) {
@@ -165,8 +315,8 @@ export class SessionComponent implements OnInit, OnDestroy {
       if (!this.hasModalParent(event.target as Element)) {
         this.hideModal(openModal);
       }
-    } else {
-      this.floatingActionButton.nativeElement['expanded'] = false;
+    } else if (this.floatingActionButton != null) {
+      this.floatingActionButton.nativeElement.dataset['expanded'] = 'false';
     }
   }
 
@@ -317,6 +467,10 @@ export class SessionComponent implements OnInit, OnDestroy {
   }
 
   private *getTopicsInRoom(roomId: string) {
+    if (this.session == null) {
+      return;
+    }
+
     const topics = this.session.topics.filter((topic) => topic.roomId === roomId);
 
     let previousTopic: Topic | null = null;
@@ -400,6 +554,10 @@ export class SessionComponent implements OnInit, OnDestroy {
   }
 
   private getTopicByElement(element: Element | null) {
+    if (this.session == null) {
+      return null;
+    }
+
     if (element == null) {
       return null;
     }
@@ -458,19 +616,26 @@ export class SessionComponent implements OnInit, OnDestroy {
   }
 
   public getTopics(slotId: string, roomId: string) {
+    if (this.session == null) {
+      return [];
+    }
+
     return this.session.topics.filter((topic) => topic.slotId === slotId && topic.roomId === roomId);
   }
 
   public get topics(): TopicLookup {
+    const topics: TopicLookup = {};
     if (this._topics != null) {
-      return this._topics;
+      return this._topics || topics;
     }
 
-    const topics: TopicLookup = {};
+    if (this.session == null) {
+      return topics;
+    }
 
     for (const slot of this.slots) {
       const slotTopics = this.rooms.map((room) => {
-        let topic = this.session.topics.find((t) => t.slotId === slot.id && t.roomId === room.id);
+        let topic = this.session!.topics.find((t) => t.slotId === slot.id && t.roomId === room.id);
 
         if (topic == null) {
           topic = {
@@ -495,6 +660,10 @@ export class SessionComponent implements OnInit, OnDestroy {
   }
 
   private previousTopicOverlaps(slotId: string, roomId: string) {
+    if (this.session == null) {
+      return false;
+    }
+
     const slots = this.slots;
     for (let slotIndex = 0; slotIndex < slots.length; ) {
       const slot = slots[slotIndex];

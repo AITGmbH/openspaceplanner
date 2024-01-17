@@ -12,3 +12,4 @@ export * from './room';
 export * from './session';
 export * from './slot';
 export * from './topic';
+export * from './votingOptions';

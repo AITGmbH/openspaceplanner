@@ -2,6 +2,7 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { FontAwesomeTestingModule } from '@fortawesome/angular-fontawesome/testing';
 import { instance, mock, when } from '@johanblumenberg/ts-mockito';
 import { Subject } from 'rxjs';
 import { SessionService } from '../session/session.service';
@@ -17,11 +18,11 @@ describe('create session', () => {
     when(sessionServiceMock.getLastSessions()).thenReturn(lastSessions$.asObservable());
 
     TestBed.configureTestingModule({
-      imports: [BrowserModule, FormsModule],
+      imports: [BrowserModule, FormsModule, FontAwesomeTestingModule],
       declarations: [CreateSessionComponent, BusySpinnerComponent],
       providers: [
         { provide: SessionService, useFactory: () => instance(sessionServiceMock) },
-        { provide: Router, useFactory: () => { } },
+        { provide: Router, useFactory: () => {} },
       ],
     }).compileComponents();
 

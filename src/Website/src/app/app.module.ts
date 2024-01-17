@@ -5,6 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { environment } from '../environments/environment';
@@ -44,6 +45,7 @@ import { TopicModalComponent } from './topic-modal/topic-modal.component';
     HttpClientModule,
     NgSelectModule,
     FormsModule,
+    FontAwesomeModule,
     ApiModule.forRoot(
       () =>
         new Configuration({
