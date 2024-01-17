@@ -11,7 +11,8 @@ tasks:
 
   - name: Backend
     init: |
-      curl https://download.visualstudio.microsoft.com/download/pr/01292c7c-a1ec-4957-90fc-3f6a2a1e5edc/025e84c4d9bd4aeb003d4f07b42e9159/dotnet-sdk-6.0.418-linux-x64.tar.gz --output sdk.tar.gz
+      echo "Downloading and installing .NET 7 SDK for .NET tools"
+      curl https://download.visualstudio.microsoft.com/download/pr/5202b091-2406-445c-b40a-68a5b97c882b/b509f2a7a0eb61aea145b990b40b6d5b/dotnet-sdk-7.0.405-linux-x64.tar.gz --output sdk.tar.gz
       tar --skip-old-files -zxf sdk.tar.gz -C /home/gitpod/dotnet
       dotnet tool restore
       cd src/WebApi

@@ -10,12 +10,12 @@ This tool allows you to plan, for example, fully packed conference days, which c
 
 After cloning the project:
 
-1. Install the [.NET 6 and 8 SDKs](https://dotnet.microsoft.com/en-us/download/dotnet)  
-The .NET 6 SDK is required for the .NET tools.
+1. Install the [.NET 7 runtime and .NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet)  
+The .NET 7 runtime is required for the .NET tools.
 
-2. Install the [NodeJS 20 SDK](https://nodejs.org/en/download)
+1. Install the [NodeJS 20 SDK](https://nodejs.org/en/download)
 
-3. Restore tools and packages
+2. Restore tools and packages
 
 ```bash
 dotnet tool restore

@@ -10,10 +10,10 @@ stages:
               useGlobalJson: true
 
           - task: UseDotNet@2
-            displayName: Download .NET 6 SDK for tools
+            displayName: Download .NET 7 SDK for tools
             inputs:
               packageType: sdk
-              version: '6.0.x'
+              version: '7.0.x'
 
           - script: dotnet tool restore
             displayName: Restore .NET tools
