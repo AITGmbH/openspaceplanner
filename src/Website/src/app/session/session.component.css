@@ -94,3 +94,9 @@ h1 .edit-button {
 .slot-not-planable {
   background-color: #ffe6ce;
 }
+
+.session-tab {
+  clear: both;
+  position: relative;
+  top: -0.5rem;
+}

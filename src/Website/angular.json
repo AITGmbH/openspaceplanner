@@ -24,22 +24,12 @@
             "main": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
-            "assets": [
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.css",
-              "node_modules/bulma/css/bulma.css",
-              "node_modules/font-awesome/css/font-awesome.css"
-            ],
-            "scripts": [],
-            "allowedCommonJsDependencies": [
-              "interactjs"
-            ],
+            "assets": ["src/assets"],
+            "styles": ["src/styles.css", "node_modules/bulma/css/bulma.css"],
+            "scripts": ["node_modules/@fortawesome/fontawesome-svg-core/index.js", "node_modules/@fortawesome/free-solid-svg-icons/index.js"],
+            "allowedCommonJsDependencies": ["interactjs"],
             "stylePreprocessorOptions": {
-              "includePaths": [
-                "./node_modules"
-              ]
+              "includePaths": ["./node_modules"]
             }
           },
           "configurations": {
@@ -88,29 +78,15 @@
           "builder": "@angular-builders/jest:run",
           "options": {
             "tsConfig": "tsconfig.spec.json",
-            "scripts": [
-              "node_modules/popper.js/dist/umd/popper.js",
-              "node_modules/tippy.js/umd/index.js"
-            ],
-            "styles": [
-              "src/styles.css",
-              "node_modules/bulma/css/bulma.css",
-              "node_modules/font-awesome/css/font-awesome.css",
-              "node_modules/tippy.js/index.css"
-            ],
-            "assets": [
-              "src/assets",
-              "src/favicon.ico"
-            ]
+            "scripts": ["node_modules/popper.js/dist/umd/popper.js", "node_modules/tippy.js/umd/index.js"],
+            "styles": ["src/styles.css", "node_modules/bulma/css/bulma.css", "node_modules/font-awesome/css/font-awesome.css", "node_modules/tippy.js/index.css"],
+            "assets": ["src/assets", "src/favicon.ico"]
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html"
-            ]
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
           }
         }
       }
@@ -126,8 +102,6 @@
   },
   "cli": {
     "analytics": false,
-    "schematicCollections": [
-      "@angular-eslint/schematics"
-    ]
+    "schematicCollections": ["@angular-eslint/schematics"]
   }
 }

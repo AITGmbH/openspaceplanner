@@ -9,6 +9,7 @@ api/sessionTopics.service.ts
 api/sessionTopicsAttendance.service.ts
 api/sessionTopicsFeedback.service.ts
 api/sessionTopicsRating.service.ts
+api/sessionTopicsVotes.service.ts
 api/sessions.service.ts
 configuration.ts
 encoder.ts
@@ -29,5 +30,6 @@ model/room.ts
 model/session.ts
 model/slot.ts
 model/topic.ts
+model/votingOptions.ts
 param.ts
 variables.ts

@@ -31,3 +31,7 @@
 .drop-target {
   background-color: lightyellow;
 }
+
+.clear-both {
+  clear: both;
+}

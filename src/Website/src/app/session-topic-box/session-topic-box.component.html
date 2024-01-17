@@ -1,10 +1,10 @@
 <div class="topic box" [class.draggable]="enableDrag" id="{{ topic.id }}" appEditButton [class.topic-favorite]="isFavorite">
   <div class="topic-indicators">
     @if (hasComments) {
-      <span class="fa fa-comments"></span>
+      <fa-icon [icon]="['fas', 'comments']"></fa-icon>
     }
     @if (isFavorite) {
-      <a (click)="favorite()"><i class="fa fa-heart"></i></a>
+      <a (click)="favorite()"><fa-icon [icon]="['fas', 'heart']"></fa-icon></a>
     }
     @if (topic.slots > 1) {
       <span class="topic-slots">{{ topic.slots }}</span>
@@ -15,7 +15,7 @@
     <div class="topic-header">
       <div class="topic-title">
         <span [hidden]="!hasError">
-          <span class="fa fa-exclamation-triangle topic-error" #errorElement></span>
+          <fa-icon [icon]="['fas', 'exclamation-triangle']" class="topic-error" #errorElement></fa-icon>
         </span>
         <div #errorTooltip>{{ errorText }}</div>
         <strong>{{ topic.name }}</strong>
@@ -38,11 +38,11 @@
     <div>
       @if (session.attendanceEnabled) {
         <div class="topic-additional-information">
-          <span class="fa fa-users"></span>
+          <fa-icon [icon]="['fas', 'users']"></fa-icon>
           @if (session.freeForAll) {
             <div class="topic-attendees">
               <a (click)="increaseAttendees()">
-                <i class="fa fa-plus" aria-hidden="true"></i>
+                <fa-icon [icon]="['fas', 'plus']" aria-hidden="true"></fa-icon>
               </a>
 
               <span class="topic-attendees-value" (click)="toggleAttendeesInput()" [hidden]="showAttendeesInput">{{ topic.attendees.length }}</span>
@@ -58,7 +58,7 @@
               />
 
               <a (click)="decreaseAttendees()">
-                <i class="fa fa-minus" aria-hidden="true"></i>
+                <fa-icon [icon]="['fas', 'minus']" aria-hidden="true"></fa-icon>
               </a>
             </div>
           } @else {
@@ -67,11 +67,11 @@
 
               @if (!isAttendee()) {
                 <a (click)="increaseAttendees()">
-                  <i class="fa fa-plus" aria-hidden="true"></i>
+                  <fa-icon [icon]="['fas', 'plus']" aria-hidden="true"></fa-icon>
                 </a>
               } @else {
                 <a (click)="decreaseAttendees()">
-                  <i class="fa fa-minus" aria-hidden="true"></i>
+                  <fa-icon [icon]="['fas', 'minus']" aria-hidden="true"></fa-icon>
                 </a>
               }
             </div>
@@ -81,7 +81,7 @@
 
       <div class="topic-additional-information">
         <div #ratingElement>
-          <span class="fa fa-star"></span>
+          <fa-icon [icon]="['fas', 'star']"></fa-icon>
           <span class="topic-ratings-value">{{ rating.mean }}</span>
 
           <div style="display: block" class="topic-rating-tooltip" #ratingTooltip>
@@ -114,7 +114,7 @@
       <div>
         @if (slot != null) {
           <div class="topic-additional-information">
-            <span class="fa fa-clock-o"></span>
+            <fa-icon [icon]="['fas', 'clock']"></fa-icon>
             <span>{{ slot.name }} {{ slot.time != null ? '(' + slot.time + ')' : '' }}</span>
 
             @if (slotEnd != null) {
@@ -127,7 +127,7 @@
 
         @if (room != null) {
           <div class="topic-additional-information">
-            <span class="fa fa-home"></span>
+            <fa-icon [icon]="['fas', 'home']"></fa-icon>
             <span>{{ room.name }}</span>
           </div>
         }
@@ -140,11 +140,11 @@
       <p class="topic-description-expander">
         @if (!description.dataset['expanded'] || description.dataset['expanded'] === 'false') {
           <a (click)="expandDescription(content, description)">
-            <i class="fa fa-expand"></i>
+            <fa-icon [icon]="['fas', 'expand']"></fa-icon>
           </a>
         } @else {
           <a (click)="collapseDescription(content, description)">
-            <i class="fa fa-compress"></i>
+            <fa-icon [icon]="['fas', 'compress']"></fa-icon>
           </a>
         }
       </p>
@@ -153,17 +153,17 @@
     <p class="topic-edit-button">
       @if (!showAdditionalInformation) {
         <a (click)="edit.emit({ event: $event, topic })">
-          <i class="fa fa-edit edit-button"></i>
+          <fa-icon [icon]="['fas', 'edit']" class="edit-button"></fa-icon>
         </a>
       }
 
       <a (click)="favorite()">
-        <i class="fa fa-heart edit-button" [class.fa-heart]="!isFavorite" [class.fa-heart-o]="isFavorite"></i>
+        <fa-icon [icon]="['fas', 'heart']" class="edit-button" [class.fa-heart]="!isFavorite" [class.fa-heart-o]="isFavorite"></fa-icon>
       </a>
     </p>
   </div>
 
-  @if (session.votingEnabled) {
+  @if (session.ratingEnabled) {
     <div class="topic-ratings-stars">
       <input type="radio" id="star4-{{ topic.id }}" name="rating-{{ topic.id }}" value="4" (click)="ratingChange(4)" [checked]="getRating() === 4" />
       <label for="star4-{{ topic.id }}"></label>

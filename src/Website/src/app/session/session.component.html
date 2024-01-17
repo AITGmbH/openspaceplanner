@@ -1,91 +1,138 @@
 @if (isLoading() === true) {
   <div class="container is-loading">Loading</div>
-} @else if (session === null) {
+} @else if (session == null) {
   <h2 class="subtitle">Session not found.</h2>
 } @else {
   <div class="container">
     <h1 class="title" (dblclick)="showModal($event, 'session', session)" appEditButton>
       {{ session.name }}
       <a (click)="showModal($event, 'session', session)">
-        <span class="fa fa-edit edit-button"></span>
+        <fa-icon [icon]="['fas', 'edit']" class="edit-button"></fa-icon>
       </a>
     </h1>
 
     <a class="calendar-button" href="{{ calendarLink }}">
-      <span class="fa fa-calendar fa-2x"></span>
+      <fa-icon [icon]="['fas', 'calendar']" size="2x"></fa-icon>
     </a>
 
-    <table class="table session-table is-striped is-fullwidth is-hoverable">
-      <thead>
-        <tr class="table-row">
-          <td class="table-cell"></td>
+    @if (currentTab === 'board') {
+      @if (canVote()) {
+        <div class="session-tab">
+          <a (click)="switchTab('voting')"> <fa-icon [icon]="['fas', 'table']"></fa-icon> Go to topic voting </a>
+        </div>
+      }
+      @if (canVoteInFuture()) {
+        <div class="clear-both">The topic voting will start at {{ session.votingOptions.votingStartDateTimeUtc | date: 'dd.MM.yyyy HH:mm' }}.</div>
+      }
 
-          <td *ngFor="let room of rooms" class="table-cell" id="{{ room.id }}" (dblclick)="showModal($event, 'room', room)" appEditButton>
-            <span>{{ room.name }}</span>
-            <a (click)="showModal($event, 'room', room)">
-              <span class="fa fa-edit pull-right edit-button"></span>
-            </a>
-            <br />
-            ({{ room.seats }} seats)
-          </td>
-        </tr>
-      </thead>
+      <table class="table session-table is-striped is-fullwidth is-hoverable">
+        <thead>
+          <tr class="table-row">
+            <td class="table-cell"></td>
 
-      <tbody>
-        <tr class="table-row" *ngFor="let slot of slots" id="{{ slot.id }}">
-          <td class="table-cell" (dblclick)="showModal($event, 'slot', slot)" appEditButton>
-            <span>{{ slot.name }}</span>
-            <a (click)="showModal($event, 'slot', slot)">
-              <span class="fa fa-edit pull-right edit-button"></span>
-            </a>
-            <br />
-            {{ slot.time }}
-          </td>
+            <td *ngFor="let room of rooms" class="table-cell" id="{{ room.id }}" (dblclick)="showModal($event, 'room', room)" appEditButton>
+              <span>{{ room.name }}</span>
+              <a (click)="showModal($event, 'room', room)">
+                <fa-icon [icon]="['fas', 'edit']" class="pull-right edit-button"></fa-icon>
+              </a>
+              <br />
+              ({{ room.seats }} seats)
+            </td>
+          </tr>
+        </thead>
 
-          <ng-container *ngFor="let topic of topics[slot.id]">
-            @if (topic != null) {
-              <td class="table-cell topic-space" [class.slot-not-planable]="!slot.isPlanable" [attr.rowspan]="topic.slots" [attr.data-slot-id]="topic.slotId" [attr.data-room-id]="topic.roomId">
-                @if (topic.id != null) {
-                  <app-session-topic-box [topic]="topic" (edit)="showModal($event.event, 'topic', $event.topic)" (dblclick)="showModal($event, 'topic', topic)"> </app-session-topic-box>
-                }
-              </td>
-            }
-          </ng-container>
-        </tr>
-      </tbody>
-    </table>
+        <tbody>
+          <tr class="table-row" *ngFor="let slot of slots" id="{{ slot.id }}">
+            <td class="table-cell" (dblclick)="showModal($event, 'slot', slot)" appEditButton>
+              <span>{{ slot.name }}</span>
+              <a (click)="showModal($event, 'slot', slot)">
+                <fa-icon [icon]="['fas', 'edit']" class="pull-right edit-button"></fa-icon>
+              </a>
+              <br />
+              {{ slot.time }}
+            </td>
 
-    <div class="topics-unassigned dropable">
-      <app-session-topic-box *ngFor="let topic of unassignedTopics" [topic]="topic" (dblclick)="showModal($event, 'topic', topic)" (edit)="showModal($event.event, 'topic', $event.topic)"></app-session-topic-box>
-    </div>
+            <ng-container *ngFor="let topic of topics[slot.id]">
+              @if (topic != null) {
+                <td class="table-cell topic-space" [class.slot-not-planable]="!slot.isPlanable" [attr.rowspan]="topic.slots" [attr.data-slot-id]="topic.slotId" [attr.data-room-id]="topic.roomId">
+                  @if (topic.id != null) {
+                    <app-session-topic-box [topic]="topic" (edit)="showModal($event.event, 'topic', $event.topic)" (dblclick)="showModal($event, 'topic', topic)"> </app-session-topic-box>
+                  }
+                </td>
+              }
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="topics-unassigned dropable">
+        <app-session-topic-box *ngFor="let topic of unassignedTopics" [topic]="topic" (dblclick)="showModal($event, 'topic', topic)" (edit)="showModal($event.event, 'topic', $event.topic)"></app-session-topic-box>
+      </div>
+
+      <button (click)="toggleFloatingActionButton($event)" class="button is-info is-floating-action" #floatingActionButton>
+        <fa-icon [icon]="['fas', 'plus']"></fa-icon>
+      </button>
+
+      @if (floatingActionButton.dataset['expanded'] === 'true') {
+        <ul class="is-floating-button-submenu">
+          <li>
+            <button (click)="showModal($event, 'topic', {})" class="button is-info is-floating-button">
+              <fa-icon [icon]="['fas', 'calendar']"></fa-icon>
+            </button>
+            <div>Add Topic</div>
+          </li>
+          <li>
+            <button (click)="showModal($event, 'room', {})" class="button is-info is-floating-button">
+              <fa-icon [icon]="['fas', 'home']"></fa-icon>
+            </button>
+            <div>Add Room</div>
+          </li>
+          <li>
+            <button (click)="showModal($event, 'slot', {})" class="button is-info is-floating-button">
+              <fa-icon [icon]="['fas', 'clock']"></fa-icon>
+            </button>
+            <div>Add Slot</div>
+          </li>
+        </ul>
+      }
+    } @else if (currentTab === 'voting') {
+      <div class="session-tab">
+        <a (click)="switchTab('board')"> <fa-icon [icon]="['fas', 'chalkboard']" size="lg"></fa-icon> Go to board </a>
+      </div>
+
+      <div>You used {{ votesUsed }} out of {{ session.votingOptions.maxNumberOfVotes }} votes. You can vote {{ session.votingOptions.maxVotesPerTopic }} times on the same topic.</div>
+      @if (session.votingOptions.blindVotingEnabled) {
+        <div>Blind voting is enabled. You can only see your votes. There are already {{ votesUsedTotal }} votes in total.</div>
+      }
+      @if (session.votingOptions.votingEndDateTimeUtc != null) {
+        <div>The voting will end at {{ session.votingOptions.votingEndDateTimeUtc | date: 'dd.MM.yyyy HH:mm' }}.</div>
+      }
+
+      <table class="table is-striped is-fullwidth is-hoverable">
+        <thead>
+          <tr>
+            <th style="width: 5rem"></th>
+            <th style="width: 90%">Name</th>
+            <th>Votes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let topic of topicsVoting">
+            <td>
+              @if (canAddVote(topic.id)) {
+                <a (click)="addTopicVote(topic.id)"><fa-icon [icon]="['fas', 'plus']"></fa-icon></a>
+              }
+              @if (canDeleteVote(topic.id)) {
+                <a (click)="deleteTopicVote(topic.id)" style="padding-left: 1rem"><fa-icon [icon]="['fas', 'minus']"></fa-icon></a>
+              }
+            </td>
+            <td>{{ topic.name }}</td>
+            <td>{{ getTopicVotes(topic.id) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    }
   </div>
-
-  <button (click)="toggleFloatingActionButton($event)" class="button is-info is-floating-action" #floatingActionButton>
-    <span class="fa fa-plus"></span>
-  </button>
-
-  @if (floatingActionButton.dataset["expanded"] === "true") {
-    <ul class="is-floating-button-submenu">
-      <li>
-        <button (click)="showModal($event, 'topic', {})" class="button is-info is-floating-button">
-          <span class="fa fa-calendar"></span>
-        </button>
-        <div>Add Topic</div>
-      </li>
-      <li>
-        <button (click)="showModal($event, 'room', {})" class="button is-info is-floating-button">
-          <span class="fa fa-home"></span>
-        </button>
-        <div>Add Room</div>
-      </li>
-      <li>
-        <button (click)="showModal($event, 'slot', {})" class="button is-info is-floating-button">
-          <span class="fa fa-clock-o"></span>
-        </button>
-        <div>Add Slot</div>
-      </li>
-    </ul>
-  }
 
   @if (currentModal(); as modal) {
     <ng-container>

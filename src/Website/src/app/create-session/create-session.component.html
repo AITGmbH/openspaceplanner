@@ -15,13 +15,10 @@
 
       <div class="field has-addons">
         <div class="control">
-          <input class="input" type="text" name="sessionId" [(ngModel)]="model.sessionId" #sessionId="ngModel" placeholder="Session ID"
-            required (keydown.enter)="enter()" />
+          <input class="input" type="text" name="sessionId" [(ngModel)]="model.sessionId" #sessionId="ngModel" placeholder="Session ID" required (keydown.enter)="enter()" />
         </div>
         <div class="control">
-          <button class="button is-info" [disabled]="!sessionId.valid" (click)="joinSession()">
-            Join Session
-          </button>
+          <button class="button is-info" [disabled]="!sessionId.valid" (click)="joinSession()">Join Session</button>
         </div>
       </div>
     </div>
@@ -32,11 +29,12 @@
   <label class="label">Last 10 sessions</label>
   <app-busy-spinner [isBusy]="isLoadingSessions"></app-busy-spinner>
   <ul>
-    <li *ngFor="let session of lastSessions$ | async"><a href="session/{{session.id}}">{{ session.name }}</a></li>
+    <li *ngFor="let session of lastSessions$ | async">
+      <a href="session/{{ session.id }}">{{ session.name }}</a>
+    </li>
   </ul>
 </div>
 
-
 <a class="calendar-button" href="/api/sessions/calendar">
-  <span class="fa fa-calendar fa-2x"></span>
+  <fa-icon [icon]="['fas', 'calendar']" size="2x"></fa-icon>
 </a>

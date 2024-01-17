@@ -16,6 +16,7 @@ import {
   SessionTopicsFeedbackService,
   SessionTopicsRatingService,
   SessionTopicsService,
+  SessionTopicsVotesService,
   SessionsService,
   Slot,
   Topic,
@@ -55,6 +56,7 @@ export class SessionService {
     private readonly sessionTopicsAttendanceService: SessionTopicsAttendanceService,
     private readonly sessionTopicsRatingService: SessionTopicsRatingService,
     private readonly sessionTopicsFeedbackService: SessionTopicsFeedbackService,
+    private readonly sessionTopicsVotesService: SessionTopicsVotesService,
     private readonly hubConnectionBuilder: HubConnectionBuilder,
   ) {}
 
@@ -197,6 +199,20 @@ export class SessionService {
     return this.updateInternal(this.getTopic(topicId)?.ratings ?? [], rating);
   }
 
+  public async updateTopicVote(topicId: string) {
+    const voteId = getRandomId();
+    const request = this.sessionTopicsVotesService.createTopicVote(this.currentSession.id, topicId, voteId);
+    await lastValueFrom(request);
+
+    if (this.sessionOptions.topicsVote[topicId] == null) {
+      this.sessionOptions.topicsVote[topicId] = [];
+    }
+    this.sessionOptions.topicsVote[topicId].push(voteId);
+    this.saveSessionOptions();
+
+    this.sessionChanged.next(this.currentSession);
+  }
+
   public async updateTopicFeedback(topicId: string, value: string): Promise<Feedback> {
     const id = getRandomId();
     const feedback = <Feedback>{ id, value };
@@ -241,6 +257,20 @@ export class SessionService {
 
     await lastValueFrom(this.sessionTopicsAttendanceService.deleteTopicAttendance(this.currentSession.id, topicId, attendanceId));
     return this.deleteInternal(this.getTopic(topicId)?.attendees ?? [], attendanceId);
+  }
+
+  public async deleteTopicVote(topicId: string) {
+    if (this.sessionOptions.topicsVote[topicId] == null) {
+      return;
+    }
+
+    const voteId = this.sessionOptions.topicsVote[topicId][0];
+    await lastValueFrom(this.sessionTopicsVotesService.deleteTopicVote(this.currentSession.id, topicId, voteId));
+
+    this.sessionOptions.topicsVote[topicId] = this.sessionOptions.topicsVote[topicId].filter((v) => v !== voteId) ?? [];
+    this.saveSessionOptions();
+
+    this.sessionChanged.next(this.currentSession);
   }
 
   public async deleteTopicFeedback(topicId: string, feedbackId: string): Promise<void> {

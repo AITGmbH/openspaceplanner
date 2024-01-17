@@ -9,6 +9,7 @@ import { SessionTopicsService } from './api/sessionTopics.service';
 import { SessionTopicsAttendanceService } from './api/sessionTopicsAttendance.service';
 import { SessionTopicsFeedbackService } from './api/sessionTopicsFeedback.service';
 import { SessionTopicsRatingService } from './api/sessionTopicsRating.service';
+import { SessionTopicsVotesService } from './api/sessionTopicsVotes.service';
 import { SessionsService } from './api/sessions.service';
 
 @NgModule({
