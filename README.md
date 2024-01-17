@@ -13,6 +13,7 @@ After cloning the project:
 1. Restore packages
 
 ```bash
+dotnet tool restore
 cd src/WebApi && dotnet restore
 cd src/Website && npm ci
 ```
@@ -36,6 +37,8 @@ The backend is exposing the API and models through OpenAPI. The frontend can aut
 ```bash
 cd src/Website && npm run generate-openapi
 ```
+
+Make sure to build the backend once for the swagger.json to exist. If you make changes to the backend also make sure to build the backend before generating the frontend code.
 
 ## Gitpod
 

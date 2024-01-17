@@ -11,10 +11,7 @@
  */
 
 
-export interface UpdateSlotRequest { 
-    id: string;
-    name: string;
-    time?: string | null;
-    isPlanable?: boolean | null;
+export interface CreateFeedbackRequest { 
+    value: string;
 }
 

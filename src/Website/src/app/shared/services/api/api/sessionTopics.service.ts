@@ -19,9 +19,9 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { Topic } from '../model/topic';
+import { CreateTopicRequest } from '../model/createTopicRequest';
 // @ts-ignore
-import { UpdateTopicRequest } from '../model/updateTopicRequest';
+import { Topic } from '../model/topic';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -95,16 +95,16 @@ export class SessionTopicsService {
 
     /**
      * @param sessionId 
-     * @param updateTopicRequest 
+     * @param createTopicRequest 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public addTopic(sessionId: number, updateTopicRequest?: UpdateTopicRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Topic>;
-    public addTopic(sessionId: number, updateTopicRequest?: UpdateTopicRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Topic>>;
-    public addTopic(sessionId: number, updateTopicRequest?: UpdateTopicRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Topic>>;
-    public addTopic(sessionId: number, updateTopicRequest?: UpdateTopicRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public createTopic(sessionId: number, createTopicRequest?: CreateTopicRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Topic>;
+    public createTopic(sessionId: number, createTopicRequest?: CreateTopicRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Topic>>;
+    public createTopic(sessionId: number, createTopicRequest?: CreateTopicRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Topic>>;
+    public createTopic(sessionId: number, createTopicRequest?: CreateTopicRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (sessionId === null || sessionId === undefined) {
-            throw new Error('Required parameter sessionId was null or undefined when calling addTopic.');
+            throw new Error('Required parameter sessionId was null or undefined when calling createTopic.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -129,9 +129,7 @@ export class SessionTopicsService {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json',
-            'text/json',
-            'application/*+json'
+            'application/json'
         ];
         const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected !== undefined) {
@@ -153,7 +151,7 @@ export class SessionTopicsService {
         return this.httpClient.request<Topic>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: updateTopicRequest,
+                body: createTopicRequest,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -226,14 +224,14 @@ export class SessionTopicsService {
     /**
      * @param sessionId 
      * @param topicId 
-     * @param updateTopicRequest 
+     * @param topic 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateTopic(sessionId: number, topicId: string, updateTopicRequest?: UpdateTopicRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Topic>;
-    public updateTopic(sessionId: number, topicId: string, updateTopicRequest?: UpdateTopicRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Topic>>;
-    public updateTopic(sessionId: number, topicId: string, updateTopicRequest?: UpdateTopicRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Topic>>;
-    public updateTopic(sessionId: number, topicId: string, updateTopicRequest?: UpdateTopicRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public updateTopic(sessionId: number, topicId: string, topic?: Topic, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Topic>;
+    public updateTopic(sessionId: number, topicId: string, topic?: Topic, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Topic>>;
+    public updateTopic(sessionId: number, topicId: string, topic?: Topic, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Topic>>;
+    public updateTopic(sessionId: number, topicId: string, topic?: Topic, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (sessionId === null || sessionId === undefined) {
             throw new Error('Required parameter sessionId was null or undefined when calling updateTopic.');
         }
@@ -263,9 +261,7 @@ export class SessionTopicsService {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json',
-            'text/json',
-            'application/*+json'
+            'application/json'
         ];
         const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected !== undefined) {
@@ -287,7 +283,7 @@ export class SessionTopicsService {
         return this.httpClient.request<Topic>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: updateTopicRequest,
+                body: topic,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

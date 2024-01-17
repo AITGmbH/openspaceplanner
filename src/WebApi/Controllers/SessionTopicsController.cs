@@ -1,3 +1,4 @@
+using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using OpenSpace.Application.Entities;
@@ -9,7 +10,7 @@ using OpenSpace.WebApi.Hubs;
 namespace OpenSpace.WebApi.Controllers;
 
 [Route("api/sessions/{sessionId:int}/topics")]
-public class SessionTopicsController : Controller
+public class SessionTopicsController : ApiControllerBase
 {
     private readonly ISessionRepository _sessionRepository;
     private readonly IHubContext<SessionsHub, ISessionsHub> _sessionsHub;
@@ -25,6 +26,25 @@ public class SessionTopicsController : Controller
         _sessionsHub = sessionsHub;
     }
 
+    [HttpPost]
+    public async Task<Topic> CreateTopicAsync(int sessionId, [FromBody] CreateTopicRequest request)
+    {
+        var session = await _sessionRepository.Get(sessionId);
+
+        var topic = new Topic(
+            Guid.NewGuid().ToString(),
+            string.IsNullOrWhiteSpace(request.Name) ? "Topic " + (session.Topics.Count + 1) : request.Name,
+            request.Description,
+            request.Owner,
+            Slots: request.Slots);
+
+        await _sessionRepository.Update(sessionId, (session) => session.Topics.Add(topic));
+
+        await _sessionsHub.Clients.Group(sessionId.ToString()).UpdateTopic(topic);
+
+        return topic;
+    }
+
     [HttpDelete("{topicId}")]
     public async Task DeleteTopicAsync(int sessionId, string topicId)
     {
@@ -35,29 +55,6 @@ public class SessionTopicsController : Controller
         });
 
         await _sessionsHub.Clients.Group(sessionId.ToString()).DeleteTopic(topicId);
-    }
-
-    [HttpPost]
-    public async Task<Topic> AddTopicAsync(int sessionId, [FromBody] Topic topic)
-    {
-        await _sessionRepository.Update(sessionId, (session) =>
-        {
-            topic = topic with
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = string.IsNullOrWhiteSpace(topic.Name) ? "Topic " + (session.Topics.Count + 1) : topic.Name,
-                Attendees = new List<Attendance>(),
-                Demands = new List<string>(),
-                Feedback = new List<Feedback>(),
-                Ratings = new List<Rating>(),
-            };
-
-            session.Topics.Add(topic);
-        });
-
-        await _sessionsHub.Clients.Group(sessionId.ToString()).UpdateTopic(topic);
-
-        return topic;
     }
 
     [HttpPut("{topicId}")]
@@ -84,4 +81,6 @@ public class SessionTopicsController : Controller
 
         return topic;
     }
+
+    public record CreateTopicRequest(string? Name, string? Description, string? Owner, int Slots = 1);
 }

@@ -10,7 +10,7 @@
     "watch": "ng build --watch",
     "test": "ng test",
     "lint": "ng lint",
-    "generate-openapi": "openapi-generator-cli generate -g typescript-angular -i http://localhost:8080/swagger/v1/swagger.json -o src/app/shared/services/api --additional-properties ngVersion=17.0.0,supportsES6=true",
+    "generate-openapi": "openapi-generator-cli generate -g typescript-angular -i ../WebApi/swagger.json -o src/app/shared/services/api --strict-spec true --additional-properties ngVersion=17.0.0,supportsES6=true",
     "openapi-generator": "openapi-generator-cli"
   },
   "private": true,

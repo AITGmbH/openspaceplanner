@@ -20,8 +20,6 @@ import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
 import { Attendance } from '../model/attendance';
-// @ts-ignore
-import { UpdateTopicAttendanceRequest } from '../model/updateTopicAttendanceRequest';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -100,15 +98,15 @@ export class SessionTopicsAttendanceService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public addTopicAttendance(sessionId: number, topicId: string, attendance?: Array<Attendance>, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<Attendance>>;
-    public addTopicAttendance(sessionId: number, topicId: string, attendance?: Array<Attendance>, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<Attendance>>>;
-    public addTopicAttendance(sessionId: number, topicId: string, attendance?: Array<Attendance>, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<Attendance>>>;
-    public addTopicAttendance(sessionId: number, topicId: string, attendance?: Array<Attendance>, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public createTopicAttendance(sessionId: number, topicId: string, attendance?: Array<Attendance>, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<Attendance>>;
+    public createTopicAttendance(sessionId: number, topicId: string, attendance?: Array<Attendance>, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<Attendance>>>;
+    public createTopicAttendance(sessionId: number, topicId: string, attendance?: Array<Attendance>, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<Attendance>>>;
+    public createTopicAttendance(sessionId: number, topicId: string, attendance?: Array<Attendance>, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (sessionId === null || sessionId === undefined) {
-            throw new Error('Required parameter sessionId was null or undefined when calling addTopicAttendance.');
+            throw new Error('Required parameter sessionId was null or undefined when calling createTopicAttendance.');
         }
         if (topicId === null || topicId === undefined) {
-            throw new Error('Required parameter topicId was null or undefined when calling addTopicAttendance.');
+            throw new Error('Required parameter topicId was null or undefined when calling createTopicAttendance.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -133,9 +131,7 @@ export class SessionTopicsAttendanceService {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json',
-            'text/json',
-            'application/*+json'
+            'application/json'
         ];
         const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected !== undefined) {
@@ -235,14 +231,14 @@ export class SessionTopicsAttendanceService {
      * @param sessionId 
      * @param topicId 
      * @param attendanceId 
-     * @param updateTopicAttendanceRequest 
+     * @param attendance 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateTopicAttendance(sessionId: number, topicId: string, attendanceId: string, updateTopicAttendanceRequest?: UpdateTopicAttendanceRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Attendance>;
-    public updateTopicAttendance(sessionId: number, topicId: string, attendanceId: string, updateTopicAttendanceRequest?: UpdateTopicAttendanceRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Attendance>>;
-    public updateTopicAttendance(sessionId: number, topicId: string, attendanceId: string, updateTopicAttendanceRequest?: UpdateTopicAttendanceRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Attendance>>;
-    public updateTopicAttendance(sessionId: number, topicId: string, attendanceId: string, updateTopicAttendanceRequest?: UpdateTopicAttendanceRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public updateTopicAttendance(sessionId: number, topicId: string, attendanceId: string, attendance?: Attendance, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<Attendance>>;
+    public updateTopicAttendance(sessionId: number, topicId: string, attendanceId: string, attendance?: Attendance, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<Attendance>>>;
+    public updateTopicAttendance(sessionId: number, topicId: string, attendanceId: string, attendance?: Attendance, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<Attendance>>>;
+    public updateTopicAttendance(sessionId: number, topicId: string, attendanceId: string, attendance?: Attendance, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (sessionId === null || sessionId === undefined) {
             throw new Error('Required parameter sessionId was null or undefined when calling updateTopicAttendance.');
         }
@@ -275,9 +271,7 @@ export class SessionTopicsAttendanceService {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json',
-            'text/json',
-            'application/*+json'
+            'application/json'
         ];
         const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected !== undefined) {
@@ -296,10 +290,10 @@ export class SessionTopicsAttendanceService {
         }
 
         let localVarPath = `/api/sessions/${this.configuration.encodeParam({name: "sessionId", value: sessionId, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int32"})}/topics/${this.configuration.encodeParam({name: "topicId", value: topicId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/attendances/${this.configuration.encodeParam({name: "attendanceId", value: attendanceId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}`;
-        return this.httpClient.request<Attendance>('put', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<Attendance>>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: updateTopicAttendanceRequest,
+                body: attendance,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

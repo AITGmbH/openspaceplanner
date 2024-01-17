@@ -9,6 +9,22 @@ stages:
               packageType: sdk
               useGlobalJson: true
 
+          - script: dotnet tool restore
+            displayName: Restore .NET tools
+
+          - task: DotNetCoreCLI@2
+            displayName: Restore backend packages
+            inputs:
+              command: restore
+              projects: src/OpenSpace.sln
+
+          - task: DotNetCoreCLI@2
+            displayName: Build backend
+            inputs:
+              command: build
+              arguments: -c Release --no-restore
+              projects: src/OpenSpace.sln
+
           - task: NodeTool@0
             displayName: Download NodeJS SDK
             inputs:
@@ -23,22 +39,13 @@ stages:
             displayName: Linting frontend
             workingDirectory: src/Website
 
+          - script: npm run generate-openapi
+            displayName: Generating frontend api
+            workingDirectory: src/Website
+
           - script: npm run build -- --output-path ../WebApi/wwwroot
             displayName: Build frontend
             workingDirectory: src/Website
-
-          - task: DotNetCoreCLI@2
-            displayName: Restore backend packages
-            inputs:
-              command: restore
-              projects: src/OpenSpace.sln
-
-          - task: DotNetCoreCLI@2
-            displayName: Build backend
-            inputs:
-              command: build
-              arguments: -c Release --no-restore
-              projects: src/OpenSpace.sln
 
           - task: DotNetCoreCLI@2
             displayName: Publish solution

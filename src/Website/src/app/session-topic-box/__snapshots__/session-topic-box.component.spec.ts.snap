@@ -81,17 +81,7 @@ exports[`session topic box should set error message when there is one owner with
     <div
       class="topic-buttons"
     >
-      <p
-        class="topic-description-expander"
-      >
-        <a>
-          <i
-            class="fa fa-expand"
-          />
-        </a>
-        
-        
-      </p>
+      
       <p
         class="topic-edit-button"
       >

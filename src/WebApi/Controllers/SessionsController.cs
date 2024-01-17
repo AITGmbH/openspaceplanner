@@ -7,8 +7,7 @@ using OpenSpace.WebApi.Hubs;
 
 namespace OpenSpace.WebApi.Controllers;
 
-[Route("api/sessions")]
-public class SessionsController : Controller
+public class SessionsController : ApiControllerBase
 {
     private readonly ICalendarService _calendarService;
     private readonly ISessionRepository _sessionRepository;
@@ -20,6 +19,9 @@ public class SessionsController : Controller
         _calendarService = calendarService;
         _sessionsHub = sessionsHub;
     }
+
+    [HttpPost]
+    public Task<Session> CreateSessionAsync() => _sessionRepository.Create();
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteSessionAsync(int id)
@@ -34,47 +36,8 @@ public class SessionsController : Controller
         return Ok();
     }
 
-    [HttpGet]
-    public Task<IEnumerable<Session>> GetSessionsAsync() => _sessionRepository.Get();
-
-    [HttpGet("{id}")]
-    public Task<Session> GetSessionByIdAsync(int id) => _sessionRepository.Get(id);
-
-    [HttpGet("last")]
-    public async Task<IEnumerable<Session>> GetLastSessionsAsync() => (await _sessionRepository.Get()).OrderByDescending(s => s.Id).Take(10);
-
-    [HttpGet("{id}/calendar")]
-    public async Task<IActionResult> GetSessionCalendarAsync(int id)
-    {
-        var calendar = await _calendarService.GetSessionsAsync(id);
-
-        Response.Headers["Content-Disposition"] = "attachment; filename=\"Session" + id + ".ics\"";
-        return Content(calendar, "text/calendar");
-    }
-
-    [HttpGet("calendar")]
-    public async Task<IActionResult> GetSessionsCalendarAsync()
-    {
-        var calendar = await _calendarService.GetSessionsAsync();
-
-        Response.Headers["Content-Disposition"] = "attachment; filename=\"Sessions.ics\"";
-        return Content(calendar, "text/calendar");
-    }
-
-    [HttpPost]
-    public Task<Session> AddSessionAsync() => _sessionRepository.Create();
-
-    [HttpPut("{id}")]
-    public async Task<Session> UpdateSessionAsync(int id, [FromBody] Session session)
-    {
-        await _sessionRepository.Update(session);
-        await _sessionsHub.Clients.Group(id.ToString()).UpdateSession(session);
-
-        return session;
-    }
-
     [HttpDelete("{id}/attendances")]
-    public Task ResetSessionAttendancesAsync(int id)
+    public Task DeleteSessionAttendancesAsync(int id)
         => _sessionRepository.Update(id, session =>
         {
             foreach (var topic in session.Topics)
@@ -85,7 +48,7 @@ public class SessionsController : Controller
         });
 
     [HttpDelete("{id}/ratings")]
-    public Task ResetSessionRatingsAsync(int id)
+    public Task DeleteSessionRatingsAsync(int id)
         => _sessionRepository.Update(id, session =>
         {
             foreach (var topic in session.Topics)
@@ -94,4 +57,40 @@ public class SessionsController : Controller
                 _sessionsHub.Clients.Group(id.ToString()).UpdateTopic(topic);
             }
         });
+
+    [HttpGet("last")]
+    public async Task<IEnumerable<Session>> GetLastSessionsAsync() => (await _sessionRepository.Get()).OrderByDescending(s => s.Id).Take(10);
+
+    [HttpGet("{id}")]
+    public Task<Session> GetSessionByIdAsync(int id) => _sessionRepository.Get(id);
+
+    [HttpGet("{id}/calendar")]
+    public async Task<IActionResult> GetSessionCalendarAsync(int id)
+    {
+        var calendar = await _calendarService.GetSessionsAsync(id);
+
+        Response.Headers["Content-Disposition"] = "attachment; filename=\"Session" + id + ".ics\"";
+        return Content(calendar, "text/calendar");
+    }
+
+    [HttpGet]
+    public Task<IEnumerable<Session>> GetSessionsAsync() => _sessionRepository.Get();
+
+    [HttpGet("calendar")]
+    public async Task<IActionResult> GetSessionsCalendarAsync()
+    {
+        var calendar = await _calendarService.GetSessionsAsync();
+
+        Response.Headers["Content-Disposition"] = "attachment; filename=\"Sessions.ics\"";
+        return Content(calendar, "text/calendar");
+    }
+
+    [HttpPut("{id}")]
+    public async Task<Session> UpdateSessionAsync(int id, [FromBody] Session session)
+    {
+        await _sessionRepository.Update(session);
+        await _sessionsHub.Clients.Group(id.ToString()).UpdateSession(session);
+
+        return session;
+    }
 }

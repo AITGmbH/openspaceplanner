@@ -19,7 +19,7 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { AddTopicFeedbackRequest } from '../model/addTopicFeedbackRequest';
+import { CreateFeedbackRequest } from '../model/createFeedbackRequest';
 // @ts-ignore
 import { Feedback } from '../model/feedback';
 
@@ -96,19 +96,19 @@ export class SessionTopicsFeedbackService {
     /**
      * @param sessionId 
      * @param topicId 
-     * @param addTopicFeedbackRequest 
+     * @param createFeedbackRequest 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public addTopicFeedback(sessionId: number, topicId: string, addTopicFeedbackRequest?: AddTopicFeedbackRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Feedback>;
-    public addTopicFeedback(sessionId: number, topicId: string, addTopicFeedbackRequest?: AddTopicFeedbackRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Feedback>>;
-    public addTopicFeedback(sessionId: number, topicId: string, addTopicFeedbackRequest?: AddTopicFeedbackRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Feedback>>;
-    public addTopicFeedback(sessionId: number, topicId: string, addTopicFeedbackRequest?: AddTopicFeedbackRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public createTopicFeedback(sessionId: number, topicId: string, createFeedbackRequest?: CreateFeedbackRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Feedback>;
+    public createTopicFeedback(sessionId: number, topicId: string, createFeedbackRequest?: CreateFeedbackRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Feedback>>;
+    public createTopicFeedback(sessionId: number, topicId: string, createFeedbackRequest?: CreateFeedbackRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Feedback>>;
+    public createTopicFeedback(sessionId: number, topicId: string, createFeedbackRequest?: CreateFeedbackRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (sessionId === null || sessionId === undefined) {
-            throw new Error('Required parameter sessionId was null or undefined when calling addTopicFeedback.');
+            throw new Error('Required parameter sessionId was null or undefined when calling createTopicFeedback.');
         }
         if (topicId === null || topicId === undefined) {
-            throw new Error('Required parameter topicId was null or undefined when calling addTopicFeedback.');
+            throw new Error('Required parameter topicId was null or undefined when calling createTopicFeedback.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -133,9 +133,7 @@ export class SessionTopicsFeedbackService {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json',
-            'text/json',
-            'application/*+json'
+            'application/json'
         ];
         const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected !== undefined) {
@@ -157,7 +155,7 @@ export class SessionTopicsFeedbackService {
         return this.httpClient.request<Feedback>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: addTopicFeedbackRequest,
+                body: createFeedbackRequest,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

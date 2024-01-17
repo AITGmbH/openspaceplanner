@@ -5,6 +5,5 @@ namespace OpenSpace.Application.Entities;
 public record Slot(
     string Id,
     string Name,
-    string? Time,
-    [DefaultValue(true)]
+    string? Time = null,
     bool? IsPlanable = true);
