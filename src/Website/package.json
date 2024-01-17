@@ -68,5 +68,9 @@
     "https": false,
     "url": false,
     "util": false
+  },
+  "overrides": {
+    "axios": "1.6.5",
+    "@nestjs/axios": "3.0.1"
   }
 }
