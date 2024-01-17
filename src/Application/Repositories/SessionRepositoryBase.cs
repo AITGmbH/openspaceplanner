@@ -1,4 +1,6 @@
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using OpenSpace.Application.Entities;
 using OpenSpace.Application.Exceptions;
 
@@ -6,6 +8,18 @@ namespace OpenSpace.Application.Repositories;
 
 public abstract class SessionRepositoryBase : ISessionRepository
 {
+    private readonly JsonSerializerOptions _serializerOptions;
+
+    protected SessionRepositoryBase()
+    {
+        _serializerOptions = new JsonSerializerOptions
+        {
+            AllowTrailingCommas = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            PropertyNameCaseInsensitive = true,
+        };
+    }
+
     protected static ICollection<Session> Sessions { get; set; } = new List<Session>();
 
     public Task<Session> Create()
@@ -20,7 +34,8 @@ public abstract class SessionRepositoryBase : ISessionRepository
                 DateTime.Now.ToShortDateString(),
                 new List<Room>(),
                 new List<Slot>(),
-                new List<Topic>());
+                new List<Topic>(),
+                new VotingOptions());
 
             Sessions.Add(session);
 
@@ -81,14 +96,10 @@ public abstract class SessionRepositoryBase : ISessionRepository
     }
 
     protected void LoadSessions(string sessionJson)
-    {
-        Sessions = new List<Session>(JsonConvert.DeserializeObject<Session[]>(
-            sessionJson,
-            new JsonSerializerSettings
-            {
-                DefaultValueHandling = DefaultValueHandling.Populate,
-            }));
-    }
+        => Sessions = new List<Session>(
+            JsonSerializer.Deserialize<Session[]>(
+                sessionJson,
+                _serializerOptions) ?? []);
 
     protected abstract void Save();
 }

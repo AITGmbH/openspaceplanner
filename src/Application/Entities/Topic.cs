@@ -11,4 +11,5 @@ public record Topic(
     ICollection<string> Demands,
     ICollection<Feedback> Feedback,
     ICollection<Rating> Ratings,
+    ICollection<TopicVote> Votes,
     int Slots = 1);

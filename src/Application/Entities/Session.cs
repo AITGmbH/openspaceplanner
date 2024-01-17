@@ -7,7 +7,11 @@ public record Session(
     ICollection<Room> Rooms,
     ICollection<Slot> Slots,
     ICollection<Topic> Topics,
-    bool VotingEnabled = false,
+    VotingOptions? VotingOptions,
+    bool RatingEnabled = false,
     bool FreeForAll = false,
     bool AttendanceEnabled = true,
-    bool TeamsAnnouncementsEnabled = false);
+    bool TeamsAnnouncementsEnabled = false)
+{
+    public VotingOptions VotingOptions { get; init; } = VotingOptions ?? new VotingOptions();
+}

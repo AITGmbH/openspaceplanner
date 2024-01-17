@@ -50,6 +50,7 @@ public class SessionTopicsController : Controller
                 Demands = new List<string>(),
                 Feedback = new List<Feedback>(),
                 Ratings = new List<Rating>(),
+                Votes = new List<TopicVote>(),
             };
 
             session.Topics.Add(topic);
