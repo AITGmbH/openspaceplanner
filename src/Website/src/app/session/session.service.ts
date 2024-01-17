@@ -39,6 +39,9 @@ export class SessionService {
     try {
       this._sessionOptions = JSON.parse(localStorage.getItem(`sessions${this.currentSession.id}`) ?? '') || new SessionOptions();
       this._sessionOptions = Object.assign(new SessionOptions(), this._sessionOptions);
+
+      this.syncSessionOptions();
+
       this.saveSessionOptions();
     } catch {
       this._sessionOptions = new SessionOptions();
@@ -210,7 +213,7 @@ export class SessionService {
     this.sessionOptions.topicsVote[topicId].push(voteId);
     this.saveSessionOptions();
 
-    this.sessionChanged.next(this.currentSession);
+    this.sessionHasChanged();
   }
 
   public async updateTopicFeedback(topicId: string, value: string): Promise<Feedback> {
@@ -270,7 +273,7 @@ export class SessionService {
     this.sessionOptions.topicsVote[topicId] = this.sessionOptions.topicsVote[topicId].filter((v) => v !== voteId) ?? [];
     this.saveSessionOptions();
 
-    this.sessionChanged.next(this.currentSession);
+    this.sessionHasChanged();
   }
 
   public async deleteTopicFeedback(topicId: string, feedbackId: string): Promise<void> {
@@ -284,6 +287,10 @@ export class SessionService {
 
   public async resetAttendance() {
     await lastValueFrom(this.sessionsService.deleteSessionAttendances(this.currentSession.id));
+  }
+
+  public async resetTopicVotes() {
+    await lastValueFrom(this.sessionsService.deleteSessionVotes(this.currentSession.id));
   }
 
   public async deleteTopicRating(topicId: string): Promise<void> {
@@ -345,7 +352,7 @@ export class SessionService {
       arr.push(obj);
     }
 
-    this.sessionChanged.next(this.currentSession);
+    this.sessionHasChanged();
 
     return obj;
   }
@@ -356,7 +363,7 @@ export class SessionService {
       obj.splice(index, 1);
     }
 
-    this.sessionChanged.next(this.currentSession);
+    this.sessionHasChanged();
   }
 
   private getTopic(topicId: string) {
@@ -378,5 +385,85 @@ export class SessionService {
     this._hubConnection.start().catch(() => {
       console.warn('Error while establishing connection');
     });
+  }
+
+  private sessionHasChanged() {
+    this.syncSessionOptions();
+
+    this.sessionChanged.next(this.currentSession);
+  }
+
+  private syncSessionOptions() {
+    if (this._sessionOptions == null) {
+      return;
+    }
+
+    for (const topic of this.currentSession.topics) {
+      const topicId = topic.id;
+
+      // check if the topic attendance was reset but is still remaining in the browser storage
+      this.syncSessionOptionsTopicAttendance(topicId, topic);
+
+      // check if the topic rating was reset but is still remaining in the browser storage
+      this.syncSessionOptionsTopicRating(topicId, topic);
+
+      // check if the topic vote was reset but is still remaining in the browser storage
+      this.syncSessionOptionsTopicVotes(topicId, topic);
+    }
+
+    this.syncSessionOptionsVotes();
+  }
+
+  private syncSessionOptionsVotes() {
+    if (this._sessionOptions == null) {
+      return;
+    }
+
+    for (const topicId of Object.keys(this._sessionOptions.topicsVote)) {
+      const topicExists = this.currentSession.topics.find((t) => t.id === topicId);
+      if (!topicExists) {
+        // if we voted for a topic that does no longer exist, we reset the votes for the user
+        delete this._sessionOptions.topicsVote[topicId];
+      }
+    }
+  }
+
+  private syncSessionOptionsTopicVotes(topicId: string, topic: Topic) {
+    if (this._sessionOptions == null) {
+      return;
+    }
+
+    const topicVotes = this._sessionOptions.topicsVote[topicId];
+    if (topicVotes != null && topicVotes.length > 0) {
+      this._sessionOptions.topicsVote[topicId] = this._sessionOptions.topicsVote[topicId].filter((voteId) => topic.votes.includes(voteId));
+    }
+  }
+
+  private syncSessionOptionsTopicRating(topicId: string, topic: Topic) {
+    if (this._sessionOptions == null) {
+      return;
+    }
+
+    const topicRating = this._sessionOptions.topicsRating[topicId];
+    if (topicRating != null) {
+      const topicRatingExists = topic.ratings.findIndex((a) => a.id === topicRating.id) >= 0;
+      if (!topicRatingExists) {
+        delete this._sessionOptions.topicsRating[topicId];
+      }
+    }
+  }
+
+  private syncSessionOptionsTopicAttendance(topicId: string, topic: Topic) {
+    if (this._sessionOptions == null) {
+      return;
+    }
+
+    const topicAttendance = this._sessionOptions.topicsAttending[topicId];
+    if (topicAttendance != null) {
+      const topicAttendanceExists = topic.attendees.findIndex((a) => a.id === topicAttendance.id) >= 0;
+      if (!topicAttendanceExists) {
+        delete this._sessionOptions.topicsAttending[topicId];
+      }
+    }
   }
 }

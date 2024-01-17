@@ -61,6 +61,6 @@ describe('SessionComponent', () => {
     verify(sessionServiceMock.get(session.id)).once();
 
     expect(component.fixture.componentInstance.session).not.toBeNull();
-    expect(component.fixture.componentInstance.session.id).toBe(session.id);
+    expect(component.fixture.componentInstance.session?.id).toBe(session.id);
   });
 });

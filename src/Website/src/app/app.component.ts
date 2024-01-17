@@ -1,7 +1,6 @@
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { FaConfig, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { AngularPlugin } from '@microsoft/applicationinsights-angularplugin-js';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
@@ -15,7 +14,8 @@ import { Config, ConfigService } from './shared/services/api';
   styleUrls: ['app.component.css'],
 })
 export class AppComponent {
-  constructor(http: HttpClient, sessionService: SessionService, configService: ConfigService, router: Router, library: FaIconLibrary) {
+  constructor(sessionService: SessionService, configService: ConfigService, router: Router, faConfig: FaConfig, library: FaIconLibrary) {
+    faConfig.fixedWidth = true;
     library.addIconPacks(fas);
 
     configService.getConfig().pipe(

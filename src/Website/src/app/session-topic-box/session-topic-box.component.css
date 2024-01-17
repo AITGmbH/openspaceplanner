@@ -133,19 +133,16 @@ a {
 
 .topic-ratings-stars>label:before {
   margin: 5px;
-  font-size: 1.25em;
-  font-family: FontAwesome;
   display: inline-block;
-  content: "\f005";
 }
 
 .topic-ratings-stars>label {
   width: 25%;
   text-align: center;
   float: right;
-  font-size: 14pt;
   border-right: 1px solid rgba(10, 10, 10, 0.1);
   color: #ddd;
+  padding: 0.5rem 0;
 }
 
 .topic-ratings-stars>input:checked~label,
@@ -191,7 +188,7 @@ a {
   margin-left: 5px;
 }
 
-.topic-indicators .fa-heart {
+.topic-indicators .heart {
   color: red;
 }
 

@@ -58,6 +58,17 @@ public class SessionsController : ApiControllerBase
             }
         });
 
+    [HttpDelete("{id}/votes")]
+    public Task DeleteSessionVotesAsync(int id)
+        => _sessionRepository.Update(id, session =>
+        {
+            foreach (var topic in session.Topics)
+            {
+                topic.Votes.Clear();
+                _sessionsHub.Clients.Group(id.ToString()).UpdateTopic(topic);
+            }
+        });
+
     [HttpGet("last")]
     public async Task<IEnumerable<Session>> GetLastSessionsAsync() => (await _sessionRepository.Get()).OrderByDescending(s => s.Id).Take(10);
 

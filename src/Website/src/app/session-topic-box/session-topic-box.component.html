@@ -14,8 +14,8 @@
   <div class="content topic-content" #content>
     <div class="topic-header">
       <div class="topic-title">
-        <span [hidden]="!hasError">
-          <fa-icon [icon]="['fas', 'exclamation-triangle']" class="topic-error" #errorElement></fa-icon>
+        <span [hidden]="!hasError" #errorElement>
+          <fa-icon [icon]="['fas', 'exclamation-triangle']" class="topic-error"></fa-icon>
         </span>
         <div #errorTooltip>{{ errorText }}</div>
         <strong>{{ topic.name }}</strong>
@@ -158,7 +158,11 @@
       }
 
       <a (click)="favorite()">
-        <fa-icon [icon]="['fas', 'heart']" class="edit-button" [class.fa-heart]="!isFavorite" [class.fa-heart-o]="isFavorite"></fa-icon>
+        @if (isFavorite) {
+          <fa-icon [icon]="['fas', 'heart-broken']" class="edit-button"></fa-icon>
+        } @else {
+          <fa-icon [icon]="['fas', 'heart']" class="edit-button"></fa-icon>
+        }
       </a>
     </p>
   </div>
@@ -166,16 +170,16 @@
   @if (session.ratingEnabled) {
     <div class="topic-ratings-stars">
       <input type="radio" id="star4-{{ topic.id }}" name="rating-{{ topic.id }}" value="4" (click)="ratingChange(4)" [checked]="getRating() === 4" />
-      <label for="star4-{{ topic.id }}"></label>
+      <label for="star4-{{ topic.id }}"><fa-icon [icon]="['fas', 'star']" size="lg"></fa-icon></label>
 
       <input type="radio" id="star3-{{ topic.id }}" name="rating-{{ topic.id }}" value="3" (click)="ratingChange(3)" [checked]="getRating() === 3" />
-      <label for="star3-{{ topic.id }}"></label>
+      <label for="star3-{{ topic.id }}"><fa-icon [icon]="['fas', 'star']" size="lg"></fa-icon></label>
 
       <input type="radio" id="star2-{{ topic.id }}" name="rating-{{ topic.id }}" value="2" (click)="ratingChange(2)" [checked]="getRating() === 2" />
-      <label for="star2-{{ topic.id }}"></label>
+      <label for="star2-{{ topic.id }}"><fa-icon [icon]="['fas', 'star']" size="lg"></fa-icon></label>
 
       <input type="radio" id="star1-{{ topic.id }}" name="rating-{{ topic.id }}" value="1" (click)="ratingChange(1)" [checked]="getRating() === 1" />
-      <label for="star1-{{ topic.id }}"></label>
+      <label for="star1-{{ topic.id }}"><fa-icon [icon]="['fas', 'star']" size="lg"></fa-icon></label>
     </div>
   }
 </div>

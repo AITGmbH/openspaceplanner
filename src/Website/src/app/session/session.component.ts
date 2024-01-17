@@ -35,12 +35,12 @@ export class SessionComponent implements OnInit, OnDestroy {
   public session?: Session;
   public currentTab: SessionTab = 'board';
 
-  public get topicsVoting(): Topic[] {
+  public get topicsVoting() {
     if (this.session == null) {
       return [];
     }
 
-    return this.session.votingOptions.blindVotingEnabled ? this.session.topics.sort((a, b) => (this.getTopicVotes(b.id) > this.getTopicVotes(a.id) ? 1 : -1)) : this.session.topics.sort((a, b) => (b.votes.length > a.votes.length ? 1 : -1));
+    return this.session.topics.sort((a, b) => (this.getTopicVotes(b.id) > this.getTopicVotes(a.id) ? 1 : -1));
   }
 
   public get votesUsed(): number {
@@ -61,7 +61,7 @@ export class SessionComponent implements OnInit, OnDestroy {
     }
 
     const sortedUnassignedTopics = this.session.votingOptions.votingEnabled
-      ? this.topicsVoting.filter((t) => t.roomId == null || t.slotId == null)
+      ? (this.topicsVoting.filter((t) => t.roomId == null || t.slotId == null) as Topic[])
       : this.session.topics
           .filter((t) => t.roomId == null || t.slotId == null)
           .sort((a, b) => b.owner?.localeCompare(a.owner ?? '') || b.name?.localeCompare(a.name))
@@ -165,11 +165,11 @@ export class SessionComponent implements OnInit, OnDestroy {
   }
 
   public addTopicVote(topicId: string) {
-    this.sessionService.updateTopicVote(topicId);
+    return this.sessionService.updateTopicVote(topicId);
   }
 
   public deleteTopicVote(topicId: string) {
-    this.sessionService.deleteTopicVote(topicId);
+    return this.sessionService.deleteTopicVote(topicId);
   }
 
   public canVote() {
@@ -230,6 +230,30 @@ export class SessionComponent implements OnInit, OnDestroy {
 
     const votesUsedOnTopic = this.session.votingOptions.blindVotingEnabled ? this.sessionService.sessionOptions.topicsVote[topicId]?.length ?? 0 : this.session.topics.find((t) => t.id === topicId)?.votes?.length ?? 0;
     return votesUsedOnTopic;
+  }
+
+  public getTopicPosition(topicId: string) {
+    const topics = this.topicsVoting;
+    let position = 1;
+
+    for (let topicIndex = 0; topicIndex < topics.length; topicIndex++) {
+      const previousTopic = topicIndex > 0 ? topics[topicIndex - 1] : null;
+      const currentTopic = topics[topicIndex];
+
+      if (previousTopic != null) {
+        const topicCount = this.getTopicVotes(currentTopic.id);
+        const previousTopicCount = this.getTopicVotes(previousTopic.id);
+        if (previousTopicCount !== topicCount) {
+          position++;
+        }
+      }
+
+      if (currentTopic.id === topicId) {
+        return position;
+      }
+    }
+
+    return position;
   }
 
   public showModal($event: any, name: string, parameter: any) {

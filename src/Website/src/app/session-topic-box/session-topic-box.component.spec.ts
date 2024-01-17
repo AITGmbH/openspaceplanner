@@ -1,3 +1,4 @@
+import { FontAwesomeTestingModule } from '@fortawesome/angular-fontawesome/testing';
 import { anything, instance, mock, when } from '@johanblumenberg/ts-mockito';
 import { render } from '@testing-library/angular';
 import { SessionService } from '../session/session.service';
@@ -44,6 +45,7 @@ describe('session topic box', () => {
 
     const component = await render(SessionTopicBoxComponent, {
       providers: [{ provide: SessionService, useFactory: () => instance(sessionServiceMock) }],
+      imports: [FontAwesomeTestingModule],
       componentInputs: { topic: topic1 },
     });
 
@@ -68,6 +70,7 @@ describe('session topic box', () => {
 
     const component = await render(SessionTopicBoxComponent, {
       providers: [{ provide: SessionService, useFactory: () => instance(sessionServiceMock) }],
+      imports: [FontAwesomeTestingModule],
       componentInputs: { topic: topic1 },
     });
 

@@ -55,8 +55,12 @@
       <div class="modal-buttons">
         <button class="button is-danger" (click)="deleteRooms()">Delete rooms</button>
         <button class="button is-danger" (click)="deleteSlots()">Delete slots</button>
+      </div>
+
+      <div class="modal-buttons">
         <button class="button is-danger" (click)="resetRatings()">Reset ratings</button>
         <button class="button is-danger" (click)="resetAttendance()">Reset attendance</button>
+        <button class="button is-danger" (click)="resetTopicVotes()">Reset topic votes</button>
       </div>
     </div>
   } @else if (selectedTab === 'imports') {

@@ -1,7 +1,17 @@
 import { anyNumber, anyString, instance, mock, verify, when } from '@johanblumenberg/ts-mockito';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { of } from 'rxjs';
-import { Session, SessionRoomsService, SessionSlotsService, SessionTopicsAttendanceService, SessionTopicsFeedbackService, SessionTopicsRatingService, SessionTopicsService, SessionsService } from '../shared/services/api';
+import {
+  Session,
+  SessionRoomsService,
+  SessionSlotsService,
+  SessionTopicsAttendanceService,
+  SessionTopicsFeedbackService,
+  SessionTopicsRatingService,
+  SessionTopicsService,
+  SessionTopicsVotesService,
+  SessionsService,
+} from '../shared/services/api';
 import { SessionService } from './session.service';
 
 const hubConnectionMock = mock(HubConnection);
@@ -24,6 +34,7 @@ describe('session service', () => {
       instance(mock(SessionTopicsAttendanceService)),
       instance(mock(SessionTopicsRatingService)),
       instance(mock(SessionTopicsFeedbackService)),
+      instance(mock(SessionTopicsVotesService)),
       instance(hubConnectionBuilderMock),
     );
     const session = await sessionService.get(5);
