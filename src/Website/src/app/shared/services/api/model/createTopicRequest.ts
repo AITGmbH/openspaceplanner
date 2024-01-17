@@ -11,8 +11,10 @@
  */
 
 
-export interface ApiSessionsSessionIdTopicsTopicIdFeedbackPostRequest { 
-    id?: string;
-    value?: string;
+export interface CreateTopicRequest { 
+    name?: string | null;
+    description?: string | null;
+    owner?: string | null;
+    slots: number;
 }
 

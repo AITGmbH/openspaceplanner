@@ -17,13 +17,13 @@ import { Room } from './room';
 export interface Session { 
     id: number;
     name: string;
-    createdAt: string;
-    rooms: Array<Room>;
-    slots: Array<Slot>;
-    topics: Array<Topic>;
     votingEnabled: boolean;
     freeForAll: boolean;
     attendanceEnabled: boolean;
     teamsAnnouncementsEnabled: boolean;
+    createdAt: string;
+    rooms: Array<Room>;
+    slots: Array<Slot>;
+    topics: Array<Topic>;
 }
 

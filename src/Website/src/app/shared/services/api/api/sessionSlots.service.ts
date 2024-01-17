@@ -19,9 +19,9 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { Slot } from '../model/slot';
+import { CreateSlotRequest } from '../model/createSlotRequest';
 // @ts-ignore
-import { UpdateSlotRequest } from '../model/updateSlotRequest';
+import { Slot } from '../model/slot';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -95,16 +95,16 @@ export class SessionSlotsService {
 
     /**
      * @param sessionId 
-     * @param updateSlotRequest 
+     * @param createSlotRequest 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public addSlot(sessionId: number, updateSlotRequest?: UpdateSlotRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Slot>;
-    public addSlot(sessionId: number, updateSlotRequest?: UpdateSlotRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Slot>>;
-    public addSlot(sessionId: number, updateSlotRequest?: UpdateSlotRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Slot>>;
-    public addSlot(sessionId: number, updateSlotRequest?: UpdateSlotRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public createSlot(sessionId: number, createSlotRequest?: CreateSlotRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Slot>;
+    public createSlot(sessionId: number, createSlotRequest?: CreateSlotRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Slot>>;
+    public createSlot(sessionId: number, createSlotRequest?: CreateSlotRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Slot>>;
+    public createSlot(sessionId: number, createSlotRequest?: CreateSlotRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (sessionId === null || sessionId === undefined) {
-            throw new Error('Required parameter sessionId was null or undefined when calling addSlot.');
+            throw new Error('Required parameter sessionId was null or undefined when calling createSlot.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -129,9 +129,7 @@ export class SessionSlotsService {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json',
-            'text/json',
-            'application/*+json'
+            'application/json'
         ];
         const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected !== undefined) {
@@ -153,7 +151,7 @@ export class SessionSlotsService {
         return this.httpClient.request<Slot>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: updateSlotRequest,
+                body: createSlotRequest,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -226,14 +224,14 @@ export class SessionSlotsService {
     /**
      * @param sessionId 
      * @param slotId 
-     * @param updateSlotRequest 
+     * @param slot 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateSlot(sessionId: number, slotId: string, updateSlotRequest?: UpdateSlotRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Slot>;
-    public updateSlot(sessionId: number, slotId: string, updateSlotRequest?: UpdateSlotRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Slot>>;
-    public updateSlot(sessionId: number, slotId: string, updateSlotRequest?: UpdateSlotRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Slot>>;
-    public updateSlot(sessionId: number, slotId: string, updateSlotRequest?: UpdateSlotRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public updateSlot(sessionId: number, slotId: string, slot?: Slot, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Slot>;
+    public updateSlot(sessionId: number, slotId: string, slot?: Slot, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Slot>>;
+    public updateSlot(sessionId: number, slotId: string, slot?: Slot, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Slot>>;
+    public updateSlot(sessionId: number, slotId: string, slot?: Slot, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (sessionId === null || sessionId === undefined) {
             throw new Error('Required parameter sessionId was null or undefined when calling updateSlot.');
         }
@@ -263,9 +261,7 @@ export class SessionSlotsService {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json',
-            'text/json',
-            'application/*+json'
+            'application/json'
         ];
         const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected !== undefined) {
@@ -287,7 +283,7 @@ export class SessionSlotsService {
         return this.httpClient.request<Slot>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: updateSlotRequest,
+                body: slot,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

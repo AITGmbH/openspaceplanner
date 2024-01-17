@@ -9,23 +9,14 @@ stages:
               packageType: sdk
               useGlobalJson: true
 
-          - task: NodeTool@0
-            displayName: Download NodeJS SDK
+          - task: UseDotNet@2
+            displayName: Download .NET 7 SDK for tools
             inputs:
-              versionSource: 'spec'
-              versionSpec: '20.x'
+              packageType: sdk
+              version: '7.0.x'
 
-          - script: npm ci
-            displayName: Restore frontend packages
-            workingDirectory: src/Website
-
-          - script: npm run lint
-            displayName: Linting frontend
-            workingDirectory: src/Website
-
-          - script: npm run build -- --output-path ../WebApi/wwwroot
-            displayName: Build frontend
-            workingDirectory: src/Website
+          - script: dotnet tool restore
+            displayName: Restore .NET tools
 
           - task: DotNetCoreCLI@2
             displayName: Restore backend packages
@@ -40,6 +31,28 @@ stages:
               arguments: -c Release --no-restore
               projects: src/OpenSpace.sln
 
+          - task: NodeTool@0
+            displayName: Download NodeJS SDK
+            inputs:
+              versionSource: 'spec'
+              versionSpec: '20.x'
+
+          - script: npm ci
+            displayName: Restore frontend packages
+            workingDirectory: src/Website
+
+          - script: npm run lint
+            displayName: Linting frontend
+            workingDirectory: src/Website
+
+          - script: npm run generate-openapi
+            displayName: Generating frontend api
+            workingDirectory: src/Website
+
+          - script: npm run build -- --output-path ../WebApi/wwwroot
+            displayName: Build frontend
+            workingDirectory: src/Website
+
           - task: DotNetCoreCLI@2
             displayName: Publish solution
             inputs:
@@ -47,7 +60,7 @@ stages:
               modifyOutputPath: false
               zipAfterPublish: false
               publishWebProjects: false
-              arguments: --configuration Release --output $(Build.ArtifactStagingDirectory) --no-build
+              arguments: --configuration Release --output $(Build.ArtifactStagingDirectory) --no-restore
               workingDirectory: src/WebApi
 
           - publish: $(Build.ArtifactStagingDirectory)

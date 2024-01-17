@@ -10,14 +10,20 @@ This tool allows you to plan, for example, fully packed conference days, which c
 
 After cloning the project:
 
-1. Restore packages
+1. Install the [.NET 7 runtime and .NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet)  
+The .NET 7 runtime is required for the .NET tools.
+
+1. Install the [NodeJS 20 SDK](https://nodejs.org/en/download)
+
+2. Restore tools and packages
 
 ```bash
+dotnet tool restore
 cd src/WebApi && dotnet restore
 cd src/Website && npm ci
 ```
 
-1. Optional: Add Azure Storage Credentials (_otherwise the data will be saved in a local file_)  
+4. Optional: Add Azure Storage Credentials (_otherwise the data will be saved in a local file_)  
     `dotnet user-secrets set TableStorageAccount <account>`  
     `dotnet user-secrets set TableStorageKey <key>`  
     `dotnet user-secrets set TableStorageContainer <container>` (_optional, otherwise the container will be named database_)
@@ -36,6 +42,8 @@ The backend is exposing the API and models through OpenAPI. The frontend can aut
 ```bash
 cd src/Website && npm run generate-openapi
 ```
+
+Make sure to build the backend once for the swagger.json to exist. If you make changes to the backend also make sure to build the backend before generating the frontend code.
 
 ## Gitpod
 

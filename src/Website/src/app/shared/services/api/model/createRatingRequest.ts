@@ -11,10 +11,7 @@
  */
 
 
-export interface ApiSessionsSessionIdSlotsSlotIdDeleteRequest { 
-    id?: string;
-    name?: string;
-    time?: string;
-    isPlanable?: boolean;
+export interface CreateRatingRequest { 
+    value: number;
 }
 

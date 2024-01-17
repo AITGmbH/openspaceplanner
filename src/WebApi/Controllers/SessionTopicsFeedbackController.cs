@@ -8,7 +8,7 @@ using OpenSpace.WebApi.Hubs;
 namespace OpenSpace.WebApi.Controllers;
 
 [Route("api/sessions/{sessionId:int}/topics/{topicId}/feedback")]
-public class SessionTopicsFeedbackController : Controller
+public class SessionTopicsFeedbackController : ApiControllerBase
 {
     private readonly ISessionRepository _sessionRepository;
     private readonly IHubContext<SessionsHub, ISessionsHub> _sessionsHub;
@@ -17,6 +17,22 @@ public class SessionTopicsFeedbackController : Controller
     {
         _sessionRepository = sessionRepository;
         _sessionsHub = sessionsHub;
+    }
+
+    [HttpPost]
+    public async Task<Feedback> CreateTopicFeedbackAsync(int sessionId, string topicId, [FromBody] CreateFeedbackRequest request)
+    {
+        var feedback = new Feedback(Guid.NewGuid().ToString(), request.Value);
+
+        await _sessionRepository.Update(sessionId, (session) =>
+        {
+            var currentTopic = session.Topics.FirstOrDefault(t => t.Id == topicId) ?? throw new EntityNotFoundException("Topic not found");
+            currentTopic.Feedback.Add(feedback);
+
+            _sessionsHub.Clients.Group(sessionId.ToString()).UpdateTopic(currentTopic);
+        });
+
+        return feedback;
     }
 
     [HttpDelete("{feedbackId}")]
@@ -31,19 +47,5 @@ public class SessionTopicsFeedbackController : Controller
             _sessionsHub.Clients.Group(sessionId.ToString()).UpdateTopic(currentTopic);
         });
 
-    [HttpPost]
-    public async Task<Feedback> AddTopicFeedbackAsync(int sessionId, string topicId, [FromBody] Feedback feedback)
-    {
-        feedback = feedback with { Id = Guid.NewGuid().ToString() };
-
-        await _sessionRepository.Update(sessionId, (session) =>
-        {
-            var currentTopic = session.Topics.FirstOrDefault(t => t.Id == topicId) ?? throw new EntityNotFoundException("Topic not found");
-            currentTopic.Feedback.Add(feedback);
-
-            _sessionsHub.Clients.Group(sessionId.ToString()).UpdateTopic(currentTopic);
-        });
-
-        return feedback;
-    }
+    public record CreateFeedbackRequest(string Value);
 }

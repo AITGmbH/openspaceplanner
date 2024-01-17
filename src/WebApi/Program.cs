@@ -1,5 +1,7 @@
 using System.Diagnostics;
+using System.Globalization;
 using Serilog;
+using Serilog.Events;
 using Serilog.Exceptions;
 
 namespace OpenSpace.WebApi;
@@ -33,9 +35,9 @@ public static class Program
 
         Log.Logger = new LoggerConfiguration()
             .Enrich.WithExceptionDetails()
-            .Enrich.FromLogContext()
-        .WriteTo.Console()
             .ReadFrom.Configuration(configuration)
+            .Enrich.FromLogContext()
+            .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{SourceContext}] {Properties}{NewLine}{Message:lj}{NewLine}{Exception}", formatProvider: CultureInfo.InvariantCulture)
             .CreateLogger();
 
         try

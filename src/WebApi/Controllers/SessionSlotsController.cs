@@ -1,3 +1,4 @@
+using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using OpenSpace.Application.Entities;
@@ -8,7 +9,7 @@ using OpenSpace.WebApi.Hubs;
 namespace OpenSpace.WebApi.Controllers;
 
 [Route("api/sessions/{sessionId:int}/slots")]
-public class SessionSlotsController : Controller
+public class SessionSlotsController : ApiControllerBase
 {
     private readonly ISessionRepository _sessionRepository;
     private readonly IHubContext<SessionsHub, ISessionsHub> _sessionsHub;
@@ -17,6 +18,22 @@ public class SessionSlotsController : Controller
     {
         _sessionRepository = sessionRepository;
         _sessionsHub = sessionsHub;
+    }
+
+    [HttpPost]
+    public async Task<Slot> CreateSlotAsync(int sessionId, [FromBody] CreateSlotRequest request)
+    {
+        var session = await _sessionRepository.Get(sessionId);
+
+        var slot = new Slot(
+            Guid.NewGuid().ToString(),
+            string.IsNullOrWhiteSpace(request.Name) ? "Slot " + (session.Slots.Count + 1) : request.Name);
+
+        await _sessionRepository.Update(sessionId, (session) => session.Slots.Add(slot));
+
+        await _sessionsHub.Clients.Group(sessionId.ToString()).UpdateSlot(slot);
+
+        return slot;
     }
 
     [HttpDelete("{slotId}")]
@@ -29,25 +46,6 @@ public class SessionSlotsController : Controller
         });
 
         await _sessionsHub.Clients.Group(sessionId.ToString()).DeleteSlot(slotId);
-    }
-
-    [HttpPost]
-    public async Task<Slot> AddSlotAsync(int sessionId, [FromBody] Slot slot)
-    {
-        await _sessionRepository.Update(sessionId, (session) =>
-        {
-            slot = slot with
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = string.IsNullOrWhiteSpace(slot.Name) ? "Slot " + (session.Slots.Count + 1) : slot.Name,
-            };
-
-            session.Slots.Add(slot);
-        });
-
-        await _sessionsHub.Clients.Group(sessionId.ToString()).UpdateSlot(slot);
-
-        return slot;
     }
 
     [HttpPut("{slotId}")]
@@ -64,4 +62,6 @@ public class SessionSlotsController : Controller
 
         return slot;
     }
+
+    public record CreateSlotRequest(string? Name);
 }

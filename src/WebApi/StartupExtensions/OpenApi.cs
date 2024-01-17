@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -8,17 +9,15 @@ public static class OpenApi
     public static void AddOpenApi(this IServiceCollection services)
         => services.AddSwaggerGen(c =>
         {
-            c.UseAllOfToExtendReferenceSchemas();
-
             c.SupportNonNullableReferenceTypes();
 
-            c.OperationFilter<OperationNameFilter>();
+            c.CustomOperationIds(operationIdSelector =>
+            {
+                var controllerActionDescriptor = operationIdSelector.ActionDescriptor as ControllerActionDescriptor;
+                return controllerActionDescriptor?.ActionName;
+            });
 
             c.SchemaFilter<RequireNonNullablePropertiesSchemaFilter>();
-
-            c.CustomSchemaIds(t => t.IsNested
-                ? t.FullName?.Replace(t.Namespace + ".", string.Empty).Replace("+", string.Empty)
-                : t.Name);
         });
 
     public static void UseOpenApi(this IApplicationBuilder app)
@@ -26,17 +25,7 @@ public static class OpenApi
 
     public class OperationNameFilter : IOperationFilter
     {
-        public void Apply(OpenApiOperation operation, OperationFilterContext context)
-        {
-            operation.OperationId = context.MethodInfo.Name?.Replace("Async", string.Empty);
-
-            var contents = operation.Responses.Select(r => r.Value.Content);
-            foreach (var content in contents)
-            {
-                content.Remove("text/json");
-                content.Remove("text/plain");
-            }
-        }
+        public void Apply(OpenApiOperation operation, OperationFilterContext context) => operation.OperationId = context.MethodInfo.Name?.Replace("Async", string.Empty);
     }
 
     public class RequireNonNullablePropertiesSchemaFilter : ISchemaFilter

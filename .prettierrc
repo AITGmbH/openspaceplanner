@@ -8,5 +8,6 @@
         }
     ],
     "printWidth": 240,
-    "singleQuote": true
+    "singleQuote": true,
+    "endOfLine": "lf"
 }
