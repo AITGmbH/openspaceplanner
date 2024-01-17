@@ -11,10 +11,7 @@
  */
 
 
-export interface ApiSessionsSessionIdRoomsRoomIdDeleteRequest { 
-    id?: string;
-    name?: string;
-    seats?: number;
-    capabilities?: Array<string>;
+export interface CreateSlotRequest { 
+    name?: string | null;
 }
 

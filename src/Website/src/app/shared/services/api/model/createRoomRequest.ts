@@ -11,8 +11,8 @@
  */
 
 
-export interface UpdateTopicRatingRequest { 
-    id: string;
-    value: number;
+export interface CreateRoomRequest { 
+    name?: string | null;
+    seats?: number | null;
 }
 

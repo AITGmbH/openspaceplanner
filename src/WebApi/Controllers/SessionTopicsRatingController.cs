@@ -8,7 +8,7 @@ using OpenSpace.WebApi.Hubs;
 namespace OpenSpace.WebApi.Controllers;
 
 [Route("api/sessions/{sessionId:int}/topics/{topicId}/ratings")]
-public class SessionTopicsRatingController : Controller
+public class SessionTopicsRatingController : ApiControllerBase
 {
     private readonly ISessionRepository _sessionRepository;
     private readonly IHubContext<SessionsHub, ISessionsHub> _sessionsHub;
@@ -17,6 +17,22 @@ public class SessionTopicsRatingController : Controller
     {
         _sessionRepository = sessionRepository;
         _sessionsHub = sessionsHub;
+    }
+
+    [HttpPost]
+    public async Task<Rating> CreateTopicRatingAsync(int sessionId, string topicId, [FromBody] CreateRatingRequest request)
+    {
+        var rating = new Rating(Guid.NewGuid().ToString(), request.Value);
+
+        await _sessionRepository.Update(sessionId, (session) =>
+        {
+            var currentTopic = session.Topics.FirstOrDefault(t => t.Id == topicId) ?? throw new EntityNotFoundException("Topic not found");
+            currentTopic.Ratings.Add(rating);
+
+            _sessionsHub.Clients.Group(sessionId.ToString()).UpdateTopic(currentTopic);
+        });
+
+        return rating;
     }
 
     [HttpDelete("{ratingId}")]
@@ -29,22 +45,6 @@ public class SessionTopicsRatingController : Controller
 
             _sessionsHub.Clients.Group(sessionId.ToString()).UpdateTopic(currentTopic);
         });
-
-    [HttpPost]
-    public async Task<Rating> AddTopicRatingAsync(int sessionId, string topicId, [FromBody] Rating rating)
-    {
-        rating = rating with { Id = Guid.NewGuid().ToString() };
-
-        await _sessionRepository.Update(sessionId, (session) =>
-        {
-            var currentTopic = session.Topics.FirstOrDefault(t => t.Id == topicId) ?? throw new EntityNotFoundException("Topic not found");
-            currentTopic.Ratings.Add(rating);
-
-            _sessionsHub.Clients.Group(sessionId.ToString()).UpdateTopic(currentTopic);
-        });
-
-        return rating;
-    }
 
     [HttpPut("{ratingId}")]
     public async Task<Rating> UpdateTopicRatingAsync(int sessionId, string topicId, string ratingId, [FromBody] Rating rating)
@@ -65,4 +65,6 @@ public class SessionTopicsRatingController : Controller
 
         return rating;
     }
+
+    public record CreateRatingRequest(decimal Value);
 }

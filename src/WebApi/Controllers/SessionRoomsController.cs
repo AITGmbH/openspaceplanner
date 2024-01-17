@@ -8,7 +8,7 @@ using OpenSpace.WebApi.Hubs;
 namespace OpenSpace.WebApi.Controllers;
 
 [Route("api/sessions/{sessionId:int}/rooms")]
-public class SessionRoomsController : Controller
+public class SessionRoomsController : ApiControllerBase
 {
     private readonly ISessionRepository _sessionRepository;
     private readonly IHubContext<SessionsHub, ISessionsHub> _sessionsHub;
@@ -17,6 +17,24 @@ public class SessionRoomsController : Controller
     {
         _sessionRepository = sessionRepository;
         _sessionsHub = sessionsHub;
+    }
+
+    [HttpPost]
+    public async Task<Room> CreateRoomAsync(int sessionId, [FromBody] CreateRoomRequest request)
+    {
+        var session = await _sessionRepository.Get(sessionId);
+
+        var room = new Room(
+            Guid.NewGuid().ToString(),
+            string.IsNullOrWhiteSpace(request.Name) ? "Room " + (session.Rooms.Count + 1) : request.Name,
+            request.Seats ?? 0,
+            new List<string>());
+
+        await _sessionRepository.Update(sessionId, (session) => session.Rooms.Add(room));
+
+        await _sessionsHub.Clients.Group(sessionId.ToString()).UpdateRoom(room);
+
+        return room;
     }
 
     [HttpDelete("{roomId}")]
@@ -29,26 +47,6 @@ public class SessionRoomsController : Controller
         });
 
         await _sessionsHub.Clients.Group(sessionId.ToString()).DeleteRoom(roomId);
-    }
-
-    [HttpPost]
-    public async Task<Room> AddRoomAsync(int sessionId, [FromBody] Room room)
-    {
-        await _sessionRepository.Update(sessionId, (session) =>
-        {
-            room = room with
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = string.IsNullOrWhiteSpace(room.Name) ? "Room " + (session.Rooms.Count + 1) : room.Name,
-                Seats = room.Seats ?? 0,
-            };
-
-            session.Rooms.Add(room);
-        });
-
-        await _sessionsHub.Clients.Group(sessionId.ToString()).UpdateRoom(room);
-
-        return room;
     }
 
     [HttpPut("{roomId}")]
@@ -65,4 +63,6 @@ public class SessionRoomsController : Controller
 
         return room;
     }
+
+    public record CreateRoomRequest(string? Name, int? Seats);
 }

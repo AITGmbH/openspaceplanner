@@ -295,3 +295,5 @@ dist
 
 junit.xml
 coverage/
+
+swagger.json

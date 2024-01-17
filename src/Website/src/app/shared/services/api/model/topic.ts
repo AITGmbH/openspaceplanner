@@ -21,10 +21,10 @@ export interface Topic {
     owner?: string | null;
     roomId?: string | null;
     slotId?: string | null;
+    slots: number;
     attendees: Array<Attendance>;
     demands: Array<string>;
     feedback: Array<Feedback>;
     ratings: Array<Rating>;
-    slots: number;
 }
 

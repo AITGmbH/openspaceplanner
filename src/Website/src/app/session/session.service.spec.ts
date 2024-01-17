@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
-import { anyString, instance, mock, verify, when } from '@johanblumenberg/ts-mockito';
+import { anyNumber, anyString, instance, mock, verify, when } from '@johanblumenberg/ts-mockito';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { of } from 'rxjs';
+import { Session, SessionRoomsService, SessionSlotsService, SessionTopicsAttendanceService, SessionTopicsFeedbackService, SessionTopicsRatingService, SessionTopicsService, SessionsService } from '../shared/services/api';
 import { SessionService } from './session.service';
 
 const hubConnectionMock = mock(HubConnection);
@@ -13,10 +13,19 @@ when(hubConnectionBuilderMock.build()).thenReturn(instance(hubConnectionMock));
 
 describe('session service', () => {
   it('get session should set it as the current session', async () => {
-    const httpClientMock = mock(HttpClient);
-    when(httpClientMock.get(anyString())).thenReturn(of(<Object>{ id: 5 }));
+    const sessionsServiceMock = mock(SessionsService);
+    when(sessionsServiceMock.getSessionById(anyNumber())).thenReturn(of({ id: 5 } as Session));
 
-    const sessionService = new SessionService(instance(httpClientMock), instance(hubConnectionBuilderMock));
+    const sessionService = new SessionService(
+      instance(sessionsServiceMock),
+      instance(mock(SessionTopicsService)),
+      instance(mock(SessionSlotsService)),
+      instance(mock(SessionRoomsService)),
+      instance(mock(SessionTopicsAttendanceService)),
+      instance(mock(SessionTopicsRatingService)),
+      instance(mock(SessionTopicsFeedbackService)),
+      instance(hubConnectionBuilderMock),
+    );
     const session = await sessionService.get(5);
 
     expect(sessionService.currentSession).toBe(session);

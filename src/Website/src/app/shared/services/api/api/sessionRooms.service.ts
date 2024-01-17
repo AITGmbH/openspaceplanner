@@ -19,9 +19,9 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { Room } from '../model/room';
+import { CreateRoomRequest } from '../model/createRoomRequest';
 // @ts-ignore
-import { UpdateRoomRequest } from '../model/updateRoomRequest';
+import { Room } from '../model/room';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -95,16 +95,16 @@ export class SessionRoomsService {
 
     /**
      * @param sessionId 
-     * @param updateRoomRequest 
+     * @param createRoomRequest 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public addRoom(sessionId: number, updateRoomRequest?: UpdateRoomRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Room>;
-    public addRoom(sessionId: number, updateRoomRequest?: UpdateRoomRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Room>>;
-    public addRoom(sessionId: number, updateRoomRequest?: UpdateRoomRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Room>>;
-    public addRoom(sessionId: number, updateRoomRequest?: UpdateRoomRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public createRoom(sessionId: number, createRoomRequest?: CreateRoomRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Room>;
+    public createRoom(sessionId: number, createRoomRequest?: CreateRoomRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Room>>;
+    public createRoom(sessionId: number, createRoomRequest?: CreateRoomRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Room>>;
+    public createRoom(sessionId: number, createRoomRequest?: CreateRoomRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (sessionId === null || sessionId === undefined) {
-            throw new Error('Required parameter sessionId was null or undefined when calling addRoom.');
+            throw new Error('Required parameter sessionId was null or undefined when calling createRoom.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -129,9 +129,7 @@ export class SessionRoomsService {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json',
-            'text/json',
-            'application/*+json'
+            'application/json'
         ];
         const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected !== undefined) {
@@ -153,7 +151,7 @@ export class SessionRoomsService {
         return this.httpClient.request<Room>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: updateRoomRequest,
+                body: createRoomRequest,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -226,14 +224,14 @@ export class SessionRoomsService {
     /**
      * @param sessionId 
      * @param roomId 
-     * @param updateRoomRequest 
+     * @param room 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateRoom(sessionId: number, roomId: string, updateRoomRequest?: UpdateRoomRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Room>;
-    public updateRoom(sessionId: number, roomId: string, updateRoomRequest?: UpdateRoomRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Room>>;
-    public updateRoom(sessionId: number, roomId: string, updateRoomRequest?: UpdateRoomRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Room>>;
-    public updateRoom(sessionId: number, roomId: string, updateRoomRequest?: UpdateRoomRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public updateRoom(sessionId: number, roomId: string, room?: Room, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Room>;
+    public updateRoom(sessionId: number, roomId: string, room?: Room, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Room>>;
+    public updateRoom(sessionId: number, roomId: string, room?: Room, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Room>>;
+    public updateRoom(sessionId: number, roomId: string, room?: Room, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (sessionId === null || sessionId === undefined) {
             throw new Error('Required parameter sessionId was null or undefined when calling updateRoom.');
         }
@@ -263,9 +261,7 @@ export class SessionRoomsService {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json',
-            'text/json',
-            'application/*+json'
+            'application/json'
         ];
         const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected !== undefined) {
@@ -287,7 +283,7 @@ export class SessionRoomsService {
         return this.httpClient.request<Room>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: updateRoomRequest,
+                body: room,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

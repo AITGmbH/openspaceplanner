@@ -19,9 +19,9 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
-import { Rating } from '../model/rating';
+import { CreateRatingRequest } from '../model/createRatingRequest';
 // @ts-ignore
-import { UpdateTopicRatingRequest } from '../model/updateTopicRatingRequest';
+import { Rating } from '../model/rating';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -96,19 +96,19 @@ export class SessionTopicsRatingService {
     /**
      * @param sessionId 
      * @param topicId 
-     * @param updateTopicRatingRequest 
+     * @param createRatingRequest 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public addTopicRating(sessionId: number, topicId: string, updateTopicRatingRequest?: UpdateTopicRatingRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Rating>;
-    public addTopicRating(sessionId: number, topicId: string, updateTopicRatingRequest?: UpdateTopicRatingRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Rating>>;
-    public addTopicRating(sessionId: number, topicId: string, updateTopicRatingRequest?: UpdateTopicRatingRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Rating>>;
-    public addTopicRating(sessionId: number, topicId: string, updateTopicRatingRequest?: UpdateTopicRatingRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public createTopicRating(sessionId: number, topicId: string, createRatingRequest?: CreateRatingRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Rating>;
+    public createTopicRating(sessionId: number, topicId: string, createRatingRequest?: CreateRatingRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Rating>>;
+    public createTopicRating(sessionId: number, topicId: string, createRatingRequest?: CreateRatingRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Rating>>;
+    public createTopicRating(sessionId: number, topicId: string, createRatingRequest?: CreateRatingRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (sessionId === null || sessionId === undefined) {
-            throw new Error('Required parameter sessionId was null or undefined when calling addTopicRating.');
+            throw new Error('Required parameter sessionId was null or undefined when calling createTopicRating.');
         }
         if (topicId === null || topicId === undefined) {
-            throw new Error('Required parameter topicId was null or undefined when calling addTopicRating.');
+            throw new Error('Required parameter topicId was null or undefined when calling createTopicRating.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -133,9 +133,7 @@ export class SessionTopicsRatingService {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json',
-            'text/json',
-            'application/*+json'
+            'application/json'
         ];
         const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected !== undefined) {
@@ -157,7 +155,7 @@ export class SessionTopicsRatingService {
         return this.httpClient.request<Rating>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: updateTopicRatingRequest,
+                body: createRatingRequest,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -235,14 +233,14 @@ export class SessionTopicsRatingService {
      * @param sessionId 
      * @param topicId 
      * @param ratingId 
-     * @param updateTopicRatingRequest 
+     * @param rating 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateTopicRating(sessionId: number, topicId: string, ratingId: string, updateTopicRatingRequest?: UpdateTopicRatingRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Rating>;
-    public updateTopicRating(sessionId: number, topicId: string, ratingId: string, updateTopicRatingRequest?: UpdateTopicRatingRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Rating>>;
-    public updateTopicRating(sessionId: number, topicId: string, ratingId: string, updateTopicRatingRequest?: UpdateTopicRatingRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Rating>>;
-    public updateTopicRating(sessionId: number, topicId: string, ratingId: string, updateTopicRatingRequest?: UpdateTopicRatingRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public updateTopicRating(sessionId: number, topicId: string, ratingId: string, rating?: Rating, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Rating>;
+    public updateTopicRating(sessionId: number, topicId: string, ratingId: string, rating?: Rating, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Rating>>;
+    public updateTopicRating(sessionId: number, topicId: string, ratingId: string, rating?: Rating, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Rating>>;
+    public updateTopicRating(sessionId: number, topicId: string, ratingId: string, rating?: Rating, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (sessionId === null || sessionId === undefined) {
             throw new Error('Required parameter sessionId was null or undefined when calling updateTopicRating.');
         }
@@ -275,9 +273,7 @@ export class SessionTopicsRatingService {
 
         // to determine the Content-Type header
         const consumes: string[] = [
-            'application/json',
-            'text/json',
-            'application/*+json'
+            'application/json'
         ];
         const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected !== undefined) {
@@ -299,7 +295,7 @@ export class SessionTopicsRatingService {
         return this.httpClient.request<Rating>('put', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: updateTopicRatingRequest,
+                body: rating,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

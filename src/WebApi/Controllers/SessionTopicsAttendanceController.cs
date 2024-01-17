@@ -8,7 +8,7 @@ using OpenSpace.WebApi.Hubs;
 namespace OpenSpace.WebApi.Controllers;
 
 [Route("api/sessions/{sessionId:int}/topics/{topicId}/attendances")]
-public class SessionTopicsAttendanceController : Controller
+public class SessionTopicsAttendanceController : ApiControllerBase
 {
     private readonly ISessionRepository _sessionRepository;
     private readonly IHubContext<SessionsHub, ISessionsHub> _sessionsHub;
@@ -20,7 +20,7 @@ public class SessionTopicsAttendanceController : Controller
     }
 
     [HttpPost]
-    public async Task<Attendance[]> AddTopicAttendanceAsync(int sessionId, string topicId, [FromBody] Attendance[] attendances)
+    public async Task<IEnumerable<Attendance>> CreateTopicAttendanceAsync(int sessionId, string topicId, [FromBody] Attendance[] attendances)
     {
         await _sessionRepository.Update(sessionId, (session) =>
         {
@@ -65,7 +65,7 @@ public class SessionTopicsAttendanceController : Controller
         });
 
     [HttpPut("{attendanceId}")]
-    public async Task<Attendance> UpdateTopicAttendanceAsync(int sessionId, string topicId, string attendanceId, [FromBody] Attendance attendance)
+    public async Task<IEnumerable<Attendance>> UpdateTopicAttendanceAsync(int sessionId, string topicId, string attendanceId, [FromBody] Attendance attendance)
     {
         await _sessionRepository.Update(sessionId, (session) =>
         {
@@ -81,6 +81,6 @@ public class SessionTopicsAttendanceController : Controller
             _sessionsHub.Clients.Group(sessionId.ToString()).UpdateTopic(currentTopic);
         });
 
-        return attendance;
+        return [attendance];
     }
 }

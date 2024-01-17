@@ -3,8 +3,7 @@ using OpenSpace.Application.Entities;
 
 namespace OpenSpace.WebApi.Controllers;
 
-[Route("api/config")]
-public class ConfigController : Controller
+public class ConfigController : ApiControllerBase
 {
     private readonly IConfiguration _configuration;
 
