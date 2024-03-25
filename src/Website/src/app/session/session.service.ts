@@ -68,7 +68,7 @@ export class SessionService {
   }
 
   public getSortedRooms(rooms: Room[]) {
-    return rooms.sort((a, b) => ((a.seats || 0) > (b.seats || 0) ? -1 : 1 || a.name.localeCompare(b.name)));
+    return rooms.sort((a, b) => a.orderNumber - b.orderNumber);
   }
 
   public getSlotsOfTopic(slots: Slot[], topic: Topic) {

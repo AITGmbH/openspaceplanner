@@ -14,6 +14,7 @@
 export interface Room { 
     id: string;
     name: string;
+    orderNumber: number;
     seats?: number | null;
     capabilities: Array<string>;
 }
