@@ -154,6 +154,26 @@ export class SessionComponent implements OnInit, OnDestroy {
       ondragenter: (event: DropEvent) => this.onDragEnter(event),
       ondragleave: (event: DropEvent) => this.onDragLeave(event),
     });
+
+    interact('.draggable-room-space').draggable({
+      autoScroll: {
+        container: window,
+        speed: 1000,
+        interval: 5,
+      },
+      inertia: true,
+      onstart: (event: InteractEvent<'drag', 'start'>) => this.onRoomMoveStart(event),
+      onmove: (event: InteractEvent<'drag', 'move'>) => this.onRoomMove(event),
+      onend: (event: InteractEvent<'drag', 'end'>) => this.onRoomMoveEnd(event),
+    });
+
+    interact('.dropable-room-space').dropzone({
+      accept: '.draggable-room-space',
+      overlap: 0.4,
+      ondrop: (event: DropEvent) => this.onRoomDrop(event),
+      ondragenter: (event: DropEvent) => this.onDragEnter(event),
+      ondragleave: (event: DropEvent) => this.onDragLeave(event),
+    });
   }
 
   public ngOnDestroy() {
@@ -161,6 +181,8 @@ export class SessionComponent implements OnInit, OnDestroy {
 
     interact('.draggable').unset();
     interact('.dropable').unset();
+    interact('.draggable-room-space').unset();
+    interact('.dropable-room-space').unset();
   }
 
   public switchTab(tab: SessionTab) {
@@ -574,6 +596,20 @@ export class SessionComponent implements OnInit, OnDestroy {
     return topic == null ? null : Object.assign({}, topic);
   }
 
+  private getRoomByElement(element: Element | null) {
+    if (this.session == null) {
+      return null;
+    }
+
+    if (element == null) {
+      return null;
+    }
+
+    const id = element.getAttribute('id');
+    const room = this.session.rooms.find((room) => room.id === id);
+    return room == null ? null : Object.assign({}, room);
+  }
+
   private getElementSlotId(container: HTMLElement, element: HTMLElement): string | null {
     try {
       if (container != null && container.dataset['slotId'] != null) {
@@ -685,6 +721,78 @@ export class SessionComponent implements OnInit, OnDestroy {
     }
 
     return true;
+  }
+
+  private onRoomMoveStart(event: InteractEvent<'drag', 'start'>) {
+    const room = this.getRoomByElement(event.target);
+    if (room == null) {
+      return;
+    }
+
+    this.markDropableRoomSpaces(room);
+
+    this.pauseEvent(event);
+  }
+
+  private onRoomMove(event: InteractEvent<'drag', 'move'>) {
+    const target = event.target,
+      x = parseFloat(target.getAttribute('data-x') ?? '0') + event.dx;
+
+    target.style.transform = 'translateX(' + x + 'px)';
+
+    target.setAttribute('data-x', x.toString());
+
+    this.pauseEvent(event);
+  }
+
+  private async onRoomMoveEnd(event: InteractEvent<'drag', 'end'>) {
+    const isNotDropable = event.relatedTarget == null || !event.relatedTarget.classList.contains('dropable-room-space');
+    if (isNotDropable) {
+      event.target.setAttribute('style', '');
+      event.target.removeAttribute('data-x');
+      event.target.removeAttribute('data-y');
+    }
+    
+    document.querySelectorAll('.draggable-room-space').forEach((t) => t.classList.remove('dropable-room-space'));
+  }
+
+  private async onRoomDrop(event: DropEvent) {
+    const srouceRoomElement = event.relatedTarget as HTMLElement;
+    if (srouceRoomElement == null) {
+      return;
+    }
+
+    const targetRoomElement = event.target as HTMLElement;
+    if (targetRoomElement == null) {
+      return;
+    }
+
+    targetRoomElement.classList.remove('drop-target');
+
+    const sourceRoom = this.getRoomByElement(srouceRoomElement);
+    const targetRoom = this.getRoomByElement(targetRoomElement);
+
+    if (sourceRoom && targetRoom) {
+      const tempOrderNumber = sourceRoom.orderNumber;
+      sourceRoom.orderNumber = targetRoom.orderNumber;
+      targetRoom.orderNumber = tempOrderNumber;
+
+      this.sessionService.updateRoom(sourceRoom);
+      this.sessionService.updateRoom(targetRoom);
+    }
+  }
+
+  private markDropableRoomSpaces(room: Room) {
+    const roomSpaces = document.querySelectorAll('.draggable-room-space');
+    for (let i = 0; i < roomSpaces.length; i++) {
+      const roomSpace = <HTMLElement>roomSpaces[i];
+
+      if (roomSpace.id == room.id) {
+        continue;
+      }
+
+      roomSpace.classList.add('dropable-room-space');
+    }
   }
 
   public toggleFloatingActionButton(event: Event) {
