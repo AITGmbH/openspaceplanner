@@ -43,7 +43,7 @@
 
         <tbody>
           <tr class="table-row" *ngFor="let slot of slots" id="{{ slot.id }}">
-            <td class="table-cell" (dblclick)="showModal($event, 'slot', slot)" appEditButton>
+            <td class="table-cell draggable-slot-space" (dblclick)="showModal($event, 'slot', slot)" appEditButton>
               <span>{{ slot.name }}</span>
               <a (click)="showModal($event, 'slot', slot)">
                 <fa-icon [icon]="['fas', 'edit']" class="pull-right edit-button"></fa-icon>

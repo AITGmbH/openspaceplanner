@@ -32,6 +32,10 @@
   background-color: #eaffea;
 }
 
+.dropable-slot-space {
+  background-color: #eaffea;
+}
+
 .drop-target {
   background-color: lightyellow;
 }
