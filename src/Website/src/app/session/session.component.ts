@@ -154,6 +154,46 @@ export class SessionComponent implements OnInit, OnDestroy {
       ondragenter: (event: DropEvent) => this.onDragEnter(event),
       ondragleave: (event: DropEvent) => this.onDragLeave(event),
     });
+
+    interact('.draggable-room-space').draggable({
+      autoScroll: {
+        container: window,
+        speed: 1000,
+        interval: 5,
+      },
+      inertia: true,
+      onstart: (event: InteractEvent<'drag', 'start'>) => this.onRoomMoveStart(event),
+      onmove: (event: InteractEvent<'drag', 'move'>) => this.onRoomMove(event),
+      onend: (event: InteractEvent<'drag', 'end'>) => this.onRoomMoveEnd(event),
+    });
+
+    interact('.dropable-room-space').dropzone({
+      accept: '.draggable-room-space',
+      overlap: 0.4,
+      ondrop: (event: DropEvent) => this.onRoomDrop(event),
+      ondragenter: (event: DropEvent) => this.onDragEnter(event),
+      ondragleave: (event: DropEvent) => this.onDragLeave(event),
+    });
+
+    interact('.draggable-slot-space').draggable({
+      autoScroll: {
+        container: window,
+        speed: 1000,
+        interval: 5,
+      },
+      inertia: true,
+      onstart: (event: InteractEvent<'drag', 'start'>) => this.onSlotMoveStart(event),
+      onmove: (event: InteractEvent<'drag', 'move'>) => this.onSlotMove(event),
+      onend: (event: InteractEvent<'drag', 'end'>) => this.onSlotMoveEnd(event),
+    });
+
+    interact('.dropable-slot-space').dropzone({
+      accept: '.draggable-slot-space',
+      overlap: 0.4,
+      ondrop: (event: DropEvent) => this.onSlotDrop(event),
+      ondragenter: (event: DropEvent) => this.onDragEnter(event),
+      ondragleave: (event: DropEvent) => this.onDragLeave(event),
+    });
   }
 
   public ngOnDestroy() {
@@ -161,6 +201,10 @@ export class SessionComponent implements OnInit, OnDestroy {
 
     interact('.draggable').unset();
     interact('.dropable').unset();
+    interact('.draggable-room-space').unset();
+    interact('.dropable-room-space').unset();
+    interact('.draggable-slot-space').unset();
+    interact('.dropable-slot-space').unset();
   }
 
   public switchTab(tab: SessionTab) {
@@ -574,6 +618,39 @@ export class SessionComponent implements OnInit, OnDestroy {
     return topic == null ? null : Object.assign({}, topic);
   }
 
+  private getRoomByElement(element: Element | null) {
+    if (this.session == null) {
+      return null;
+    }
+
+    if (element == null) {
+      return null;
+    }
+
+    const id = element.getAttribute('id');
+    const room = this.session.rooms.find((room) => room.id === id);
+    return room == null ? null : Object.assign({}, room);
+  }
+
+  private getSlotByElement(element: Element | null) {
+    if (this.session == null) {
+      return null;
+    }
+
+    if (element == null) {
+      return null;
+    }
+
+    if (element.parentElement == null) {
+      return null
+    }
+
+    const id = element.parentElement.getAttribute('id');
+    const slot = this.session.slots.find((slot) => slot.id === id);
+
+    return slot == null ? null : Object.assign({}, slot);
+  }
+
   private getElementSlotId(container: HTMLElement, element: HTMLElement): string | null {
     try {
       if (container != null && container.dataset['slotId'] != null) {
@@ -685,6 +762,148 @@ export class SessionComponent implements OnInit, OnDestroy {
     }
 
     return true;
+  }
+
+  private onRoomMoveStart(event: InteractEvent<'drag', 'start'>) {
+    const room = this.getRoomByElement(event.target);
+    if (room == null) {
+      return;
+    }
+
+    this.markDropableRoomSpaces(room);
+
+    this.pauseEvent(event);
+  }
+
+  private onRoomMove(event: InteractEvent<'drag', 'move'>) {
+    const target = event.target,
+      x = parseFloat(target.getAttribute('data-x') ?? '0') + event.dx;
+
+    target.style.transform = 'translateX(' + x + 'px)';
+    target.setAttribute('data-x', x.toString());
+
+    this.pauseEvent(event);
+  }
+
+  private async onRoomMoveEnd(event: InteractEvent<'drag', 'end'>) {
+    const isNotDropable = event.relatedTarget == null || !event.relatedTarget.classList.contains('dropable-room-space');
+    if (isNotDropable) {
+      event.target.setAttribute('style', '');
+      event.target.removeAttribute('data-x');
+      event.target.removeAttribute('data-y');
+    }
+    
+    document.querySelectorAll('.draggable-room-space').forEach((t) => t.classList.remove('dropable-room-space'));
+  }
+
+  private async onRoomDrop(event: DropEvent) {
+    const srouceRoomElement = event.relatedTarget as HTMLElement;
+    if (srouceRoomElement == null) {
+      return;
+    }
+
+    const targetRoomElement = event.target as HTMLElement;
+    if (targetRoomElement == null) {
+      return;
+    }
+
+    targetRoomElement.classList.remove('drop-target');
+
+    const sourceRoom = this.getRoomByElement(srouceRoomElement);
+    const targetRoom = this.getRoomByElement(targetRoomElement);
+
+    if (sourceRoom && targetRoom) {
+      const tempOrderNumber = sourceRoom.orderNumber;
+      sourceRoom.orderNumber = targetRoom.orderNumber;
+      targetRoom.orderNumber = tempOrderNumber;
+
+      this.sessionService.updateRoom(sourceRoom);
+      this.sessionService.updateRoom(targetRoom);
+    }
+  }
+
+  private markDropableRoomSpaces(room: Room) {
+    const roomSpaces = document.querySelectorAll('.draggable-room-space');
+    for (let i = 0; i < roomSpaces.length; i++) {
+      const roomSpace = <HTMLElement>roomSpaces[i];
+
+      if (roomSpace.id == room.id) {
+        continue;
+      }
+
+      roomSpace.classList.add('dropable-room-space');
+    }
+  }
+
+  private onSlotMoveStart(event: InteractEvent<'drag', 'start'>) {
+    const slot = this.getSlotByElement(event.target);
+
+    if (slot == null) {
+      return;
+    }
+
+    this.markDropableSlotSpaces(slot);
+
+    this.pauseEvent(event);
+  }
+
+  private onSlotMove(event: InteractEvent<'drag', 'move'>) {
+    const target = event.target,
+      y = parseFloat(target.getAttribute('data-y') ?? '0') + event.dy;
+
+    target.style.transform = 'translateY(' + y + 'px)';
+    target.setAttribute('data-y', y.toString());
+
+    this.pauseEvent(event);
+  }
+
+  private async onSlotMoveEnd(event: InteractEvent<'drag', 'end'>) {
+    const isNotDropable = event.relatedTarget == null || !event.relatedTarget.classList.contains('dropable-slot-space');
+    if (isNotDropable) {
+      event.target.setAttribute('style', '');
+      event.target.removeAttribute('data-x');
+      event.target.removeAttribute('data-y');
+    }
+    
+    document.querySelectorAll('.draggable-slot-space').forEach((t) => t.classList.remove('dropable-slot-space'));
+  }
+
+  private async onSlotDrop(event: DropEvent) {
+    const srouceSlotElement = event.relatedTarget as HTMLElement;
+    if (srouceSlotElement == null) {
+      return;
+    }
+
+    const targetSlotElement = event.target as HTMLElement;
+    if (targetSlotElement == null) {
+      return;
+    }
+
+    targetSlotElement.classList.remove('drop-target');
+
+    const sourceSlot = this.getSlotByElement(srouceSlotElement);
+    const targetSlot = this.getSlotByElement(targetSlotElement);
+
+    if (sourceSlot && targetSlot) {
+      const tempOrderNumber = sourceSlot.orderNumber;
+      sourceSlot.orderNumber = targetSlot.orderNumber;
+      targetSlot.orderNumber = tempOrderNumber;
+
+      this.sessionService.updateSlot(sourceSlot);
+      this.sessionService.updateSlot(targetSlot);
+    }
+  }
+
+  private markDropableSlotSpaces(slot: Slot) {
+    const slotSpaces = document.querySelectorAll('.draggable-slot-space');
+    for (let i = 0; i < slotSpaces.length; i++) {
+      const slotSpace = <HTMLElement>slotSpaces[i];
+      if (slotSpace.id == slot.id) {
+        continue;
+      }
+
+      slotSpace.classList.add('dropable-slot-space');
+    }
   }
 
   public toggleFloatingActionButton(event: Event) {

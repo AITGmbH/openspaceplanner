@@ -24,9 +24,12 @@ public class SessionRoomsController : ApiControllerBase
     {
         var session = await _sessionRepository.Get(sessionId);
 
+        var highestOrderNumber = session.Rooms.Count != 0 ? session.Rooms.Max(r => r.OrderNumber) + 1 : 0;
+
         var room = new Room(
             Guid.NewGuid().ToString(),
             string.IsNullOrWhiteSpace(request.Name) ? "Room " + (session.Rooms.Count + 1) : request.Name,
+            highestOrderNumber,
             request.Seats ?? 0,
             new List<string>());
 

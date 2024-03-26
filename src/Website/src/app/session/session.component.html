@@ -30,7 +30,7 @@
           <tr class="table-row">
             <td class="table-cell"></td>
 
-            <td *ngFor="let room of rooms" class="table-cell" id="{{ room.id }}" (dblclick)="showModal($event, 'room', room)" appEditButton>
+            <td *ngFor="let room of rooms" class="table-cell draggable-room-space" id="{{ room.id }}" (dblclick)="showModal($event, 'room', room)" appEditButton>
               <span>{{ room.name }}</span>
               <a (click)="showModal($event, 'room', room)">
                 <fa-icon [icon]="['fas', 'edit']" class="pull-right edit-button"></fa-icon>
@@ -43,7 +43,7 @@
 
         <tbody>
           <tr class="table-row" *ngFor="let slot of slots" id="{{ slot.id }}">
-            <td class="table-cell" (dblclick)="showModal($event, 'slot', slot)" appEditButton>
+            <td class="table-cell draggable-slot-space" (dblclick)="showModal($event, 'slot', slot)" appEditButton>
               <span>{{ slot.name }}</span>
               <a (click)="showModal($event, 'slot', slot)">
                 <fa-icon [icon]="['fas', 'edit']" class="pull-right edit-button"></fa-icon>

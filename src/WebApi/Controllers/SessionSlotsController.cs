@@ -25,9 +25,12 @@ public class SessionSlotsController : ApiControllerBase
     {
         var session = await _sessionRepository.Get(sessionId);
 
+        var highestOrderNumber = session.Slots.Count != 0 ? session.Slots.Max(s => s.OrderNumber) + 1 : 0;
+
         var slot = new Slot(
             Guid.NewGuid().ToString(),
-            string.IsNullOrWhiteSpace(request.Name) ? "Slot " + (session.Slots.Count + 1) : request.Name);
+            string.IsNullOrWhiteSpace(request.Name) ? "Slot " + (session.Slots.Count + 1) : request.Name,
+            highestOrderNumber);
 
         await _sessionRepository.Update(sessionId, (session) => session.Slots.Add(slot));
 
