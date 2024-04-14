@@ -5,6 +5,7 @@
 /* eslint complexity: 0 */
 /* eslint max-statements: 0 */
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild, signal } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DropEvent, InteractEvent } from '@interactjs/types';
 import interact from 'interactjs';
@@ -104,13 +105,14 @@ export class SessionComponent implements OnInit, OnDestroy {
     private sessionService: SessionService,
     private router: Router,
     private route: ActivatedRoute,
+    private titleService: Title,
   ) {
     this._subscriptions.add(
       this.sessionService.sessionChanged.subscribe(() => {
         this.refreshTopics();
         this.refreshVotings();
 
-        this.session = this.sessionService.currentSession;
+        this.setSession(this.sessionService.currentSession);
       }),
     );
   }
@@ -131,7 +133,7 @@ export class SessionComponent implements OnInit, OnDestroy {
 
     await this.sessionService.get(+id);
 
-    this.session = this.sessionService.currentSession;
+    this.setSession(this.sessionService.currentSession);
 
     this.isLoading.set(false);
 
@@ -715,5 +717,10 @@ export class SessionComponent implements OnInit, OnDestroy {
 
   private refreshVotings() {
     this._topicsVoting = null;
+  }
+
+  private setSession(session: Session) {
+    this.session = session;
+    this.titleService.setTitle(`${environment.title} - ${this.session.name}`);
   }
 }

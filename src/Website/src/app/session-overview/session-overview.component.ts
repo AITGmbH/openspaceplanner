@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 import { SessionService } from '../session/session.service';
 import { Room, Slot, Topic } from '../shared/services/api';
 
@@ -17,6 +19,7 @@ export class SessionOverviewComponent implements OnInit {
     private sessionService: SessionService,
     private router: Router,
     private route: ActivatedRoute,
+    private titleService: Title,
   ) {}
 
   public get slots(): Slot[] {
@@ -68,5 +71,6 @@ export class SessionOverviewComponent implements OnInit {
     }
 
     await this.sessionService.get(+id);
+    this.titleService.setTitle(`${environment.title} - ${this.session.name}`);
   }
 }

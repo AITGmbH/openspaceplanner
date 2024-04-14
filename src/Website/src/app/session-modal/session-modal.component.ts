@@ -44,7 +44,7 @@ export class SessionModalComponent implements OnInit {
 
   public ngOnInit() {
     this.sessions$ = this.sessionService.getAll().pipe(
-      map((s) =>
+      map((s: Session[]) =>
         s
           .filter((s) => s.id != this.sessionService.currentSession.id)
           .sort((a, b) => {

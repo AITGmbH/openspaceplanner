@@ -1,10 +1,50 @@
 <header>
   <nav class="navbar">
-    <div class="container">
-      <div class="columns is-vcentered">
-        <h2 class="subtitle is-marginless">
-          <a routerLink="/">Open Space</a>
-        </h2>
+    <div class="navbar-brand">
+      <a class="navbar-item" routerLink="/">Open Space</a>
+
+      <a class="navbar-burger" role="button" aria-label="menu" aria-expanded="false" (click)="toggleBurger()">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+
+    <div class="navbar-menu">
+      <div class="navbar-end">
+        <div class="navbar-item has-dropdown is-hoverable" (click)="toggleDropdown($event)">
+          <a class="navbar-link">
+            @if (currentTheme === 'light') {
+              <fa-icon [icon]="['fas', 'sun']"></fa-icon>
+            } @else if (currentTheme === 'dark') {
+              <fa-icon [icon]="['fas', 'moon']"></fa-icon>
+            } @else {
+              <fa-icon [icon]="['fas', 'desktop']"></fa-icon>
+            }
+          </a>
+
+          <div class="navbar-dropdown is-right">
+            <a class="navbar-item" [class.is-active]="currentTheme === 'light'" (click)="changeTheme('light')">
+              <span class="icon">
+                <fa-icon [icon]="['fas', 'sun']"></fa-icon>
+              </span>
+              <span>Light</span>
+            </a>
+            <a class="navbar-item" [class.is-active]="currentTheme === 'dark'" (click)="changeTheme('dark')">
+              <span class="icon">
+                <fa-icon [icon]="['fas', 'moon']"></fa-icon>
+              </span>
+              <span>Dark</span>
+            </a>
+            <a class="navbar-item" [class.is-active]="currentTheme == null || currentTheme === 'system'" (click)="changeTheme('system')">
+              <span class="icon">
+                <fa-icon [icon]="['fas', 'desktop']"></fa-icon>
+              </span>
+              <span>System</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </nav>

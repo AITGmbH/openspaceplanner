@@ -7,6 +7,12 @@
       "commands": [
         "swagger"
       ]
+    },
+    "dotnet-outdated-tool": {
+      "version": "4.6.1",
+      "commands": [
+        "dotnet-outdated"
+      ]
     }
   }
 }

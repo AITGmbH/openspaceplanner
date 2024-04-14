@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { environment } from '../environments/environment';
 import { CreateSessionComponent } from './create-session/create-session.component';
 import { SessionOverviewComponent } from './session-overview/session-overview.component';
 import { SessionComponent } from './session/session.component';
@@ -9,7 +10,7 @@ const routes: Routes = [
   { path: 'sessions/:id/overview', component: SessionOverviewComponent },
   { path: 'session/:id', redirectTo: 'sessions/:id' },
   { path: 'session/:id/overview', redirectTo: 'sessions/:id/overview' },
-  { path: '**', component: CreateSessionComponent },
+  { path: '**', component: CreateSessionComponent, title: environment.title },
 ];
 
 @NgModule({

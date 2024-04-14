@@ -1,0 +1,17 @@
+@use "bulma/sass/utilities/mixins";
+
+.navbar-item {
+  @include mixins.mobile {
+    &.has-dropdown {
+      .navbar-dropdown {
+        display: none;
+      }
+
+      &.is-active {
+        .navbar-dropdown {
+          display: block;
+        }
+      }
+    }
+  }
+}
