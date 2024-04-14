@@ -50,6 +50,8 @@ describe('session topic box', () => {
     });
 
     const errorContainerElement = component.container.querySelector('.topic-error')?.parentElement;
+
+    expect(errorContainerElement).not.toBeNull();
     expect(errorContainerElement?.style?.display).toBe('');
   });
 

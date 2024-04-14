@@ -1,10 +1,21 @@
+const { defaultTransformerOptions } = require('jest-preset-angular/presets');
+
 module.exports = {
   preset: 'jest-preset-angular',
   roots: ['<rootDir>/src/'],
   testMatch: ['**/+(*.)+(spec).+(ts)'],
-  setupFilesAfterEnv: ['<rootDir>/src/test.ts'],
-  collectCoverage: true,
+  collectCoverage: false,
   reporters: ['default', 'jest-junit'],
   coverageReporters: ['cobertura'],
-  coverageDirectory: 'coverage/app'
+  coverageDirectory: 'coverage/app',
+  coveragePathIgnorePatterns: ['node_modules'],
+  transform: {
+    '^.+\\.(ts|js|mjs|html|svg)$': [
+      'jest-preset-angular',
+      {
+        ...defaultTransformerOptions,
+        isolatedModules: true,
+      },
+    ],
+  },
 };

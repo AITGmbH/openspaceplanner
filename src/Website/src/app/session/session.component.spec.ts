@@ -1,4 +1,4 @@
-import { ComponentFixture, waitForAsync } from '@angular/core/testing';
+import { waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,7 +21,6 @@ describe('SessionComponent', () => {
   session.name = 'Session 3';
 
   let component: RenderResult<SessionComponent, SessionComponent>;
-  let fixture: ComponentFixture<SessionComponent>;
   let sessionServiceMock: SessionService;
   let routerMock: Router;
 

@@ -77,9 +77,10 @@
           "builder": "@angular-builders/jest:run",
           "options": {
             "tsConfig": "tsconfig.spec.json",
-            "scripts": ["node_modules/popper.js/dist/umd/popper.js", "node_modules/tippy.js/umd/index.js"],
-            "styles": ["src/styles.scss", "node_modules/font-awesome/css/font-awesome.css", "node_modules/tippy.js/index.css"],
-            "assets": ["src/assets", "src/favicon.ico"]
+            "styles": ["src/styles.scss"],
+            "assets": ["src/assets", "src/favicon.ico"],
+            "globalMocks": ["doctype", "styleTransform", "matchMedia", "getComputedStyle"],
+            "cache": false
           }
         },
         "lint": {

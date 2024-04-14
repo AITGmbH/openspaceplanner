@@ -9,6 +9,7 @@
     "build:dev": "ng build --configuration development",
     "watch": "ng build --watch",
     "test": "ng test",
+    "test:watch": "ng test --watch",
     "lint": "ng lint",
     "generate-openapi": "openapi-generator-cli generate -g typescript-angular -i ../WebApi/swagger.json -o src/app/shared/services/api --strict-spec true --additional-properties ngVersion=17.0.0,supportsES6=true",
     "openapi-generator": "openapi-generator-cli"
