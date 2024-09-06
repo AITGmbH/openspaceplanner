@@ -1,3 +1,4 @@
+! This project wil go into an archived status and will no longer be maintained !
 # Open Space Planner
 
 [![Build Status](https://dev.azure.com/ait/AIT/_apis/build/status/Tools/OpenSpacePlanner/OpenSpacePlanner.Pipeline?branchName=master)](https://dev.azure.com/ait/AIT/_build/latest?definitionId=334&branchName=master)
